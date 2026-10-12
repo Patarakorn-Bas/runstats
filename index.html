@@ -104,6 +104,15 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .savebar .in{max-width:1180px;margin:0 auto;display:flex;gap:8px;align-items:center}
 .savebar select{width:auto;flex:1 1 auto;min-width:0}
 .savebar button{flex:none;padding:11px 18px;font-size:15px}
+.filebtn{position:relative;display:flex;justify-content:center;align-items:center;gap:8px;background:var(--accent);border-color:var(--accent);color:var(--accent-ink);padding:12px 16px;font-size:15px;overflow:hidden}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
+.filebtn.busy{opacity:.6;pointer-events:none}
+.aistatus{display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:var(--muted)}
+.foundlist{display:flex;flex-wrap:wrap;gap:6px}
+.foundlist:empty{display:none}
+.found{font:500 13px var(--num);background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--ink);border-radius:999px;padding:3px 10px}
+.found::before{content:"✓ ";color:var(--hot)}
+fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 35%,transparent)}
 .modal{position:fixed;inset:0;background:rgba(5,10,20,.75);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
 .modal .card2{background:var(--surface);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;align-items:stretch;max-height:100%;max-width:440px;width:100%}
 .modal .chk{background-color:#9aa3b1;background-image:linear-gradient(45deg,#b7bec9 25%,transparent 25%),linear-gradient(-45deg,#b7bec9 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#b7bec9 75%),linear-gradient(-45deg,transparent 75%,#b7bec9 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0;border-radius:10px;overflow:hidden;display:flex;justify-content:center;min-height:0}
@@ -158,6 +167,14 @@ button:disabled{opacity:.45;cursor:not-allowed}
 
     <!-- DATA -->
     <section class="pane" id="tab-data" role="tabpanel">
+      <fieldset class="ai">
+        <legend>อ่านผลจากภาพหน้าจอ</legend>
+        <p class="hint" style="text-align:left">เลือกภาพหน้าจอผลวิ่งจาก Apple Fitness ได้หลายภาพพร้อมกัน (หน้ารายละเอียด หน้ารอบ และหน้าแผนที่) แอปจะกรอกตัวเลขและดึงเส้นทางให้เอง</p>
+        <label class="btn primary filebtn" id="shotBtn"><input type="file" id="shotIn" accept="image/*" multiple>เลือกภาพหน้าจอ</label>
+        <div class="aistatus" id="aiStatus" hidden><div class="progress"><b id="aiBar"></b></div><span id="aiText"></span></div>
+        <div class="foundlist" id="aiResult"></div>
+        <p class="hint" style="text-align:left" id="aiEngine"></p>
+      </fieldset>
       <fieldset>
         <legend>ผลการวิ่ง</legend>
         <div class="row">
@@ -293,6 +310,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
           <div class="stack">
             <label class="chip"><input type="radio" name="rmode" data-k="route.mode" value="preset"> เส้นทางตัวอย่าง</label>
             <label class="chip"><input type="radio" name="rmode" data-k="route.mode" value="drawn"> วาดเอง</label>
+            <label class="chip"><input type="radio" name="rmode" data-k="route.mode" value="shot"> จากภาพหน้าจอ</label>
             <label class="chip"><input type="radio" name="rmode" data-k="route.mode" value="gpx"> จากไฟล์ GPX</label>
             <label class="chip"><input type="radio" name="rmode" data-k="route.mode" value="none"> ไม่แสดง</label>
             <button id="clearPad">ล้างแล้ววาดใหม่</button>
@@ -404,7 +422,7 @@ const DEF={
   tpl:'classic',icon:'shoe',pos:'center',font:'Kanit',scale:100,rot:0,ox:0,oy:0,ratio:'9:16',res:'1',
   style:{text:'#ffffff',accent:'#ff5a1f',accent2:'#ffd23f',grad:false,stroke:false,strokeColor:'#000000',strokeW:6,shadow:55,upper:false,
          panel:'none',panelColor:'#0b1426',panelAlpha:55,radius:36},
-  route:{mode:'preset',drawn:[],gpx:[],style:'solid',width:10,size:100,dots:false},
+  route:{mode:'preset',drawn:[],gpx:[],shot:[],style:'solid',width:10,size:100,dots:false},
   bg:{zoom:100,x:0,y:0,filter:'none',bright:0,contrast:0,sat:0,vignette:0,fadeBottom:0}
 };
 const PRESETS=[
@@ -458,7 +476,7 @@ function derive(){
   const stats=all.filter(s=>S.show[s.k]&&s.val);
   if(S.style.upper&&S.lang==='en')stats.forEach(s=>s.label=s.label.toUpperCase());
   const m=S.route.mode;
-  const route=m==='preset'?PRESET:m==='drawn'?chaikin(chaikin(S.route.drawn)):m==='gpx'?S.route.gpx:[];
+  const route=m==='preset'?PRESET:m==='drawn'?chaikin(chaikin(S.route.drawn)):m==='gpx'?S.route.gpx:m==='shot'?chaikin(S.route.shot):[];
   return{L,stats,route,
     splits:String(r.splits).split(/[,\s]+/).map(parseT).filter(x=>x>0).slice(0,12),
     hrs:String(r.hrSplits).split(/[,\s]+/).map(Number).filter(x=>x>0).slice(0,20),
@@ -833,8 +851,8 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 // route pad
 const pad=$('pad'),pctx=pad.getContext('2d');let drawing=false;
 function drawPad(){
-  pctx.clearRect(0,0,600,600);const m=S.route.mode;const pts=m==='preset'?PRESET:m==='drawn'?S.route.drawn:m==='gpx'?S.route.gpx:[];
-  if(pts.length<2){pctx.fillStyle=getComputedStyle(document.body).color;pctx.globalAlpha=.45;pctx.font='500 30px "IBM Plex Sans Thai",sans-serif';pctx.textAlign='center';pctx.fillText(m==='gpx'?'ยังไม่มีไฟล์ GPX':'ลากเพื่อวาดเส้นทาง',300,310);pctx.globalAlpha=1;return}
+  pctx.clearRect(0,0,600,600);const m=S.route.mode;const pts=m==='preset'?PRESET:m==='drawn'?S.route.drawn:m==='gpx'?S.route.gpx:m==='shot'?S.route.shot:[];
+  if(pts.length<2){pctx.fillStyle=getComputedStyle(document.body).color;pctx.globalAlpha=.45;pctx.font='500 30px "IBM Plex Sans Thai",sans-serif';pctx.textAlign='center';pctx.fillText(m==='gpx'?'ยังไม่มีไฟล์ GPX':m==='shot'?'ยังไม่มีภาพแผนที่':'ลากเพื่อวาดเส้นทาง',300,310);pctx.globalAlpha=1;return}
   let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;pts.forEach(([x,y])=>{x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)});
   const fit=m!=='drawn',k=fit?Math.min(500/Math.max(x1-x0,1e-9),500/Math.max(y1-y0,1e-9)):1,ox=fit?300-(x0+x1)/2*k:0,oy=fit?300-(y0+y1)/2*k:0;
   pctx.lineWidth=10;pctx.lineCap=pctx.lineJoin='round';pctx.strokeStyle=S.style.accent;
@@ -883,9 +901,9 @@ $('saveStyle').onclick=()=>{const n=$('styleName').value.trim()||('สไตล�
 // run history
 function renderRuns(){const list=store.get('rs.runs',[]),el=$('runList');el.innerHTML='';if(!list.length){el.innerHTML='<p class="empty">ยังไม่มีประวัติ กดปุ่มด้านบนเพื่อเก็บรอบนี้</p>';return}
   list.forEach((it,i)=>{const r=document.createElement('div');r.className='item';const d=document.createElement('div');const b=document.createElement('b');b.textContent=`${it.run.dist} กม. · ${it.run.title}`;const sm=document.createElement('small');sm.textContent=`${it.run.date} · เพซ ${it.run.pace}`;d.append(b,sm);
-    const u=document.createElement('button');u.textContent='เปิด';u.onclick=()=>{Object.assign(S.run,it.run);if(it.route){S.route.mode=it.route.mode;S.route.drawn=it.route.drawn||[];S.route.gpx=it.route.gpx||[]}syncInputs();schedule();toast('เปิดรอบ '+it.run.date)};
+    const u=document.createElement('button');u.textContent='เปิด';u.onclick=()=>{Object.assign(S.run,it.run);if(it.route){S.route.mode=it.route.mode;S.route.drawn=it.route.drawn||[];S.route.gpx=it.route.gpx||[];S.route.shot=it.route.shot||[]}syncInputs();schedule();toast('เปิดรอบ '+it.run.date)};
     const x=document.createElement('button');x.textContent='ลบ';x.className='danger';x.onclick=()=>{list.splice(i,1);store.set('rs.runs',list);renderRuns()};r.append(d,u,x);el.append(r)})}
-$('saveRun').onclick=()=>{const list=store.get('rs.runs',[]);list.unshift({run:clone(S.run),route:{mode:S.route.mode,drawn:S.route.drawn,gpx:S.route.gpx}});store.set('rs.runs',list.slice(0,60));renderRuns();toast('เก็บรอบนี้แล้ว')};
+$('saveRun').onclick=()=>{const list=store.get('rs.runs',[]);list.unshift({run:clone(S.run),route:{mode:S.route.mode,drawn:S.route.drawn,gpx:S.route.gpx,shot:S.route.shot}});store.set('rs.runs',list.slice(0,60));renderRuns();toast('เก็บรอบนี้แล้ว')};
 $('resetAll').onclick=()=>{if($('resetAll').dataset.arm){S=clone(DEF);syncInputs();ensureFont().then(schedule);delete $('resetAll').dataset.arm;$('resetAll').textContent='ล้างค่าทั้งหมดกลับเป็นค่าเริ่มต้น';toast('กลับเป็นค่าเริ่มต้นแล้ว')}
   else{$('resetAll').dataset.arm=1;$('resetAll').textContent='กดอีกครั้งเพื่อยืนยัน';setTimeout(()=>{delete $('resetAll').dataset.arm;$('resetAll').textContent='ล้างค่าทั้งหมดกลับเป็นค่าเริ่มต้น'},3000)}};
 
@@ -940,6 +958,147 @@ $('shareBtn').onclick=async()=>{if(!result)return;const{blob,name}=result;
 $('closeModal').onclick=()=>{$('modal').hidden=true};
 $('modal').onclick=e=>{if(e.target===$('modal'))$('modal').hidden=true};
 $('exportBtn').onclick=()=>{const k=$('exportType').value;if(k==='video')exportVideo();else exportStill(k)};
+
+// ---------- read results from screenshots ----------
+const TH_MONTHS=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const TH_SHORT=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const EN_MONTHS=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+function normDigits(t){return t.replace(/[๐-๙]/g,d=>'๐๑๒๓๔๕๖๗๘๙'.indexOf(d))}
+// Parse OCR text from Apple Fitness (Thai or English) and similar workout screens
+function parseWorkoutText(raw){
+  const t=normDigits(raw).replace(/[“”″]/g,'"').replace(/[‘’′`]/g,"'");const lines=t.split(/\n/).map(s=>s.trim()).filter(Boolean);const o={};
+  const after=(re,valRe)=>{for(let i=0;i<lines.length-1;i++)if(re.test(lines[i])){for(let j=i+1;j<Math.min(i+3,lines.length);j++){const m=lines[j].match(valRe);if(m)return{m,line:lines[i],next:lines[j]}}}return null};
+  // workout time
+  let m=t.match(/\b(\d{1,2}):(\d{2}):(\d{2})\b/);if(m)o.time=`${+m[1]}:${m[2]}:${m[3]}`;
+  else if((m=t.match(/(\d{1,2})\s*(?:ชม|h)\.?\s*(\d{1,2})\s*(?:น|m)\b/i)))o.time=`${m[1]}:${m[2].padStart(2,'0')}:00`;
+  // distance
+  m=t.match(/(\d{1,3}[.,]\d{1,2})\s*(กม|ไมล์|km\b|mi\b)/i);if(m){let d=parseFloat(m[1].replace(',','.'));if(/ไมล์|mi/i.test(m[2]))d/=0.621371;o.dist=d.toFixed(2)}
+  // average pace: value under its label, else first pace
+  const PACE=/(\d{1,2})'?\s?(\d{2})\s*["'”]*\s*\/\s*(กม|km|mi|ไมล์)/i,PACE_G=new RegExp(PACE.source,'gi');
+  const secOf=m=>+m[1]*60+ +m[2];const tsec=o.time?parseT(o.time):NaN,dd=o.dist?+o.dist:NaN,exp=tsec>0&&dd>0?tsec/dd:NaN;
+  const near=v=>!isFinite(exp)||Math.abs(v-exp)<=25;
+  let pa=after(/เพ[ซช]เฉลี่ย|avg\.?\s*pace|average pace/i,PACE);let pace=pa&&+pa.m[2]<60&&near(secOf(pa.m))?secOf(pa.m):NaN;
+  if(!isFinite(pace)){const all=[...t.matchAll(PACE_G),...t.matchAll(/\b(\d{1,2}):(\d{2})\s*\/\s*(กม|km)/gi)].filter(m=>+m[2]<60).map(secOf);
+    const pick=isFinite(exp)?all.filter(near).sort((a,b)=>Math.abs(a-exp)-Math.abs(b-exp))[0]:all[0];pace=pick??(isFinite(exp)?Math.round(exp):NaN)}
+  if(isFinite(pace))o.pace=mmss(pace);
+  // heart rate
+  const BPM=/(\d{2,3})\s?[B8]PM/i;let hr=after(/หัวใจเต้นเฉลี่ย|avg\.?\s*heart|average heart/i,BPM);
+  if(!hr){const mm=t.match(/(?:เฉลี่ย|avg\.?|average)\s*(\d{2,3})\s?[B8]PM/i);if(mm)o.hr=mm[1]}else o.hr=hr.m[1];
+  // cadence, power, elevation, kcal
+  if((m=t.match(/(\d{2,3})\s*[sS5][pP][mM]/)))o.cad=m[1];
+  if((m=t.match(/(\d{2,4})\s*(?:วัตต|W\b)/)))o.power=m[1];
+  if((m=t.match(/(?:^|[^\d.,])(\d{1,4})\s*ม\./m))||(m=t.match(/(?:^|[^\d.,])(\d{1,4})\s?(?:m|ft)\b(?!\s*\/)/m)))o.elev=m[1];
+  const kc=[...t.matchAll(/(\d{2,4})\s*(?:กิโลแคล|kcal|cal\b|KCAL|CAL\b)/gi)].map(x=>+x[1]);if(kc.length)o.kcal=String(Math.max(...kc));
+  // laps table: "1  07:44  7'44"/กม.  151BPM"
+  const laps=[],lapHr=[];
+  lines.forEach(l=>{const r=l.match(/^\s*(\d{1,2})\D{0,3}?(\d{2}:\d{2})(?!:)[\])|.,]?\s+(.*)$/);if(!r||!/กม|km|mi|ไมล์|\/|PM/i.test(r[3]))return;const n=+r[1];if(n<1||n>60)return;
+    let lt=r[2];const pm=r[3].match(PACE);if(pm&&+pm[2]<60){const ps=secOf(pm),ls=parseT(lt);if(Math.abs(ps-ls)<=9)lt=mmss(ps)}
+    laps.push([n,lt]);const h=r[3].match(BPM);lapHr.push(h?+h[1]:null)});
+  if(laps.length>=2){laps.sort((a,b)=>a[0]-b[0]);o.splits=laps.map(x=>{const[a,b]=x[1].split(':');return `${+a}:${b}`}).join(', ');
+    const hs=lapHr.filter(Boolean);if(hs.length>=2&&hs.length===laps.length)o.hrSplits=hs.join(', ')}
+  if(!o.hr&&lapHr.filter(Boolean).length){const hs=lapHr.filter(Boolean);o.hr=String(Math.round(hs.reduce((a,b)=>a+b,0)/hs.length))}
+  // date and start time
+  const mr=new RegExp(`(\\d{1,2})\\s*(${TH_MONTHS.join('|')})\\s*(\\d{4})(?:\\s*(\\d{1,2}[:.]\\d{2}))?`);
+  if((m=t.match(mr)))o.date=`${+m[1]} ${TH_SHORT[TH_MONTHS.indexOf(m[2])]} ${m[3]}${m[4]?' · '+m[4].replace('.',':'):''}`;
+  else if((m=t.match(/(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{4})(?:\D{1,4}(\d{1,2}:\d{2}))?/i)))o.date=`${+m[1]} ${m[2][0].toUpperCase()+m[2].slice(1,3).toLowerCase()} ${m[3]}${m[4]?' · '+m[4]:''}`;
+  if((m=t.match(/(วิ่งกลางแจ้ง|วิ่งในร่ม|เดินกลางแจ้ง|Outdoor Run|Indoor Run|Trail Run)/i)))o.title=m[1];
+  return o;
+}
+
+// Trace the coloured route line (yellow/orange/red) from a map screenshot
+function routeFromImage(img){
+  const W=360,H=Math.round(img.naturalHeight*W/img.naturalWidth),c=document.createElement('canvas');c.width=W;c.height=H;
+  const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,W,H);const p=x.getImageData(0,0,W,H).data;
+  const y0=Math.round(H*.06),y1=Math.round(H*.56),cell=3,cols=Math.ceil(W/cell),hit=new Map();
+  // only map screenshots: most of the upper area is muted green/grey map ground
+  let mapPx=0,tot=0;for(let y=y0;y<y1;y+=3)for(let xx=0;xx<W;xx+=3){const i=(y*W+xx)*4,r=p[i],g=p[i+1],b=p[i+2],l=(r+g+b)/3;tot++;if(l>25&&l<170&&g>r+6&&g>=b-4)mapPx++}
+  if(mapPx/tot<.45)return null;
+  for(let y=y0;y<y1;y++)for(let xx=0;xx<W;xx++){const i=(y*W+xx)*4,r=p[i],g=p[i+1],b=p[i+2];
+    if(r>190&&b<110&&r-b>120&&g<r-25){const k=((y/cell)|0)*cols+((xx/cell)|0);hit.set(k,(hit.get(k)||0)+1)}}
+  const nodes=[...hit.entries()].filter(([,n])=>n>=2).map(([k])=>[k%cols,(k/cols)|0]);
+  if(nodes.length<12)return null;
+  // keep the largest connected group
+  const key=(a,b)=>a+','+b,set=new Set(nodes.map(n=>key(...n))),seen=new Set();let best=[];
+  for(const n of nodes){const k0=key(...n);if(seen.has(k0))continue;const comp=[],st=[n];seen.add(k0);
+    while(st.length){const[a,b]=st.pop();comp.push([a,b]);for(let dx=-2;dx<=2;dx++)for(let dy=-2;dy<=2;dy++){const k=key(a+dx,b+dy);if(set.has(k)&&!seen.has(k)){seen.add(k);st.push([a+dx,b+dy])}}}
+    if(comp.length>best.length)best=comp}
+  if(best.length<12)return null;
+  // order: start at an extreme cell, then walk to the nearest unvisited cell
+  const deg=n=>best.filter(m=>Math.abs(m[0]-n[0])<=1&&Math.abs(m[1]-n[1])<=1).length;
+  let cur=best.reduce((a,n)=>deg(n)<deg(a)?n:a,best[0]);const left=new Set(best.map(n=>key(...n)));const path=[cur];left.delete(key(...cur));
+  while(left.size){let bd=1e9,bn=null;for(const k of left){const[a,b]=k.split(',').map(Number);const d=(a-cur[0])**2+(b-cur[1])**2;if(d<bd){bd=d;bn=[a,b]}}
+    if(bd>64)break;left.delete(key(...bn));cur=bn;path.push(cur)}
+  // light smoothing and thinning
+  const sm=path.map((q,i)=>{const a=path[Math.max(0,i-2)],b=path[Math.min(path.length-1,i+2)];return[(a[0]+q[0]+b[0])/3,(a[1]+q[1]+b[1])/3]});
+  return sm.filter((_,i)=>i%2===0||i===sm.length-1);
+}
+
+function loadImg(file){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=rej;im.src=URL.createObjectURL(file)})}
+function ocrCanvas(img){
+  const sc=Math.min(1,1400/img.naturalWidth),W=Math.round(img.naturalWidth*sc),H=Math.round(img.naturalHeight*sc);
+  const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,W,H);
+  const d=x.getImageData(0,0,W,H),p=d.data;let sum=0;for(let i=0;i<p.length;i+=4)sum+=p[i]*.3+p[i+1]*.59+p[i+2]*.11;const dark=sum/(p.length/4)<128;
+  for(let i=0;i<p.length;i+=4){let v=p[i]*.3+p[i+1]*.59+p[i+2]*.11;if(dark)v=255-v;p[i]=p[i+1]=p[i+2]=v}
+  x.putImageData(d,0,0);return c;
+}
+let ocrWorker=null;
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.append(s)})}
+async function getOcr(onP){
+  if(ocrWorker)return ocrWorker;
+  if(!window.Tesseract)await loadScript('ocr/tesseract.min.js');
+  const abs=p=>new URL(p,location.href).href;
+  ocrWorker=await Tesseract.createWorker(['tha','eng'],1,{workerPath:abs('ocr/worker.min.js'),corePath:abs('ocr/core'),langPath:abs('ocr/lang'),
+    logger:m=>{if(m.status&&typeof m.progress==='number')onP(m.status,m.progress)}});
+  await ocrWorker.setParameters({preserve_interword_spaces:'1'});return ocrWorker;
+}
+async function getSample(){try{if(!window.claude?.use)return null;const s=await window.claude.use('sample');if(!s)return null;const lim=await s.limits();return lim.images?s:null}catch(e){return null}}
+const AI_PROMPT=`You read running workout screenshots (Apple Fitness/Apple Watch, Strava, Garmin, Nike Run Club; Thai or English UI).
+Reply with ONLY a JSON object, no prose, using null for anything not visible:
+{"title": string (activity name as shown, e.g. "วิ่งกลางแจ้ง"), "date": string (day, short month, year as shown, plus start time, e.g. "12 ต.ค. 2569 · 17:19"), "place": string,
+ "distance_km": number, "workout_time": "h:mm:ss" (moving/workout time, not elapsed), "avg_pace": "m:ss" per km,
+ "avg_hr": number, "cadence_spm": number, "total_kcal": number, "elevation_gain_m": number, "avg_power_w": number,
+ "splits": ["m:ss", ...] time of each lap or km in order, "split_hr": [number, ...] heart rate of each lap in order}`;
+function fromClaude(j){const o={};if(!j||typeof j!=='object')return o;
+  if(j.title)o.title=String(j.title);if(j.date)o.date=String(j.date);if(j.place)o.place=String(j.place);
+  if(isFinite(j.distance_km))o.dist=(+j.distance_km).toFixed(2);if(j.workout_time)o.time=String(j.workout_time);if(j.avg_pace)o.pace=String(j.avg_pace);
+  if(isFinite(j.avg_hr))o.hr=String(j.avg_hr);if(isFinite(j.cadence_spm))o.cad=String(j.cadence_spm);if(isFinite(j.total_kcal))o.kcal=String(j.total_kcal);
+  if(isFinite(j.elevation_gain_m))o.elev=String(j.elevation_gain_m);if(isFinite(j.avg_power_w))o.power=String(j.avg_power_w);
+  if(Array.isArray(j.splits)&&j.splits.length)o.splits=j.splits.join(', ');if(Array.isArray(j.split_hr)&&j.split_hr.length)o.hrSplits=j.split_hr.join(', ');return o}
+const FOUND_LABEL={dist:'ระยะทาง',time:'เวลา',pace:'เพซ',hr:'หัวใจ',cad:'รอบขา',kcal:'แคลอรี',elev:'ความสูง',power:'กำลัง',splits:'สปลิต',hrSplits:'หัวใจรายกิโล',date:'วันที่',title:'ชื่อ',place:'สถานที่'};
+function aiStatus(text,frac){const box=$('aiStatus');box.hidden=false;$('aiText').textContent=text;$('aiBar').style.width=Math.round((frac||0)*100)+'%'}
+async function readShots(files){
+  files=[...files].slice(0,4);if(!files.length)return;$('aiResult').innerHTML='';$('shotBtn').classList.add('busy');
+  try{
+    const imgs=await Promise.all(files.map(loadImg));
+    // route: take the screenshot with the clearest coloured line
+    let route=null;imgs.forEach(im=>{const r=routeFromImage(im);if(r&&(!route||r.length>route.length))route=r});
+    let o={};const sample=await getSample();
+    if(sample){
+      aiStatus('Claude กำลังอ่านภาพ...',.35);
+      const j=await sample.json(AI_PROMPT,{images:files,modelTier:'default'});o=fromClaude(j);
+    }else{
+      aiStatus('กำลังโหลดตัวอ่านภาพ (ครั้งแรกใช้เวลาสักครู่)...',.05);
+      const w=await getOcr((st,pr)=>{if(/load|init/.test(st))aiStatus('กำลังโหลดตัวอ่านภาพ...',.05+pr*.25)});
+      let text='';for(let i=0;i<imgs.length;i++){aiStatus(`กำลังอ่านภาพ ${i+1}/${imgs.length}...`,.3+.65*i/imgs.length);const r=await w.recognize(ocrCanvas(imgs[i]));text+='\n'+r.data.text}
+      o=parseWorkoutText(text);
+    }
+    Object.keys(o).forEach(k=>{if(k in S.run&&o[k])S.run[k]=o[k]});
+    if(o.pace&&o.dist&&o.time){} // keep Apple's own average pace
+    if(o.pace)S.run.paceAuto=false;else S.run.paceAuto=true;
+    if(o.hrSplits)S.show.hrChart=S.show.hrChart||false;
+    if(route){S.route.shot=route;S.route.mode='shot'}
+    syncInputs();schedule();aiStatus('อ่านเสร็จแล้ว ตรวจตัวเลขอีกครั้งก่อนบันทึก',1);
+    const res=$('aiResult');const keys=Object.keys(o).filter(k=>FOUND_LABEL[k]);
+    keys.forEach(k=>{const s=document.createElement('span');s.className='found';s.textContent=FOUND_LABEL[k]+(['splits','hrSplits'].includes(k)?'':' '+o[k]);res.append(s)});
+    if(route){const s=document.createElement('span');s.className='found';s.textContent='เส้นทางจากแผนที่';res.append(s)}
+    if(!keys.length&&!route)aiStatus('ไม่พบตัวเลขในภาพ ลองใช้ภาพหน้ารายละเอียดของ Apple Fitness ที่ไม่ถูกครอป',1);
+    else toast(`กรอกให้แล้ว ${keys.length} รายการ`);
+  }catch(e){aiStatus(e&&e.code==='not_granted'?'ยังไม่ได้อนุญาตให้ Claude อ่านภาพ':e&&e.code==='rate_limited'?'ใช้งานถี่เกินไป รอสักครู่แล้วลองใหม่':'อ่านภาพไม่สำเร็จ ลองอีกครั้ง หรือกรอกตัวเลขเอง',1)}
+  finally{$('shotBtn').classList.remove('busy');$('shotIn').value=''}
+}
+$('shotIn').onchange=e=>readShots(e.target.files);
+(async()=>{const s=await getSample();$('aiEngine').textContent=s?'อ่านด้วย Claude (แม่นยำสุด ใช้โควตาบัญชี Claude ของคุณ)':
+  'อ่านในเครื่องด้วย OCR ฟรี ภาพไม่ถูกส่งออกไปไหน ครั้งแรกต้องใช้เน็ตโหลดข้อมูลภาษาประมาณ 8 MB'})();
 
 // ---------- fonts ----------
 async function ensureFont(){try{await Promise.all([400,500,600,700].map(w=>document.fonts.load(`${w} 40px "${S.font}"`,'ระยะทาง 0123 กม.')))}catch(e){}}
