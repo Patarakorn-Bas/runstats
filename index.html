@@ -96,6 +96,8 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .list{display:flex;flex-direction:column;gap:6px}
 .item{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--sunk)}
 .item div{min-width:0}
+.item.sel{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.lname{background:none;border:0;padding:4px 0;text-align:left;font:600 14px var(--num);color:var(--ink);cursor:pointer;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .item b{display:block;font:600 14px var(--num);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .item small{color:var(--muted)}
 .item button{padding:6px 10px;font-size:13px}
@@ -233,6 +235,7 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
       <fieldset>
         <legend>แม่แบบ</legend>
         <div class="cards" role="radiogroup" aria-label="แม่แบบ">
+          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="free"><b>อิสระ</b>ลากได้ทุกชิ้น</label>
           <label class="card"><input type="radio" name="tpl" data-k="tpl" value="classic"><b>คลาสสิก</b>เรียงกลาง</label>
           <label class="card"><input type="radio" name="tpl" data-k="tpl" value="hero"><b>ตัวเลขยักษ์</b>ระยะทางเด่น</label>
           <label class="card"><input type="radio" name="tpl" data-k="tpl" value="grid"><b>ตาราง</b>ครบทุกค่า</label>
@@ -240,6 +243,26 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
           <label class="card"><input type="radio" name="tpl" data-k="tpl" value="bar"><b>แถบล่าง</b>เหมาะกับวิดีโอ</label>
           <label class="card"><input type="radio" name="tpl" data-k="tpl" value="badge"><b>เหรียญ</b>วงกลม</label>
         </div>
+      </fieldset>
+      <fieldset id="layerBox" hidden>
+        <legend>เลเยอร์</legend>
+        <p class="hint" style="text-align:left">ลากแต่ละชิ้นบนภาพตัวอย่างได้เลย สองนิ้วย่อขยายและหมุน แตะสองครั้งเพื่อคืนขนาด เลือกชิ้นจากรายการเพื่อปรับละเอียด</p>
+        <div class="list" id="layerList"></div>
+        <div id="layerCtl" class="stack" hidden>
+          <label class="f"><span>ขนาดชิ้นที่เลือก <output id="lsOut"></output></span><input type="range" min="20" max="400" id="lScale"></label>
+          <label class="f"><span>หมุนชิ้นที่เลือก <output id="lrOut"></output></span><input type="range" min="-180" max="180" id="lRot"></label>
+          <div class="chips"><button type="button" class="tb" id="lFront">ไว้หน้าสุด</button><button type="button" class="tb" id="lCenter">จัดกึ่งกลางแนวนอน</button></div>
+        </div>
+        <button type="button" id="relayout">จัดเรียงใหม่ทั้งหมด</button>
+      </fieldset>
+      <fieldset>
+        <legend>แอนิเมชัน</legend>
+        <p class="hint" style="text-align:left">เส้นทางค่อยๆ วาดตัวเอง ตัวเลขนับขึ้นจาก 0 แล้วบันทึกเป็นวิดีโอสำหรับ Reels หรือ TikTok</p>
+        <div class="row">
+          <label class="f"><span>ความยาว</span><select data-k="anim.dur"><option value="4">4 วินาที</option><option value="6">6 วินาที</option><option value="8">8 วินาที</option><option value="10">10 วินาที</option></select></label>
+          <label class="f"><span>พื้นหลังวิดีโอ</span><select data-k="anim.bg"><option value="media">รูป/วิดีโอที่เลือก</option><option value="black">ดำ</option><option value="navy">กรมท่า</option><option value="green">กรีนสกรีน (ลบพื้นใน CapCut)</option></select></label>
+        </div>
+        <button type="button" class="primary" id="playAnim">▶ เล่นตัวอย่าง</button>
       </fieldset>
       <fieldset>
         <legend>ไอคอน</legend>
@@ -339,6 +362,8 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
       <fieldset>
         <legend>สไตล์เส้นทาง</legend>
         <div class="cards" role="radiogroup" aria-label="สไตล์เส้นทาง">
+          <label class="card"><input type="radio" name="rstyle" data-k="route.style" value="pace"><b>สีตามเพซ</b>เขียว เหลือง แดง</label>
+          <label class="card"><input type="radio" name="rstyle" data-k="route.style" value="pacet"><b>เพซสีธีม</b>สีรอง → สีหลัก</label>
           <label class="card"><input type="radio" name="rstyle" data-k="route.style" value="solid"><b>เส้นทึบ</b></label>
           <label class="card"><input type="radio" name="rstyle" data-k="route.style" value="glow"><b>เรืองแสง</b></label>
           <label class="card"><input type="radio" name="rstyle" data-k="route.style" value="grad"><b>ไล่สี</b></label>
@@ -346,6 +371,7 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
           <label class="card"><input type="radio" name="rstyle" data-k="route.style" value="double"><b>สองชั้น</b></label>
           <label class="card"><input type="radio" name="rstyle" data-k="route.style" value="dots"><b>จุดเรียง</b></label>
         </div>
+        <p class="hint" style="text-align:left">สีตามเพซใช้เวลาจริงจากไฟล์ GPX ถ้ามี ไม่อย่างนั้นใช้สปลิตรายกิโลจากแท็บข้อมูล ช่วงที่เร็วเป็นสีเขียว ช้าเป็นสีแดง</p>
         <label class="f"><span>ความหนา <output data-out="route.width"></output></span><input type="range" min="3" max="24" data-k="route.width"></label>
         <label class="f"><span>ขนาดเส้นทาง <output data-out="route.size"></output></span><input type="range" min="50" max="160" data-k="route.size"></label>
         <label class="chip" style="justify-self:start"><input type="checkbox" data-k="route.dots"> จุดเริ่ม (เขียว) / จบ (แดง)</label>
@@ -406,7 +432,8 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
     <select id="exportType" aria-label="ชนิดไฟล์">
       <option value="png">PNG โปร่งใส (สติกเกอร์)</option>
       <option value="jpg">JPG รวมพื้นหลัง</option>
-      <option value="video">วิดีโอรวมสติกเกอร์ (ทดลอง)</option>
+      <option value="anim">วิดีโอแอนิเมชัน (เส้นทางวาด + ตัวเลขนับ)</option>
+      <option value="video">วิดีโอพื้นหลังรวมสติกเกอร์</option>
     </select>
     <button class="primary" id="exportBtn">บันทึก</button>
   </div>
@@ -439,8 +466,8 @@ const DEF={
   tpl:'classic',icon:'shoe',pos:'center',font:'Kanit',scale:100,rot:0,ox:0,oy:0,ratio:'9:16',res:'1',
   style:{text:'#ffffff',accent:'#ff5a1f',accent2:'#ffd23f',grad:false,stroke:false,strokeColor:'#000000',strokeW:6,shadow:55,upper:false,
          panel:'none',panelColor:'#0b1426',panelAlpha:55,radius:36},
-  rt:{free:true,x:0,y:.3,scale:90,rot:0,flip:false,behind:false},sel:'stats',
-  route:{mode:'preset',drawn:[],gpx:[],shot:[],style:'solid',width:10,size:100,dots:false},
+  layers:{},order:[],layoutTouched:false,layoutIds:'',anim:{dur:6,bg:'media'},rt:{free:true,x:0,y:.3,scale:90,rot:0,flip:false,behind:false},sel:'stats',
+  route:{mode:'preset',drawn:[],gpx:[],gpxD:null,gpxT:null,shot:[],style:'solid',width:10,size:100,dots:false},
   bg:{zoom:100,x:0,y:0,filter:'none',bright:0,contrast:0,sat:0,vignette:0,fadeBottom:0}
 };
 const PRESETS=[
@@ -481,21 +508,23 @@ function derive(){
   const dd=mi&&isFinite(dist)?dist*0.621371:dist;
   let pace=r.pace;if(r.paceAuto&&dd>0&&tsec>0){pace=mmss(tsec/dd);if(S.run.pace!==pace){S.run.pace=pace;const pi=$('paceIn');if(document.activeElement!==pi)pi.value=pace}}
   const unit=mi?L.mi:L.km;
+  const P=ANIM?ease(ANIM.num):1,ani=v=>{if(P>=1)return v;const n=parseFloat(String(v).replace(',','.'));return isFinite(n)?String(Math.round(n*P)):v};
+  const paceSec=parseT(pace);
   const all=[
-    {k:'dist',label:L.dist,val:isFinite(dd)?dd.toFixed(2):'',unit},
-    {k:'pace',label:L.pace,val:String(pace).trim(),unit:'/'+unit},
-    {k:'time',label:L.time,val:tsec>0?timeLabel(tsec,L):'',unit:''},
-    {k:'hr',label:L.hr,val:String(r.hr).trim(),unit:'BPM'},
-    {k:'cad',label:L.cad,val:String(r.cad).trim(),unit:'SPM'},
-    {k:'kcal',label:L.kcal,val:String(r.kcal).trim(),unit:L.kc},
-    {k:'elev',label:L.elev,val:String(r.elev).trim(),unit:L.m},
-    {k:'power',label:L.power,val:String(r.power).trim(),unit:'W'}
+    {k:'dist',label:L.dist,val:isFinite(dd)?(dd*P).toFixed(2):'',unit},
+    {k:'pace',label:L.pace,val:P<1&&paceSec>0?mmss(paceSec*P):String(pace).trim(),unit:'/'+unit},
+    {k:'time',label:L.time,val:tsec>0?timeLabel(tsec*P,L):'',unit:''},
+    {k:'hr',label:L.hr,val:ani(String(r.hr).trim()),unit:'BPM'},
+    {k:'cad',label:L.cad,val:ani(String(r.cad).trim()),unit:'SPM'},
+    {k:'kcal',label:L.kcal,val:ani(String(r.kcal).trim()),unit:L.kc},
+    {k:'elev',label:L.elev,val:ani(String(r.elev).trim()),unit:L.m},
+    {k:'power',label:L.power,val:ani(String(r.power).trim()),unit:'W'}
   ];
   const stats=all.filter(s=>S.show[s.k]&&s.val);
   if(S.style.upper&&S.lang==='en')stats.forEach(s=>s.label=s.label.toUpperCase());
   const m=S.route.mode;
   const route=m==='preset'?PRESET:m==='drawn'?chaikin(chaikin(S.route.drawn)):m==='gpx'?S.route.gpx:m==='shot'?chaikin(S.route.shot):[];
-  const free=S.rt.free&&route.length>1;
+  const free=(S.rt.free||S.tpl==='free')&&route.length>1;
   return{L,stats,route:free?[]:route,freeRoute:free?route:null,
     splits:String(r.splits).split(/[,\s]+/).map(parseT).filter(x=>x>0).slice(0,12),
     hrs:String(r.hrSplits).split(/[,\s]+/).map(Number).filter(x=>x>0).slice(0,20),
@@ -612,24 +641,37 @@ function drawIcon(ctx,x,top,h,align){
 }
 function setShadowLocal(ctx,k){/* shadow blur is in device px, unaffected by scale */setShadow(ctx)}
 
-function drawRoute(ctx,pts,bx,by,bw,bh,align){
-  if(pts.length<2)return;const R=S.route;const sz=R.size/100;
+function drawRoute(ctx,full,bx,by,bw,bh,align){
+  if(full.length<2)return;const R=S.route;const sz=R.size/100;
+  const frac=ANIM?ANIM.route:1;if(frac<=0)return;const pts=cutPath(full,frac);if(pts.length<2)return;
   const cx=bx+bw/2,cy=by+bh/2;bw*=sz;bh*=sz;bx=cx-bw/2;by=cy-bh/2;
   let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
-  pts.forEach(([x,y])=>{x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)});
+  full.forEach(([x,y])=>{x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)});
   const pw=Math.max(x1-x0,1e-9),ph=Math.max(y1-y0,1e-9),k=Math.min(bw/pw,bh/ph),dw=pw*k,dh=ph*k;
   const ox=align==='left'?bx:align==='right'?bx+bw-dw:bx+(bw-dw)/2,oy=by+(bh-dh)/2;
   const P=([x,y])=>[ox+(x-x0)*k,oy+(y-y0)*k];const st=S.style,lw=R.width*SC;
   const path=()=>{ctx.beginPath();pts.forEach((p,i)=>{const[x,y]=P(p);i?ctx.lineTo(x,y):ctx.moveTo(x,y)})};
   ctx.save();ctx.lineJoin='round';ctx.lineCap='round';setShadow(ctx);
-  if(R.style==='glow'){ctx.shadowColor=st.accent;ctx.shadowBlur=lw*3;ctx.shadowOffsetY=0;ctx.strokeStyle=st.accent;ctx.lineWidth=lw;path();ctx.stroke();ctx.shadowBlur=lw*1.2;ctx.strokeStyle=st.accent2;ctx.lineWidth=lw*.4;path();ctx.stroke()}
-  else if(R.style==='grad'){const a=P(pts[0]),b=P(pts[pts.length-1]);const g=ctx.createLinearGradient(ox,oy,ox+dw,oy+dh);g.addColorStop(0,st.accent);g.addColorStop(1,st.accent2);ctx.strokeStyle=g;ctx.lineWidth=lw;path();ctx.stroke()}
+  if(R.style==='pace'||R.style==='pacet'){
+    const N=64,ser=paceSeries(N);
+    if(!ser){ctx.strokeStyle=st.accent;ctx.lineWidth=lw;path();ctx.stroke()}
+    else{const lo=Math.min(...ser),hi=Math.max(...ser),rng=Math.max(hi-lo,1);
+      const L=[0];for(let i=1;i<full.length;i++)L.push(L[i-1]+Math.hypot(full[i][0]-full[i-1][0],full[i][1]-full[i-1][1]));const tot=L[L.length-1]||1;
+      // shadow pass, then coloured segments on top
+      ctx.strokeStyle=paceColor((ser[0]-lo)/rng,R.style==='pacet');ctx.lineWidth=lw;path();ctx.stroke();ctx.shadowColor='transparent';
+      let acc=0;for(let i=1;i<pts.length;i++){const a=P(pts[i-1]),b=P(pts[i]);const seg=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);const f=(acc+seg/2)/tot;acc+=seg;
+        const v=ser[Math.min(N-1,Math.round(f*(N-1)))];ctx.strokeStyle=paceColor((v-lo)/rng,R.style==='pacet');ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()}}
+  }
+  else if(R.style==='glow'){ctx.shadowColor=st.accent;ctx.shadowBlur=lw*3;ctx.shadowOffsetY=0;ctx.strokeStyle=st.accent;ctx.lineWidth=lw;path();ctx.stroke();ctx.shadowBlur=lw*1.2;ctx.strokeStyle=st.accent2;ctx.lineWidth=lw*.4;path();ctx.stroke()}
+  else if(R.style==='grad'){const g=ctx.createLinearGradient(ox,oy,ox+dw,oy+dh);g.addColorStop(0,st.accent);g.addColorStop(1,st.accent2);ctx.strokeStyle=g;ctx.lineWidth=lw;path();ctx.stroke()}
   else if(R.style==='dash'){ctx.setLineDash([lw*1.6,lw*1.4]);ctx.strokeStyle=st.accent;ctx.lineWidth=lw;path();ctx.stroke()}
   else if(R.style==='double'){ctx.strokeStyle=st.text;ctx.lineWidth=lw*1.9;path();ctx.stroke();ctx.shadowColor='transparent';ctx.strokeStyle=st.accent;ctx.lineWidth=lw;path();ctx.stroke()}
   else if(R.style==='dots'){ctx.fillStyle=st.accent;let acc=0,prev=P(pts[0]);const gap=lw*1.9;ctx.beginPath();ctx.arc(prev[0],prev[1],lw*.55,0,7);ctx.fill();
     for(let i=1;i<pts.length;i++){const c=P(pts[i]);let dx=c[0]-prev[0],dy=c[1]-prev[1],dl=Math.hypot(dx,dy);while(acc+dl>=gap){const t=(gap-acc)/dl;const q=[prev[0]+dx*t,prev[1]+dy*t];ctx.beginPath();ctx.arc(q[0],q[1],lw*.55,0,7);ctx.fill();prev=q;dx=c[0]-prev[0];dy=c[1]-prev[1];dl=Math.hypot(dx,dy);acc=0}acc+=dl;prev=c}}
   else{ctx.strokeStyle=st.accent;ctx.lineWidth=lw;path();ctx.stroke()}
-  if(R.dots){ctx.setLineDash([]);ctx.shadowColor='transparent';[[pts[0],'#2BD46B'],[pts[pts.length-1],'#FF3B30']].forEach(([p,c])=>{const[x,y]=P(p);ctx.beginPath();ctx.arc(x,y,lw*1.15,0,7);ctx.fillStyle=c;ctx.fill();ctx.lineWidth=lw*.4;ctx.strokeStyle='#fff';ctx.stroke()})}
+  ctx.setLineDash([]);
+  if(frac<1){const[hx,hy]=P(pts[pts.length-1]);ctx.shadowColor=st.accent2;ctx.shadowBlur=lw*2.5;ctx.shadowOffsetY=0;ctx.beginPath();ctx.arc(hx,hy,lw*1.1,0,7);ctx.fillStyle='#fff';ctx.fill()}
+  else if(R.dots){ctx.shadowColor='transparent';[[pts[0],'#2BD46B'],[pts[pts.length-1],'#FF3B30']].forEach(([p,c])=>{const[x,y]=P(p);ctx.beginPath();ctx.arc(x,y,lw*1.15,0,7);ctx.fillStyle=c;ctx.fill();ctx.lineWidth=lw*.4;ctx.strokeStyle='#fff';ctx.stroke()})}
   ctx.restore();
 }
 function drawHrChart(ctx,hrs,x,y,w,h,L){
@@ -793,8 +835,10 @@ function cssFilter(){const b=S.bg;let br=1+b.bright/100,ct=1+b.contrast/100,sa=1
   return `brightness(${br}) contrast(${ct}) saturate(${sa})${ex}`}
 
 // ---------- compose ----------
-// Route as an independent layer: own position, size, rotation and mirror
-let ROUTE_HIT=null;
+// ---------- layers: route layer, freeform layers, hit testing ----------
+let HITS=[];
+const ease=t=>t<=0?0:t>=1?1:1-Math.pow(1-t,3);
+const clamp01=v=>Math.max(0,Math.min(1,v));
 function drawFreeRoute(ctx,W,H,mult,pts){
   const rt=S.rt,base=Math.min(W/1080,H/1350)*mult,box=560*base*rt.scale/100*(S.route.size/100);
   const cx=W/2+rt.x*W,cy=H/2+rt.y*H;
@@ -802,38 +846,114 @@ function drawFreeRoute(ctx,W,H,mult,pts){
   const k=Math.min(box/Math.max(x1-x0,1e-9),box/Math.max(y1-y0,1e-9)),hw=Math.max((x1-x0)*k/2,20*base),hh=Math.max((y1-y0)*k/2,20*base);
   const prevSC=SC;SC=base*Math.sqrt(rt.scale/100);
   ctx.save();ctx.translate(cx,cy);ctx.rotate(rt.rot*Math.PI/180);if(rt.flip)ctx.scale(-1,1);
-  const sz=S.route.size;S.route.size=100;drawRoute(ctx,pts,-box*0+-hw,-hh,hw*2,hh*2,'center');S.route.size=sz;
+  const sz=S.route.size;S.route.size=100;drawRoute(ctx,pts,-hw,-hh,hw*2,hh*2,'center');S.route.size=sz;
   ctx.restore();SC=prevSC;
-  if(mult===1)ROUTE_HIT={cx,cy,hw,hh,rot:rt.rot};
+  if(mult===1)HITS.push({id:'route',cx,cy,hw,hh,rot:rt.rot});
 }
+
+// Freeform layers: each part of the sticker is its own movable piece
+const LAYER_NAMES={icon:'ไอคอน',title:'ชื่อ วันที่ สถานที่',splits:'แท่งสปลิต',hr:'กราฟหัวใจ',caption:'แคปชัน',footer:'ข้อความท้าย',route:'เส้นทาง'};
+function layerList(d){
+  const s=SC,L=[];
+  if(S.icon!=='none')L.push({id:'icon',h:.08,draw(c){const h=110*SC,w=iconW(h);drawIcon(c,0,-h/2,h,'center');return[w/2,h/2]}});
+  if(S.show.meta)L.push({id:'title',h:.08,draw(c){const sub=[S.run.place,S.run.date].filter(Boolean).join('  ·  ');
+    txt(c,S.run.title,0,-4*SC,46*SC,600,'center','plain');label(c,sub,0,42*SC,28*SC,'center');
+    c.font=F(600,46*SC);let w=c.measureText(S.run.title).width;c.font=F(500,28*SC);w=Math.max(w,c.measureText(sub).width);return[w/2,56*SC]}});
+  d.stats.forEach(t=>L.push({id:'stat:'+t.k,name:t.label,h:.1,draw(c){label(c,t.label,0,-48*SC,32*SC,'center');drawVal(c,0,60*SC,t.val,t.unit,104*SC,'center');
+    c.font=F(500,32*SC);const lw=c.measureText(t.label).width;return[Math.max(valW(c,t.val,t.unit,104*SC),lw)/2,88*SC]}}));
+  if(S.show.splits&&d.splits.length){const n=d.splits.length;L.push({id:'splits',h:.04+n*.03,draw(c){const h=(70+n*56)*SC;drawSplitBars(c,d.splits,-450*SC,-h/2,900*SC,d.L);return[450*SC,h/2]}})}
+  if(S.show.hrChart&&d.hrs.length>1)L.push({id:'hr',h:.14,draw(c){drawHrChart(c,d.hrs,-450*SC,-125*SC,900*SC,250*SC,d.L);return[450*SC,125*SC]}});
+  if(S.caption)L.push({id:'caption',h:.05,draw(c){txt(c,S.caption,0,14*SC,40*SC,500,'center','plain');c.font=F(500,40*SC);return[c.measureText(S.caption).width/2,34*SC]}});
+  if(S.footer)L.push({id:'footer',h:.05,draw(c){c.save();c.font=F(700,32*SC);const sp=7*SC;if('letterSpacing' in c)c.letterSpacing=sp+'px';c.textAlign='center';c.fillStyle=S.style.text;setShadow(c);
+    const tx=S.footer.toUpperCase();c.fillText(tx,sp/2,12*SC);const w=c.measureText(tx).width;c.restore();return[w/2,30*SC]}});
+  return L;
+}
+function seedLayers(list,W,H){
+  const ids=list.map(l=>l.id).join('|'),k=H>W*1.5?1:H>W?1.3:1.6;
+  if(!S.layoutTouched&&S.layoutIds!==ids){ // untouched layout: restack everything so pieces never overlap
+    const keep=S.layers.route;S.layers={};if(keep)S.layers.route=keep;S.layoutIds=ids;
+    const gap=.018,tot=list.reduce((a,l)=>a+l.h*k+gap,0),hasR=ROUTE_ON&&!S.rt.behind,room=hasR?.62:.84,f=Math.min(1,room/tot);
+    let y=-(tot*f)/2-(hasR?.12:0);
+    list.forEach(l=>{const h=l.h*k*f;S.layers[l.id]={x:0,y:+(y+h/2).toFixed(3),scale:Math.round(100*f),rot:0,hide:false};y+=h+gap*f});
+    if(hasR){S.rt.x=0;S.rt.y=+Math.min(.4,y+.12).toFixed(3);S.rt.scale=Math.round(70*Math.max(f,.7))}
+    return;
+  }
+  const missing=list.filter(l=>!S.layers[l.id]);if(!missing.length)return;
+  let bottom=-.4;list.forEach(l=>{const st=S.layers[l.id];if(st&&!st.hide)bottom=Math.max(bottom,st.y+l.h*k*st.scale/200)});
+  missing.forEach(l=>{const h=l.h*k;let y=bottom+.02+h/2;if(y>.45)y=0;S.layers[l.id]={x:0,y:+y.toFixed(3),scale:100,rot:0,hide:false};bottom=y+h/2});
+  S.layoutIds=ids;
+}
+function drawFreeLayers(ctx,W,H,mult,d){
+  const base=Math.min(W/1080,H/1350)*mult;SC=base;const list=layerList(d);seedLayers(list,W,H);
+  const order=S.order.filter(id=>list.some(l=>l.id===id));list.forEach(l=>{if(!order.includes(l.id))order.push(l.id)});
+  order.forEach((id,i)=>{const l=list.find(x=>x.id===id),st=S.layers[id];if(!l||st.hide)return;
+    const cx=W/2+st.x*W,cy=H/2+st.y*H;
+    const a=ANIM?ease(clamp01((ANIM.t-.12*i)/.45)):1;if(a<=0)return;
+    ctx.save();ctx.globalAlpha=a;ctx.translate(cx,cy+(1-a)*40*base);ctx.rotate(st.rot*Math.PI/180);SC=base*st.scale/100;
+    ctx.fillStyle=S.style.text;ctx.textBaseline='alphabetic';const[hw,hh]=l.draw(ctx);ctx.restore();
+    if(mult===1)HITS.push({id,cx,cy,hw,hh,rot:st.rot});
+  });
+  LAYER_CACHE=list.map(l=>({id:l.id,name:l.name||LAYER_NAMES[l.id]||l.id}));
+}
+let LAYER_CACHE=[];
 function drawSelection(ctx){
-  if(!ROUTE_HIT||!S.rt.free||S.sel!=='route')return;const r=ROUTE_HIT,pad=18;
+  if(ANIM)return;const r=HITS.find(h=>h.id===S.sel);if(!r||(S.sel==='stats'))return;const pad=16;
   ctx.save();ctx.translate(r.cx,r.cy);ctx.rotate(r.rot*Math.PI/180);ctx.setLineDash([14,10]);ctx.lineWidth=3;ctx.strokeStyle='rgba(255,255,255,.9)';
   ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=6;ctx.strokeRect(-r.hw-pad,-r.hh-pad,(r.hw+pad)*2,(r.hh+pad)*2);
   ctx.setLineDash([]);[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=>{ctx.beginPath();ctx.arc(a*(r.hw+pad),b*(r.hh+pad),9,0,7);ctx.fillStyle='#fff';ctx.fill()});ctx.restore();
 }
-function hitRoute(px,py){if(!ROUTE_HIT||!S.rt.free)return false;const r=ROUTE_HIT,a=-r.rot*Math.PI/180,dx=px-r.cx,dy=py-r.cy;
-  const lx=dx*Math.cos(a)-dy*Math.sin(a),ly=dx*Math.sin(a)+dy*Math.cos(a);return Math.abs(lx)<=r.hw+50&&Math.abs(ly)<=r.hh+50}
+function hitAt(px,py){for(let i=HITS.length-1;i>=0;i--){const r=HITS[i],a=-r.rot*Math.PI/180,dx=px-r.cx,dy=py-r.cy;
+  const lx=dx*Math.cos(a)-dy*Math.sin(a),ly=dx*Math.sin(a)+dy*Math.cos(a),m=r.id==='route'?50:24;if(Math.abs(lx)<=r.hw+m&&Math.abs(ly)<=r.hh+m)return r.id}return null}
+
+// ---------- compose ----------
+let ANIM=null; // {t, D, route, num} while an animation frame is drawn
 function composite(ctx,W,H,mult,bgSource){
-  // bgSource: canvas/video drawn first (or null for transparent)
   ctx.clearRect(0,0,W,H);
   if(bgSource)ctx.drawImage(bgSource,0,0,W,H);
   BGSRC=bgSource;
-  PANEL_BLUR=bgSource?(c,X,Y,w,h,r)=>{ // blur the real background inside the panel, in overlay space mapped through the transform
-    c.save();rrect(c,X,Y,w,h,r);c.clip();const m=c.getTransform().inverse();c.setTransform(1,0,0,1,0,0);
+  PANEL_BLUR=bgSource?(c,X,Y,w,h,r)=>{
+    c.save();rrect(c,X,Y,w,h,r);c.clip();c.setTransform(1,0,0,1,0,0);
     const small=document.createElement('canvas'),k=.06;small.width=Math.max(1,W*k|0);small.height=Math.max(1,H*k|0);small.getContext('2d').drawImage(bgSource,0,0,small.width,small.height);
     const s2=document.createElement('canvas');s2.width=small.width*4;s2.height=small.height*4;const g2=s2.getContext('2d');g2.imageSmoothingQuality='high';g2.drawImage(small,0,0,s2.width,s2.height);
     c.imageSmoothingQuality='high';c.drawImage(s2,0,0,W,H);c.restore();
   }:null;
-  // overlay drawn straight onto target with transform so the glass blur can sample the background
-  ctx.save();ctx.translate(W/2+S.ox*W,H/2+S.oy*H);ctx.rotate(S.rot*Math.PI/180);ctx.translate(-W/2,-H/2);
-  const prev=CTX;CTX=ctx;SC=Math.min(W/1080,H/1350)*S.scale/100*mult;ctx.textBaseline='alphabetic';ctx.fillStyle=S.style.text;
-  const d=derive();
-  const freeLayer=()=>{if(d.freeRoute)drawFreeRoute(ctx,W,H,mult,d.freeRoute)};
-  if(S.rt.behind){ctx.restore();freeLayer();ctx.save();ctx.translate(W/2+S.ox*W,H/2+S.oy*H);ctx.rotate(S.rot*Math.PI/180);ctx.translate(-W/2,-H/2);SC=Math.min(W/1080,H/1350)*S.scale/100*mult;ctx.textBaseline='alphabetic';ctx.fillStyle=S.style.text}
-  (TPL[S.tpl]||TPL.classic)(W,H,d);CTX=prev;ctx.restore();
-  if(!S.rt.behind)freeLayer();
-  BGSRC=null;PANEL_BLUR=null;
+  const prev=CTX;CTX=ctx;const d=derive();
+  if(mult===1)ROUTE_ON=!!d.freeRoute;
+  const routeLayer=()=>{if(d.freeRoute&&!(S.tpl==='free'&&S.layers.route&&S.layers.route.hide)){ctx.save();if(ANIM)ctx.globalAlpha=ease(clamp01(ANIM.t/.4));drawFreeRoute(ctx,W,H,mult,d.freeRoute);ctx.restore()}};
+  if(S.tpl==='free'){
+    if(S.rt.behind)routeLayer();drawFreeLayers(ctx,W,H,mult,d);if(!S.rt.behind)routeLayer();
+  }else{
+    if(S.rt.behind)routeLayer();
+    const a=ANIM?ease(clamp01(ANIM.t/.5)):1;
+    ctx.save();ctx.globalAlpha=a;ctx.translate(W/2+S.ox*W,H/2+S.oy*H+(1-a)*50*mult);ctx.rotate(S.rot*Math.PI/180);ctx.translate(-W/2,-H/2);
+    SC=Math.min(W/1080,H/1350)*S.scale/100*mult;ctx.textBaseline='alphabetic';ctx.fillStyle=S.style.text;
+    (TPL[S.tpl]||TPL.classic)(W,H,d);ctx.restore();
+    if(!S.rt.behind)routeLayer();
+  }
+  CTX=prev;BGSRC=null;PANEL_BLUR=null;
+}
+
+// ---------- pace along the route ----------
+function paceSeries(n){ // pace (s/km) for n evenly spaced fractions along the run, or null
+  const g=S.route.mode==='gpx'&&S.route.gpxD&&S.route.gpxD.length>2?S.route:null;
+  if(g){const D=g.gpxD,Tm=g.gpxT,tot=D[D.length-1];if(tot>0&&Tm&&Tm.length===D.length){const out=[];let j=0;
+    for(let i=0;i<n;i++){const f=i/(n-1)*tot;while(j<D.length-2&&D[j+1]<f)j++;const a=Math.max(0,j-4),b=Math.min(D.length-1,j+5);const dd=D[b]-D[a],dt=Tm[b]-Tm[a];out.push(dd>0.001?dt/dd:NaN)}
+    const ok=out.filter(isFinite);if(ok.length>2){const med=ok.slice().sort((a,b)=>a-b)[ok.length>>1];return out.map(v=>isFinite(v)?Math.min(v,med*2.2):med)}}}
+  const sp=String(S.run.splits).split(/[,\s]+/).map(parseT).filter(x=>x>0);if(sp.length<2)return null;
+  const out=[];for(let i=0;i<n;i++){const kmPos=i/(n-1)*sp.length-.5,a=Math.max(0,Math.min(sp.length-1,Math.floor(kmPos))),b=Math.min(sp.length-1,a+1),t=clamp01(kmPos-a);out.push(sp[a]+(sp[b]-sp[a])*t)}
+  return out;
+}
+function paceColor(u,themed){ // u: 0 fast .. 1 slow
+  const st=S.style;const stops=themed?[st.accent2,st.accent]:['#2BD46B','#FFD23F','#FF3B30'];
+  const seg=u*(stops.length-1),i=Math.min(stops.length-2,Math.floor(seg)),t=seg-i;
+  const h2=x=>[parseInt(x.slice(1,3),16),parseInt(x.slice(3,5),16),parseInt(x.slice(5,7),16)];const A=h2(stops[i]),B=h2(stops[i+1]);
+  return `rgb(${A.map((v,k)=>Math.round(v+(B[k]-v)*t)).join(',')})`;
+}
+function cutPath(pts,f){ // first fraction f of the path by length
+  if(f>=1)return pts;const L=[0];for(let i=1;i<pts.length;i++)L.push(L[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));
+  const target=L[L.length-1]*f,out=[pts[0]];for(let i=1;i<pts.length;i++){if(L[i]<=target){out.push(pts[i]);continue}
+    const t=(target-L[i-1])/Math.max(L[i]-L[i-1],1e-9);out.push([pts[i-1][0]+(pts[i][0]-pts[i-1][0])*t,pts[i-1][1]+(pts[i][1]-pts[i-1][1])*t]);break}
+  return out;
 }
 
 // ---------- preview ----------
@@ -849,11 +969,11 @@ function draw(){
   bgv.style.transform=mediaKind==='video'?`translate(${S.bg.x/4}%,${S.bg.y/4}%) scale(${S.bg.zoom/100})`:'';
   // preview: draw overlay with background for glass blur only on photo
   const vx=view.getContext('2d');
-  ROUTE_HIT=null;const glass=bg&&S.style.panel==='glass';composite(vx,W,H,1,glass?bg:null);drawSelection(vx);
+  HITS=[];const glass=bg&&S.style.panel==='glass';composite(vx,W,H,1,glass?bg:null);drawSelection(vx);
   bgc.style.visibility=glass?'hidden':''; // the view already holds the background when the glass panel samples it
   document.querySelectorAll('[data-ratio]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ratio===S.ratio));$('freeBtn').setAttribute('aria-pressed',!!S.rt.free);
   document.querySelectorAll('[data-out]').forEach(o=>{const v=getP(o.dataset.out);o.textContent=['scale','route.size','bg.zoom','style.panelAlpha','style.shadow','rt.scale'].includes(o.dataset.out)?v+'%':['rot','rt.rot'].includes(o.dataset.out)?v+'°':v});
-  drawPad();renderIconCards();store.set('rs.state',S);
+  if(ANIM)return;drawPad();renderIconCards();renderLayers();store.set('rs.state',S);
 }
 
 // ---------- bindings ----------
@@ -879,25 +999,26 @@ $('freeBtn').onclick=()=>{S.rt.free=!S.rt.free;S.sel=S.rt.free?'route':'stats';s
 $('rtReset').onclick=()=>{Object.assign(S.rt,{x:0,y:.3,scale:90,rot:0,flip:false});S.sel='route';syncInputs();schedule()};
 $('resetPos').onclick=()=>{S.ox=0;S.oy=0;S.rot=0;S.scale=100;syncInputs();schedule()};
 
-// drag + pinch on preview: the gesture moves whichever layer it starts on (route or stats)
+// drag + pinch on preview: a gesture moves whichever piece it starts on
 const ptrs=new Map();let start=null,lastTap=0,target='stats';
 function canvasPt(e){const r=view.getBoundingClientRect();return[(e.clientX-r.left)/r.width*view.width,(e.clientY-r.top)/r.height*view.height]}
+function tf(id){if(id==='route')return{o:S.rt,x:'x',y:'y',min:20,max:400,lim:.7};if(id&&S.layers[id])return{o:S.layers[id],x:'x',y:'y',min:20,max:400,lim:.7};return{o:S,x:'ox',y:'oy',min:40,max:160,lim:.6}}
+function pick(e){const h=hitAt(...canvasPt(e));return h||(S.tpl==='free'?null:'stats')}
 view.addEventListener('pointerdown',e=>{view.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);
-  if(ptrs.size===1){target=hitRoute(...canvasPt(e))?'route':'stats';S.sel=target}
-  start=snap();
-  const now=Date.now();if(now-lastTap<300&&ptrs.size===1){if(target==='route')Object.assign(S.rt,{x:0,y:.3,scale:90,rot:0});else{S.ox=0;S.oy=0}syncInputs();schedule()}lastTap=now;schedule()});
-view.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;ptrs.set(e.pointerId,[e.clientX,e.clientY]);const r=view.getBoundingClientRect();
-  const R=target==='route';
-  if(ptrs.size===1&&start.pts.length===1){const[p]=[...ptrs.values()];const dx=(p[0]-start.pts[0][0])/r.width,dy=(p[1]-start.pts[0][1])/r.height;
-    if(R){S.rt.x=+clamp(start.rx+dx,-.7,.7).toFixed(3);S.rt.y=+clamp(start.ry+dy,-.7,.7).toFixed(3)}else{S.ox=clamp(start.ox+dx,-.6,.6);S.oy=clamp(start.oy+dy,-.6,.6)}}
+  if(ptrs.size===1){target=pick(e);S.sel=target||'none'}
+  start=snap();const now=Date.now();
+  if(now-lastTap<300&&ptrs.size===1&&target){const t=tf(target);if(target==='route')Object.assign(S.rt,{x:0,y:.3,scale:90,rot:0});else if(target==='stats'){S.ox=0;S.oy=0}else{t.o.scale=100;t.o.rot=0}syncInputs()}
+  lastTap=now;schedule()});
+view.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId)||!target)return;if(S.tpl==='free')S.layoutTouched=true;ptrs.set(e.pointerId,[e.clientX,e.clientY]);const r=view.getBoundingClientRect(),t=tf(target);
+  if(ptrs.size===1&&start.pts.length===1){const[p]=[...ptrs.values()];
+    t.o[t.x]=+clamp(start.x+(p[0]-start.pts[0][0])/r.width,-t.lim,t.lim).toFixed(4);t.o[t.y]=+clamp(start.y+(p[1]-start.pts[0][1])/r.height,-t.lim,t.lim).toFixed(4)}
   else if(ptrs.size===2&&start.pts.length===2){const[a,b]=[...ptrs.values()];const d0=Math.hypot(start.pts[0][0]-start.pts[1][0],start.pts[0][1]-start.pts[1][1]),d1=Math.hypot(a[0]-b[0],a[1]-b[1]);
-    const a0=Math.atan2(start.pts[1][1]-start.pts[0][1],start.pts[1][0]-start.pts[0][0]),a1=Math.atan2(b[1]-a[1],b[0]-a[0]),da=(a1-a0)*180/Math.PI;
-    if(R){S.rt.scale=Math.round(clamp(start.rscale*d1/Math.max(d0,1),20,400));S.rt.rot=Math.round(wrap(start.rrot+da))}
-    else{S.scale=Math.round(clamp(start.scale*d1/Math.max(d0,1),40,160));S.rot=Math.round(wrap(start.rot+da))}}
+    const a0=Math.atan2(start.pts[1][1]-start.pts[0][1],start.pts[1][0]-start.pts[0][0]),a1=Math.atan2(b[1]-a[1],b[0]-a[0]);
+    t.o.scale=Math.round(clamp(start.s*d1/Math.max(d0,1),t.min,t.max));t.o.rot=Math.round(wrap(start.r+(a1-a0)*180/Math.PI))}
   syncInputs();schedule()});
 const up=e=>{ptrs.delete(e.pointerId);start=snap()};view.addEventListener('pointerup',up);view.addEventListener('pointercancel',up);
-view.addEventListener('wheel',e=>{e.preventDefault();if(hitRoute(...canvasPt(e))){S.sel='route';S.rt.scale=Math.round(clamp(S.rt.scale-e.deltaY*.2,20,400))}else{S.sel='stats';S.scale=Math.round(clamp(S.scale-e.deltaY*.05,40,160))}syncInputs();schedule()},{passive:false});
-function snap(){return{pts:[...ptrs.values()].map(p=>[...p]),ox:S.ox,oy:S.oy,scale:S.scale,rot:S.rot,rx:S.rt.x,ry:S.rt.y,rscale:S.rt.scale,rrot:S.rt.rot}}
+view.addEventListener('wheel',e=>{e.preventDefault();const id=pick(e);if(!id)return;S.sel=id;const t=tf(id);t.o.scale=Math.round(clamp(t.o.scale-e.deltaY*.1,t.min,t.max));syncInputs();schedule()},{passive:false});
+function snap(){const t=tf(target);return{pts:[...ptrs.values()].map(p=>[...p]),x:t.o[t.x],y:t.o[t.y],s:t.o.scale,r:t.o.rot}}
 const wrap=v=>((v+180)%360+360)%360-180;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
@@ -924,8 +1045,12 @@ $('gpxIn').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{
   if(pts.length<2)throw 0;
   const lat0=pts[0][0]*Math.PI/180;let dist=0;
   for(let i=1;i<pts.length;i++){const[a,b]=[pts[i-1],pts[i]];const dl=(b[0]-a[0])*Math.PI/180,dn=(b[1]-a[1])*Math.PI/180;const h=Math.sin(dl/2)**2+Math.cos(a[0]*Math.PI/180)*Math.cos(b[0]*Math.PI/180)*Math.sin(dn/2)**2;dist+=12742*Math.asin(Math.sqrt(h))}
+  const nodes=[...xml.querySelectorAll('trkpt,rtept')].filter(n=>isFinite(+n.getAttribute('lat'))&&isFinite(+n.getAttribute('lon')));
+  const cum=[0];for(let i=1;i<pts.length;i++){const[a,b]=[pts[i-1],pts[i]];const dl=(b[0]-a[0])*Math.PI/180,dn=(b[1]-a[1])*Math.PI/180;const h=Math.sin(dl/2)**2+Math.cos(a[0]*Math.PI/180)*Math.cos(b[0]*Math.PI/180)*Math.sin(dn/2)**2;cum.push(cum[i-1]+12742*Math.asin(Math.sqrt(h)))}
+  const tms=nodes.map(n=>{const t=n.querySelector('time');return t?Date.parse(t.textContent)/1000:NaN});
   let proj=pts.map(([la,lo])=>[lo*Math.cos(lat0)*1e4,-la*1e4]);
-  const step=Math.max(1,Math.floor(proj.length/800));proj=proj.filter((_,i)=>i%step===0||i===proj.length-1);
+  const step=Math.max(1,Math.floor(proj.length/800)),keep=(_,i)=>i%step===0||i===proj.length-1;proj=proj.filter(keep);
+  S.route.gpxD=cum.filter(keep).map(v=>+v.toFixed(4));S.route.gpxT=tms.every(isFinite)?tms.filter(keep).map(v=>Math.round(v-tms[0])):null;
   S.route.gpx=proj;S.route.mode='gpx';S.run.dist=dist.toFixed(2);
   const times=[...xml.querySelectorAll('trkpt time')].map(t=>Date.parse(t.textContent)).filter(isFinite);
   if(times.length>1&&!S.run.time){S.run.time=new Date(times[times.length-1]-times[0]).toISOString().substr(11,8)}
@@ -1010,7 +1135,7 @@ $('shareBtn').onclick=async()=>{if(!result)return;const{blob,name}=result;
 };
 $('closeModal').onclick=()=>{$('modal').hidden=true};
 $('modal').onclick=e=>{if(e.target===$('modal'))$('modal').hidden=true};
-$('exportBtn').onclick=()=>{const k=$('exportType').value;if(k==='video')exportVideo();else exportStill(k)};
+$('exportBtn').onclick=()=>{const k=$('exportType').value;if(k==='anim')exportAnim();else if(k==='video')exportVideo();else exportStill(k)};
 
 // ---------- read results from screenshots ----------
 const TH_MONTHS=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
@@ -1152,6 +1277,56 @@ async function readShots(files){
 $('shotIn').onchange=e=>readShots(e.target.files);
 (async()=>{const s=await getSample();$('aiEngine').textContent=s?'อ่านด้วย Claude (แม่นยำสุด ใช้โควตาบัญชี Claude ของคุณ)':
   'อ่านในเครื่องด้วย OCR ฟรี ภาพไม่ถูกส่งออกไปไหน ครั้งแรกต้องใช้เน็ตโหลดข้อมูลภาษาประมาณ 8 MB'})();
+
+// ---------- layer panel ----------
+let layerSig='',ROUTE_ON=false;
+function renderLayers(){
+  const box=$('layerBox');box.hidden=S.tpl!=='free';if(box.hidden)return;
+  const items=LAYER_CACHE.slice();if(ROUTE_ON)items.push({id:'route',name:LAYER_NAMES.route});
+  const sig=JSON.stringify([items.map(i=>i.id+':'+i.name+(S.layers[i.id]&&S.layers[i.id].hide?1:0)),S.sel]);
+  if(sig!==layerSig){layerSig=sig;const el=$('layerList');el.innerHTML='';
+    items.forEach(it=>{const row=document.createElement('div');row.className='item'+(S.sel===it.id?' sel':'');
+      const nm=document.createElement('button');nm.type='button';nm.className='lname';nm.textContent=it.name;nm.onclick=()=>{S.sel=it.id;schedule()};
+      const hidden=!!(S.layers[it.id]&&S.layers[it.id].hide);
+      const eye=document.createElement('button');eye.type='button';eye.textContent=hidden?'แสดง':'ซ่อน';eye.onclick=()=>{S.layers[it.id]=S.layers[it.id]||{x:0,y:0,scale:100,rot:0};S.layers[it.id].hide=!hidden;schedule()};
+      row.append(nm,document.createElement('span'),eye);el.append(row)})}
+  const t=S.sel&&S.sel!=='none'&&S.sel!=='stats'?tf(S.sel).o:null;$('layerCtl').hidden=!t;
+  if(t){if(document.activeElement!==$('lScale'))$('lScale').value=t.scale;if(document.activeElement!==$('lRot'))$('lRot').value=t.rot;$('lsOut').textContent=t.scale+'%';$('lrOut').textContent=t.rot+'°'}
+}
+$('lScale').addEventListener('input',e=>{S.layoutTouched=true;const t=tf(S.sel).o;t.scale=+e.target.value;e.stopPropagation();schedule()});
+$('lRot').addEventListener('input',e=>{S.layoutTouched=true;const t=tf(S.sel).o;t.rot=+e.target.value;e.stopPropagation();schedule()});
+$('lFront').onclick=()=>{if(S.sel==='route'){S.rt.behind=false;syncInputs()}else{S.order=S.order.filter(x=>x!==S.sel);S.order.push(S.sel)}schedule()};
+$('lCenter').onclick=()=>{const t=tf(S.sel);t.o[t.x]=0;schedule()};
+$('relayout').onclick=()=>{S.layers={};S.order=[];S.layoutTouched=false;S.layoutIds='';S.sel='none';schedule();toast('จัดเรียงใหม่แล้ว')};
+
+// ---------- animation ----------
+let playing=false;
+function setAnimT(t,D){ANIM={t,D,route:ease(clamp01((t-.4)/(D*.55))),num:clamp01((t-.4)/(D*.45))}}
+$('playAnim').onclick=()=>{if(playing)return;playing=true;const D=+S.anim.dur||6,t0=performance.now();
+  const loop=now=>{const t=(now-t0)/1000;setAnimT(t,D);draw();if(t<D+.6)requestAnimationFrame(loop);else{ANIM=null;playing=false;draw()}};requestAnimationFrame(loop)};
+async function exportAnim(){
+  const probe=document.createElement('canvas');
+  if(!probe.captureStream||!window.MediaRecorder){toast('เบราว์เซอร์นี้สร้างวิดีโอไม่ได้ ลองเปิดแอปด้วย Safari เวอร์ชันล่าสุดหรือ Chrome');return}
+  const[W,H]=dims();const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const types=['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm'];const mime=types.find(t=>MediaRecorder.isTypeSupported(t))||'';
+  const rec=new MediaRecorder(c.captureStream(30),mime?{mimeType:mime,videoBitsPerSecond:10e6}:{});const chunks=[];rec.ondataavailable=e=>e.data.size&&chunks.push(e.data);
+  let mode=S.anim.bg;if(mode==='media'&&!mediaKind)mode='black';
+  let still=null;const tmp=document.createElement('canvas');tmp.width=W;tmp.height=H;const tx=tmp.getContext('2d');
+  if(mode==='media'&&mediaKind==='image')still=filtered(W,H);
+  else if(mode!=='media'){tx.fillStyle={black:'#000000',navy:'#0E1D38',green:'#00B140'}[mode]||'#000';tx.fillRect(0,0,W,H);still=tmp}
+  openModal();$('resultBox').innerHTML='';$('prog').hidden=false;$('resultHint').textContent='กำลังสร้างวิดีโอแอนิเมชัน เปิดหน้านี้ค้างไว้จนเสร็จ';$('shareBtn').disabled=true;
+  const v=bgv;if(mode==='media'&&mediaKind==='video'){v.loop=true;v.currentTime=0;await v.play().catch(()=>{})}
+  const D=+S.anim.dur||6,total=D+1;rec.start(250);const t0=performance.now();
+  await new Promise(res=>{const tick=now=>{const t=Math.min((now-t0)/1000,total);
+    let bg=still;if(!bg){tx.filter=cssFilter();coverDraw(tx,v,v.videoWidth,v.videoHeight,W,H);tx.filter='none';overlays(tx,W,H);bg=tmp}
+    setAnimT(t,D);HITS=[];composite(x,W,H,1,bg);$('prog').firstElementChild.style.width=(t/total*100)+'%';
+    if(t>=total){res();return}requestAnimationFrame(tick)};requestAnimationFrame(tick)});
+  ANIM=null;await new Promise(r=>{rec.onstop=r;rec.stop()});
+  const ext=(rec.mimeType||mime).includes('mp4')?'mp4':'webm';$('prog').hidden=true;
+  showResult(new Blob(chunks,{type:rec.mimeType||mime}),fileName(ext),'video');
+  if(mode==='green')$('resultHint').textContent='วิดีโอพื้นเขียว นำไปวางบนคลิปใน CapCut แล้วใช้ "ลบพื้นหลัง → Chroma key" เลือกสีเขียว';
+  draw();
+}
 
 // ---------- fonts ----------
 async function ensureFont(){try{await Promise.all([400,500,600,700].map(w=>document.fonts.load(`${w} 40px "${S.font}"`,'ระยะทาง 0123 กม.')))}catch(e){}}
