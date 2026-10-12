@@ -75,6 +75,10 @@ label.chip:has(input:checked){border-color:var(--accent);box-shadow:inset 0 0 0 
 label.card{position:relative;border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;cursor:pointer;background:var(--sunk);font-size:12.5px;line-height:1.3;color:var(--muted)}
 label.card b{display:block;font:600 15px var(--num);color:var(--ink)}
 label.card input{position:absolute;opacity:0;pointer-events:none}
+.cards.icons{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}
+label.icard{padding:6px 6px 8px;display:flex;flex-direction:column;gap:6px;align-items:stretch}
+label.icard canvas{width:100%;height:auto;aspect-ratio:180/96;display:block;border-radius:8px}
+label.icard b{font-size:13px}
 label.card:has(input:checked){border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
 label.card:focus-within,label.chip:focus-within{outline:2px solid var(--hot);outline-offset:2px}
 .presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -221,14 +225,8 @@ button:disabled{opacity:.45;cursor:not-allowed}
       </fieldset>
       <fieldset>
         <legend>ไอคอน</legend>
-        <div class="cards" role="radiogroup" aria-label="ไอคอน">
-          <label class="card"><input type="radio" name="icon" data-k="icon" value="shoe"><b>รองเท้า</b></label>
-          <label class="card"><input type="radio" name="icon" data-k="icon" value="flame"><b>ไฟ</b></label>
-          <label class="card"><input type="radio" name="icon" data-k="icon" value="bolt"><b>สายฟ้า</b></label>
-          <label class="card"><input type="radio" name="icon" data-k="icon" value="medal"><b>เหรียญ</b></label>
-          <label class="card"><input type="radio" name="icon" data-k="icon" value="watch"><b>นาฬิกา</b></label>
-          <label class="card"><input type="radio" name="icon" data-k="icon" value="none"><b>ไม่มี</b></label>
-        </div>
+        <div class="cards icons" id="iconGrid" role="radiogroup" aria-label="ไอคอน"></div>
+        <p class="hint" style="text-align:left">ไอคอนใช้สีตัวอักษร สีหลัก และสีรองจากแท็บสไตล์ เปลี่ยนสีแล้วไอคอนเปลี่ยนตาม</p>
       </fieldset>
       <fieldset>
         <legend>ตำแหน่งและขนาด</legend>
@@ -490,25 +488,85 @@ function drawVal(ctx,x,y,val,unit,size,align){
 function label(ctx,str,x,y,size,align){txt(ctx,str,x,y,size,500,align,'label')}
 function rrect(ctx,x,y,w,h,r){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
 
-// Icons: each drawn in local units 50 tall; w = local width
-const SHOE_U=new Path2D('M8 69 L10 46 C10 38 15 34 22 35 L29 39 C35 45 42 45 46 40 L52 32 C55 29 60 30 61 34 L67 45 C75 50 88 52 94 60 C97 64 96 68 92 69 Z');
-const SHOE_S=new Path2D('M6 71 L94 71 C99 72 99 78 93 80 L13 80 C8 80 5 76 6 71 Z');
-const FLAME_O=new Path2D('M20 0 C24 10 36 18 36 32 C36 43 29 50 20 50 C11 50 4 43 4 33 C4 25 9 20 12 14 C13 20 15 23 18 24 C17 15 17 8 20 0 Z');
-const FLAME_I=new Path2D('M20 24 C22 30 28 33 28 40 C28 46 24 50 20 50 C16 50 12 46 12 41 C12 36 16 33 17 29 C18 32 19 33 20 33 C19 30 19 27 20 24 Z');
-const BOLT=new Path2D('M24 0 L5 29 L18 29 L12 50 L35 18 L21 18 L29 0 Z');
+// Icons: drawn in local units, 50 tall. w = local width; (ox, oy) = local point at the box's top-left.
+const P2=d=>new Path2D(d);
+const SHOE_U=P2('M8 69 L10 46 C10 38 15 34 22 35 L29 39 C35 45 42 45 46 40 L52 32 C55 29 60 30 61 34 L67 45 C75 50 88 52 94 60 C97 64 96 68 92 69 Z');
+const SHOE_S=P2('M6 71 L94 71 C99 72 99 78 93 80 L13 80 C8 80 5 76 6 71 Z');
+const RACE_U=P2('M10 63 L12 50 C12 44 17 41 23 42 L30 45 C36 49 43 49 47 45 L54 39 C57 37 61 38 62 41 L68 49 C77 53 90 55 96 60 C98 62 97 63 94 63 Z');
+const RACE_S=P2('M6 64 L95 63 C100 64 100 70 95 72 L60 77 L12 83 C5 83 3 72 6 64 Z');
+const SPIKE_S=P2('M6 69 L94 69 C98 70 98 74 93 76 L13 76 C8 76 5 73 6 69 Z');
+const TOE_BUMP=P2('M80 56 C88 57 95 61 96 66 L96 70 L82 70 C80 65 79 60 80 56 Z');
+const TOE_CAP=P2('M76 50.6 C84 52 90 54.5 94 60 C97 64 96 68 92 69 L78 69 C75 63 75 56 76 50.6 Z');
+const HEEL_CAP=P2('M8 69 L10 46 C10 40 13 36 17 35 C19 44 19 58 22 69 Z');
+const WING=P2('M14 50 C4 41 -8 35 -24 32 C-17 39 -19 41 -27 44 C-18 48 -20 50 -26 55 C-14 59 2 59 13 59 Z');
+const WING_IN=P2('M12 52 C2 47 -8 44 -16 43 M12 56 C2 54 -8 53 -18 51');
+const FIRE_O=P2('M12 44 C0 38 -12 46 -28 38 C-20 48 -26 54 -32 58 C-20 58 -12 68 6 67 Z');
+const FIRE_I=P2('M12 51 C4 49 -4 54 -15 51 C-9 57 -11 60 -16 63 C-6 63 0 66 10 64 Z');
+const PRINT=P2('M10 0 C17 0 20 7 20 14 C20 21 17 24 16 30 C16 34 17 38 17 42 C17 47 14 50 10 50 C6 50 3 47 3 42 C3 36 5 32 4 27 C3 21 0 18 0 12 C0 5 4 0 10 0 Z');
+const FLAME_O=P2('M20 0 C24 10 36 18 36 32 C36 43 29 50 20 50 C11 50 4 43 4 33 C4 25 9 20 12 14 C13 20 15 23 18 24 C17 15 17 8 20 0 Z');
+const FLAME_I=P2('M20 24 C22 30 28 33 28 40 C28 46 24 50 20 50 C16 50 12 46 12 41 C12 36 16 33 17 29 C18 32 19 33 20 33 C19 30 19 27 20 24 Z');
+const BOLT=P2('M24 0 L5 29 L18 29 L12 50 L35 18 L21 18 L29 0 Z');
+const noShadow=ctx=>{ctx.shadowColor='transparent'};
+function lines(ctx,col,w,segs){ctx.lineCap='round';ctx.strokeStyle=col;ctx.lineWidth=w;segs.forEach(([a,b,c,d])=>{ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c,d);ctx.stroke()})}
+const SPEED=[[-24,44,-6,44],[-26,54,-4,54],[-18,62,-2,62]];
+const LACES=[[53,40,59,37],[57,46,63,43],[61,52,67,49]];
+function baseShoe(ctx,st,o={}){
+  if(o.speed!==false)lines(ctx,st.accent,4.2,SPEED);
+  ctx.fillStyle=o.upper||st.text;ctx.fill(SHOE_U);noShadow(ctx);
+  ctx.fillStyle=o.sole||st.accent;ctx.fill(SHOE_S);
+  lines(ctx,o.lace||st.accent,3,LACES);
+  if(o.mid!==false){ctx.lineWidth=2.6;ctx.strokeStyle=o.lace||st.accent;ctx.beginPath();ctx.moveTo(20,58);ctx.quadraticCurveTo(45,64,74,56);ctx.stroke()}
+}
+const SHOE={w:124,ox:26,oy:30};
 const ICONS={
-  shoe:{w:124,ox:26,oy:30,draw(ctx,st){ctx.lineCap='round';ctx.strokeStyle=st.accent;ctx.lineWidth=4.2;[[-24,44,-6],[-26,54,-4],[-18,62,-2]].forEach(([a,y,b])=>{ctx.beginPath();ctx.moveTo(a,y);ctx.lineTo(b,y);ctx.stroke()});
-    ctx.fillStyle=st.text;ctx.fill(SHOE_U);ctx.shadowColor='transparent';ctx.fillStyle=st.accent;ctx.fill(SHOE_S);
-    ctx.lineWidth=3;[[53,40,59,37],[57,46,63,43],[61,52,67,49]].forEach(([a,b,c,e])=>{ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c,e);ctx.stroke()});
-    ctx.lineWidth=2.6;ctx.beginPath();ctx.moveTo(20,58);ctx.quadraticCurveTo(45,64,74,56);ctx.stroke()}},
-  flame:{w:40,ox:0,oy:0,draw(ctx,st){ctx.fillStyle=st.accent;ctx.fill(FLAME_O);ctx.shadowColor='transparent';ctx.fillStyle=st.accent2;ctx.fill(FLAME_I)}},
-  bolt:{w:40,ox:0,oy:0,draw(ctx,st){ctx.fillStyle=st.accent;ctx.fill(BOLT);ctx.shadowColor='transparent';ctx.lineWidth=1.6;ctx.strokeStyle=st.text;ctx.lineJoin='round';ctx.stroke(BOLT)}},
-  medal:{w:40,ox:0,oy:0,draw(ctx,st){ctx.fillStyle=st.accent2;[[8,0,18,0,24,18,14,18],[32,0,22,0,16,18,26,18]].forEach(p=>{ctx.beginPath();ctx.moveTo(p[0],p[1]);for(let i=2;i<8;i+=2)ctx.lineTo(p[i],p[i+1]);ctx.closePath();ctx.fill()});
-    ctx.beginPath();ctx.arc(20,34,15.5,0,7);ctx.fillStyle=st.accent;ctx.fill();ctx.shadowColor='transparent';ctx.beginPath();ctx.arc(20,34,10,0,7);ctx.lineWidth=2.4;ctx.strokeStyle=st.text;ctx.stroke();
-    ctx.beginPath();for(let i=0;i<10;i++){const r=i%2?2.6:6,a=-Math.PI/2+i*Math.PI/5;ctx.lineTo(20+r*Math.cos(a),34+r*Math.sin(a))}ctx.closePath();ctx.fillStyle=st.text;ctx.fill()}},
-  watch:{w:40,ox:0,oy:0,draw(ctx,st){ctx.fillStyle=st.accent;rrect(ctx,15,0,10,6,2);ctx.fill();ctx.lineWidth=4.5;ctx.strokeStyle=st.text;ctx.beginPath();ctx.arc(20,29,17.5,0,7);ctx.stroke();ctx.shadowColor='transparent';
-    ctx.lineCap='round';ctx.strokeStyle=st.accent;ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(20,29);ctx.lineTo(20,17);ctx.stroke();ctx.beginPath();ctx.moveTo(20,29);ctx.lineTo(28,33);ctx.stroke();ctx.beginPath();ctx.arc(20,29,2.6,0,7);ctx.fillStyle=st.accent;ctx.fill()}}
+  shoe:{...SHOE,name:'รองเท้าวิ่ง',group:'shoe',draw:(c,st)=>baseShoe(c,st)},
+  racer:{...SHOE,name:'คาร์บอนเรซ',group:'shoe',draw(c,st){lines(c,st.accent,4.2,[[-24,46,-6,46],[-28,55,-4,55],[-18,64,-2,64]]);
+    c.fillStyle=st.text;c.fill(RACE_U);noShadow(c);c.fillStyle=st.accent;c.fill(RACE_S);
+    c.lineWidth=3;c.strokeStyle=st.accent2;c.beginPath();c.moveTo(12,74);c.quadraticCurveTo(52,70,92,66);c.stroke();
+    lines(c,st.accent,3,[[54,46,60,43],[58,51,64,48],[62,56,68,53]])}},
+  trail:{...SHOE,name:'เทรล',group:'shoe',draw(c,st){baseShoe(c,st,{mid:false});c.fillStyle=st.accent2;c.fill(TOE_BUMP);
+    c.fillStyle=st.accent;for(let x=12;x<=86;x+=10){c.beginPath();c.moveTo(x,79);c.lineTo(x+7,79);c.lineTo(x+6,85);c.lineTo(x+1,85);c.closePath();c.fill()}
+    lines(c,st.accent2,2.4,[[24,62,40,62],[24,66,46,66]])}},
+  spike:{...SHOE,name:'สตั๊ดลู่',group:'shoe',draw(c,st){lines(c,st.accent,4.2,SPEED);c.fillStyle=st.text;c.fill(SHOE_U);noShadow(c);
+    c.fillStyle=st.accent;c.fill(SPIKE_S);c.fillStyle=st.accent2;for(let x=52;x<=88;x+=9){c.beginPath();c.moveTo(x,76);c.lineTo(x+3,84);c.lineTo(x+6,76);c.closePath();c.fill()}
+    lines(c,st.accent,3,LACES)}},
+  retro:{...SHOE,name:'เรโทร',group:'shoe',draw(c,st){lines(c,st.accent,4.2,SPEED);c.fillStyle=st.text;c.fill(SHOE_U);noShadow(c);
+    c.fillStyle=st.accent2;c.fill(TOE_CAP);c.fill(HEEL_CAP);c.fillStyle=st.accent;c.fill(SHOE_S);
+    c.lineWidth=4;c.lineCap='round';c.strokeStyle=st.accent;c.beginPath();c.moveTo(26,62);c.quadraticCurveTo(44,44,68,58);c.stroke();lines(c,st.accent,3,LACES)}},
+  wing:{...SHOE,w:126,ox:28,name:'ปีกเร็ว',group:'shoe',draw(c,st){c.fillStyle=st.accent2;c.fill(WING);c.save();noShadow(c);c.lineWidth=2;c.strokeStyle=st.accent;c.stroke(WING_IN);c.restore();baseShoe(c,st,{speed:false})}},
+  fire:{...SHOE,w:130,ox:32,name:'ไฟลุก',group:'shoe',draw(c,st){c.fillStyle=st.accent;c.fill(FIRE_O);c.save();noShadow(c);c.fillStyle=st.accent2;c.fill(FIRE_I);c.restore();baseShoe(c,st,{speed:false})}},
+  outline:{...SHOE,name:'เส้นโครง',group:'shoe',draw(c,st){c.lineJoin='round';c.lineWidth=4.5;c.strokeStyle=st.text;c.stroke(SHOE_U);c.stroke(SHOE_S);noShadow(c);
+    lines(c,st.accent,4,SPEED);lines(c,st.accent,3,LACES);c.lineWidth=2.6;c.strokeStyle=st.accent;c.beginPath();c.moveTo(20,58);c.quadraticCurveTo(45,64,74,56);c.stroke()}},
+  pair:{...SHOE,w:126,name:'คู่ซ้อน',group:'shoe',draw(c,st){c.translate(-26,30);c.scale(.86,.86);c.translate(26,-22);
+    c.save();c.translate(16,-8);baseShoe(c,st,{speed:false,upper:st.accent2,sole:st.text,lace:st.accent,mid:false});c.restore();
+    c.shadowColor='rgba(0,0,0,.35)';c.shadowBlur=6;baseShoe(c,st)}},
+  steps:{w:52,ox:0,oy:0,name:'รอยเท้า',group:'shoe',draw(c,st){
+    const one=(x,y,r,col)=>{c.save();c.translate(x,y);c.rotate(r);c.fillStyle=col;c.fill(PRINT);c.restore()};
+    c.save();c.translate(0,6);c.scale(.82,.82);one(2,2,-.15,st.text);c.restore();one(28,0,.12,st.accent);
+    noShadow(c);c.strokeStyle=st.accent;c.lineWidth=2;c.lineCap='round';[[6,12,14,11],[6,18,15,17],[6,40,12,40]].forEach(([a,b,d,e])=>{c.beginPath();c.moveTo(a,b);c.lineTo(d,e);c.stroke()})}},
+  flame:{w:40,ox:0,oy:0,name:'ไฟ',group:'other',draw(c,st){c.fillStyle=st.accent;c.fill(FLAME_O);noShadow(c);c.fillStyle=st.accent2;c.fill(FLAME_I)}},
+  bolt:{w:40,ox:0,oy:0,name:'สายฟ้า',group:'other',draw(c,st){c.fillStyle=st.accent;c.fill(BOLT);noShadow(c);c.lineWidth=1.6;c.strokeStyle=st.text;c.lineJoin='round';c.stroke(BOLT)}},
+  medal:{w:40,ox:0,oy:0,name:'เหรียญ',group:'other',draw(c,st){c.fillStyle=st.accent2;[[8,0,18,0,24,18,14,18],[32,0,22,0,16,18,26,18]].forEach(p=>{c.beginPath();c.moveTo(p[0],p[1]);for(let i=2;i<8;i+=2)c.lineTo(p[i],p[i+1]);c.closePath();c.fill()});
+    c.beginPath();c.arc(20,34,15.5,0,7);c.fillStyle=st.accent;c.fill();noShadow(c);c.beginPath();c.arc(20,34,10,0,7);c.lineWidth=2.4;c.strokeStyle=st.text;c.stroke();
+    c.beginPath();for(let i=0;i<10;i++){const r=i%2?2.6:6,a=-Math.PI/2+i*Math.PI/5;c.lineTo(20+r*Math.cos(a),34+r*Math.sin(a))}c.closePath();c.fillStyle=st.text;c.fill()}},
+  watch:{w:40,ox:0,oy:0,name:'นาฬิกา',group:'other',draw(c,st){c.fillStyle=st.accent;rrect(c,15,0,10,6,2);c.fill();c.lineWidth=4.5;c.strokeStyle=st.text;c.beginPath();c.arc(20,29,17.5,0,7);c.stroke();noShadow(c);
+    c.lineCap='round';c.strokeStyle=st.accent;c.lineWidth=4;c.beginPath();c.moveTo(20,29);c.lineTo(20,17);c.stroke();c.beginPath();c.moveTo(20,29);c.lineTo(28,33);c.stroke();c.beginPath();c.arc(20,29,2.6,0,7);c.fillStyle=st.accent;c.fill()}}
 };
+function renderIconCards(){
+  const grid=$('iconGrid');if(!grid)return;
+  if(!grid.childElementCount){
+    const mk=(key,name)=>{const l=document.createElement('label');l.className='card icard';
+      l.innerHTML=`<input type="radio" name="icon" data-k="icon" value="${key}">`;
+      const cv=document.createElement('canvas');cv.width=180;cv.height=96;cv.dataset.icon=key;l.append(cv);
+      const b=document.createElement('b');b.textContent=name;l.append(b);grid.append(l)};
+    Object.entries(ICONS).forEach(([k,v])=>mk(k,v.name));mk('none','ไม่มี');
+  }
+  grid.querySelectorAll('canvas').forEach(cv=>{const x=cv.getContext('2d');x.clearRect(0,0,180,96);
+    x.fillStyle=S.style.text.toLowerCase()>'#888888'?'#16243f':'#e9edf3';rrect(x,0,0,180,96,12);x.fill();
+    const ic=ICONS[cv.dataset.icon];if(!ic){x.strokeStyle=S.style.text;x.globalAlpha=.5;x.lineWidth=3;x.beginPath();x.arc(90,48,22,0,7);x.moveTo(74,64);x.lineTo(106,32);x.stroke();x.globalAlpha=1;return}
+    const h=58,k=h/50,w=ic.w*k;const sc=Math.min(1,150/w),kk=k*sc;
+    x.save();x.translate(90-ic.w*kk/2+ic.ox*kk,48-25*kk-ic.oy*kk);x.scale(kk,kk);ic.draw(x,S.style);x.restore()});
+}
 function iconW(h){const ic=ICONS[S.icon];return ic?ic.w*h/50:0}
 function drawIcon(ctx,x,top,h,align){
   const ic=ICONS[S.icon];if(!ic)return;const k=h/50,w=ic.w*k;
@@ -733,7 +791,7 @@ function draw(){
   bgc.style.visibility=glass?'hidden':''; // the view already holds the background when the glass panel samples it
   document.querySelectorAll('[data-ratio]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ratio===S.ratio));
   document.querySelectorAll('[data-out]').forEach(o=>{const v=getP(o.dataset.out);o.textContent=['scale','route.size','bg.zoom','style.panelAlpha','style.shadow'].includes(o.dataset.out)?v+'%':o.dataset.out==='rot'?v+'°':v});
-  drawPad();store.set('rs.state',S);
+  drawPad();renderIconCards();store.set('rs.state',S);
 }
 
 // ---------- bindings ----------
@@ -888,7 +946,7 @@ async function ensureFont(){try{await Promise.all([400,500,600,700].map(w=>docum
 document.addEventListener('change',e=>{if(e.target.dataset?.k==='font')ensureFont().then(schedule)});
 
 // ---------- boot ----------
-renderPresets();renderStyles();renderRuns();syncInputs();draw();
+renderPresets();renderIconCards();renderStyles();renderRuns();syncInputs();draw();
 ensureFont().then(draw);document.fonts&&document.fonts.ready.then(draw);
 addEventListener('resize',schedule);
 if('serviceWorker' in navigator&&location.protocol==='https:'&&!/claude|anthropic/.test(location.hostname))navigator.serviceWorker.register('sw.js').catch(()=>{});
