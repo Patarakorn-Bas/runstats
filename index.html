@@ -151,8 +151,9 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
       <button class="tb" data-ratio="1:1">1:1</button>
       <button class="tb" data-ratio="16:9">16:9</button>
       <button class="tb" id="resetPos">จัดกลาง</button>
+      <button class="tb" id="freeBtn">เส้นทางอิสระ</button>
     </div>
-    <p class="hint">ลากสติกเกอร์เพื่อย้าย ใช้สองนิ้วย่อขยาย แตะสองครั้งเพื่อจัดกลาง ลายตารางคือส่วนโปร่งใส</p>
+    <p class="hint">ลากตัวเลขหรือเส้นทางเพื่อย้าย ใช้สองนิ้วย่อขยายและหมุน แตะสองครั้งเพื่อคืนค่า ลายตารางคือส่วนโปร่งใส</p>
   </section>
 
   <div class="panel">
@@ -253,7 +254,7 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
             <option value="Kanit">Kanit สปอร์ต</option><option value="Prompt">Prompt โมเดิร์น</option><option value="Mitr">Mitr กลมมน</option><option value="Bai Jamjuree">Bai Jamjuree เท่</option><option value="Chakra Petch">Chakra Petch ดิจิทัล</option></select></label>
         </div>
         <label class="f"><span>ขนาด <output data-out="scale"></output></span><input type="range" min="40" max="160" step="1" data-k="scale"></label>
-        <label class="f"><span>หมุน <output data-out="rot"></output></span><input type="range" min="-30" max="30" step="1" data-k="rot"></label>
+        <label class="f"><span>หมุน <output data-out="rot"></output></span><input type="range" min="-180" max="180" step="1" data-k="rot"></label>
       </fieldset>
     </section>
 
@@ -318,6 +319,22 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
         </div>
         <label class="f"><span>นำเข้าไฟล์ GPX (เส้นทาง GPS จริง)</span><input type="file" id="gpxIn" accept=".gpx,application/gpx+xml,application/xml,text/xml"></label>
         <p class="hint" style="text-align:left">ส่งออก GPX จาก Apple Watch ได้ด้วยแอปฟรีอย่าง HealthFit หรือ RunGap แล้วเลือกไฟล์ที่นี่ ระยะทางในไฟล์จะถูกกรอกให้ด้วย</p>
+      </fieldset>
+      <fieldset>
+        <legend>ตำแหน่งเส้นทาง</legend>
+        <label class="chip" style="justify-self:start"><input type="checkbox" data-k="rt.free"> ย้ายเส้นทางอิสระ แยกจากตัวเลข</label>
+        <p class="hint" style="text-align:left">เปิดแล้วลากเส้นทางบนภาพตัวอย่างเพื่อย้าย ใช้สองนิ้วย่อขยายและหมุน แตะสองครั้งที่เส้นทางเพื่อคืนค่า</p>
+        <label class="f"><span>ขนาด <output data-out="rt.scale"></output></span><input type="range" min="20" max="400" data-k="rt.scale"></label>
+        <label class="f"><span>หมุน <output data-out="rt.rot"></output></span><input type="range" min="-180" max="180" data-k="rt.rot"></label>
+        <div class="row">
+          <label class="f"><span>ซ้าย-ขวา</span><input type="range" min="-0.7" max="0.7" step="0.01" data-k="rt.x"></label>
+          <label class="f"><span>ขึ้น-ลง</span><input type="range" min="-0.7" max="0.7" step="0.01" data-k="rt.y"></label>
+        </div>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" data-k="rt.flip"> กลับด้านซ้าย-ขวา</label>
+          <label class="chip"><input type="checkbox" data-k="rt.behind"> วางไว้หลังตัวเลข</label>
+          <button type="button" class="tb" id="rtReset">คืนค่าเส้นทาง</button>
+        </div>
       </fieldset>
       <fieldset>
         <legend>สไตล์เส้นทาง</legend>
@@ -422,6 +439,7 @@ const DEF={
   tpl:'classic',icon:'shoe',pos:'center',font:'Kanit',scale:100,rot:0,ox:0,oy:0,ratio:'9:16',res:'1',
   style:{text:'#ffffff',accent:'#ff5a1f',accent2:'#ffd23f',grad:false,stroke:false,strokeColor:'#000000',strokeW:6,shadow:55,upper:false,
          panel:'none',panelColor:'#0b1426',panelAlpha:55,radius:36},
+  rt:{free:true,x:0,y:.3,scale:90,rot:0,flip:false,behind:false},sel:'stats',
   route:{mode:'preset',drawn:[],gpx:[],shot:[],style:'solid',width:10,size:100,dots:false},
   bg:{zoom:100,x:0,y:0,filter:'none',bright:0,contrast:0,sat:0,vignette:0,fadeBottom:0}
 };
@@ -477,7 +495,8 @@ function derive(){
   if(S.style.upper&&S.lang==='en')stats.forEach(s=>s.label=s.label.toUpperCase());
   const m=S.route.mode;
   const route=m==='preset'?PRESET:m==='drawn'?chaikin(chaikin(S.route.drawn)):m==='gpx'?S.route.gpx:m==='shot'?chaikin(S.route.shot):[];
-  return{L,stats,route,
+  const free=S.rt.free&&route.length>1;
+  return{L,stats,route:free?[]:route,freeRoute:free?route:null,
     splits:String(r.splits).split(/[,\s]+/).map(parseT).filter(x=>x>0).slice(0,12),
     hrs:String(r.hrSplits).split(/[,\s]+/).map(Number).filter(x=>x>0).slice(0,20),
     unitLong:mi?L.miL:L.kmL,distVal:isFinite(dd)?dd.toFixed(2):'',pace,tsec};
@@ -774,6 +793,27 @@ function cssFilter(){const b=S.bg;let br=1+b.bright/100,ct=1+b.contrast/100,sa=1
   return `brightness(${br}) contrast(${ct}) saturate(${sa})${ex}`}
 
 // ---------- compose ----------
+// Route as an independent layer: own position, size, rotation and mirror
+let ROUTE_HIT=null;
+function drawFreeRoute(ctx,W,H,mult,pts){
+  const rt=S.rt,base=Math.min(W/1080,H/1350)*mult,box=560*base*rt.scale/100*(S.route.size/100);
+  const cx=W/2+rt.x*W,cy=H/2+rt.y*H;
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;pts.forEach(([x,y])=>{x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)});
+  const k=Math.min(box/Math.max(x1-x0,1e-9),box/Math.max(y1-y0,1e-9)),hw=Math.max((x1-x0)*k/2,20*base),hh=Math.max((y1-y0)*k/2,20*base);
+  const prevSC=SC;SC=base*Math.sqrt(rt.scale/100);
+  ctx.save();ctx.translate(cx,cy);ctx.rotate(rt.rot*Math.PI/180);if(rt.flip)ctx.scale(-1,1);
+  const sz=S.route.size;S.route.size=100;drawRoute(ctx,pts,-box*0+-hw,-hh,hw*2,hh*2,'center');S.route.size=sz;
+  ctx.restore();SC=prevSC;
+  if(mult===1)ROUTE_HIT={cx,cy,hw,hh,rot:rt.rot};
+}
+function drawSelection(ctx){
+  if(!ROUTE_HIT||!S.rt.free||S.sel!=='route')return;const r=ROUTE_HIT,pad=18;
+  ctx.save();ctx.translate(r.cx,r.cy);ctx.rotate(r.rot*Math.PI/180);ctx.setLineDash([14,10]);ctx.lineWidth=3;ctx.strokeStyle='rgba(255,255,255,.9)';
+  ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=6;ctx.strokeRect(-r.hw-pad,-r.hh-pad,(r.hw+pad)*2,(r.hh+pad)*2);
+  ctx.setLineDash([]);[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=>{ctx.beginPath();ctx.arc(a*(r.hw+pad),b*(r.hh+pad),9,0,7);ctx.fillStyle='#fff';ctx.fill()});ctx.restore();
+}
+function hitRoute(px,py){if(!ROUTE_HIT||!S.rt.free)return false;const r=ROUTE_HIT,a=-r.rot*Math.PI/180,dx=px-r.cx,dy=py-r.cy;
+  const lx=dx*Math.cos(a)-dy*Math.sin(a),ly=dx*Math.sin(a)+dy*Math.cos(a);return Math.abs(lx)<=r.hw+50&&Math.abs(ly)<=r.hh+50}
 function composite(ctx,W,H,mult,bgSource){
   // bgSource: canvas/video drawn first (or null for transparent)
   ctx.clearRect(0,0,W,H);
@@ -788,7 +828,11 @@ function composite(ctx,W,H,mult,bgSource){
   // overlay drawn straight onto target with transform so the glass blur can sample the background
   ctx.save();ctx.translate(W/2+S.ox*W,H/2+S.oy*H);ctx.rotate(S.rot*Math.PI/180);ctx.translate(-W/2,-H/2);
   const prev=CTX;CTX=ctx;SC=Math.min(W/1080,H/1350)*S.scale/100*mult;ctx.textBaseline='alphabetic';ctx.fillStyle=S.style.text;
-  const d=derive();(TPL[S.tpl]||TPL.classic)(W,H,d);CTX=prev;ctx.restore();
+  const d=derive();
+  const freeLayer=()=>{if(d.freeRoute)drawFreeRoute(ctx,W,H,mult,d.freeRoute)};
+  if(S.rt.behind){ctx.restore();freeLayer();ctx.save();ctx.translate(W/2+S.ox*W,H/2+S.oy*H);ctx.rotate(S.rot*Math.PI/180);ctx.translate(-W/2,-H/2);SC=Math.min(W/1080,H/1350)*S.scale/100*mult;ctx.textBaseline='alphabetic';ctx.fillStyle=S.style.text}
+  (TPL[S.tpl]||TPL.classic)(W,H,d);CTX=prev;ctx.restore();
+  if(!S.rt.behind)freeLayer();
   BGSRC=null;PANEL_BLUR=null;
 }
 
@@ -805,10 +849,10 @@ function draw(){
   bgv.style.transform=mediaKind==='video'?`translate(${S.bg.x/4}%,${S.bg.y/4}%) scale(${S.bg.zoom/100})`:'';
   // preview: draw overlay with background for glass blur only on photo
   const vx=view.getContext('2d');
-  const glass=bg&&S.style.panel==='glass';composite(vx,W,H,1,glass?bg:null);
+  ROUTE_HIT=null;const glass=bg&&S.style.panel==='glass';composite(vx,W,H,1,glass?bg:null);drawSelection(vx);
   bgc.style.visibility=glass?'hidden':''; // the view already holds the background when the glass panel samples it
-  document.querySelectorAll('[data-ratio]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ratio===S.ratio));
-  document.querySelectorAll('[data-out]').forEach(o=>{const v=getP(o.dataset.out);o.textContent=['scale','route.size','bg.zoom','style.panelAlpha','style.shadow'].includes(o.dataset.out)?v+'%':o.dataset.out==='rot'?v+'°':v});
+  document.querySelectorAll('[data-ratio]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ratio===S.ratio));$('freeBtn').setAttribute('aria-pressed',!!S.rt.free);
+  document.querySelectorAll('[data-out]').forEach(o=>{const v=getP(o.dataset.out);o.textContent=['scale','route.size','bg.zoom','style.panelAlpha','style.shadow','rt.scale'].includes(o.dataset.out)?v+'%':['rot','rt.rot'].includes(o.dataset.out)?v+'°':v});
   drawPad();renderIconCards();store.set('rs.state',S);
 }
 
@@ -831,21 +875,30 @@ function onTpl(t){if(t==='bar'){S.pos='bottom';S.show.hr=true;}syncInputs()}
 document.querySelectorAll('[role=tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[role=tab]').forEach(x=>x.setAttribute('aria-selected',x===b));
   document.querySelectorAll('.pane').forEach(p=>p.hidden=p.id!=='tab-'+b.dataset.tab);if(b.dataset.tab==='route')drawPad()});
 document.querySelectorAll('[data-ratio]').forEach(b=>b.onclick=()=>{S.ratio=b.dataset.ratio;bgCache.key='';schedule()});
+$('freeBtn').onclick=()=>{S.rt.free=!S.rt.free;S.sel=S.rt.free?'route':'stats';syncInputs();schedule();toast(S.rt.free?'ลากเส้นทางบนภาพได้อิสระแล้ว':'เส้นทางกลับไปอยู่ในแม่แบบ')};
+$('rtReset').onclick=()=>{Object.assign(S.rt,{x:0,y:.3,scale:90,rot:0,flip:false});S.sel='route';syncInputs();schedule()};
 $('resetPos').onclick=()=>{S.ox=0;S.oy=0;S.rot=0;S.scale=100;syncInputs();schedule()};
 
-// drag + pinch on preview
-const ptrs=new Map();let start=null,lastTap=0;
-view.addEventListener('pointerdown',e=>{view.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);start=snap();
-  const now=Date.now();if(now-lastTap<300&&ptrs.size===1){S.ox=0;S.oy=0;syncInputs();schedule()}lastTap=now});
+// drag + pinch on preview: the gesture moves whichever layer it starts on (route or stats)
+const ptrs=new Map();let start=null,lastTap=0,target='stats';
+function canvasPt(e){const r=view.getBoundingClientRect();return[(e.clientX-r.left)/r.width*view.width,(e.clientY-r.top)/r.height*view.height]}
+view.addEventListener('pointerdown',e=>{view.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);
+  if(ptrs.size===1){target=hitRoute(...canvasPt(e))?'route':'stats';S.sel=target}
+  start=snap();
+  const now=Date.now();if(now-lastTap<300&&ptrs.size===1){if(target==='route')Object.assign(S.rt,{x:0,y:.3,scale:90,rot:0});else{S.ox=0;S.oy=0}syncInputs();schedule()}lastTap=now;schedule()});
 view.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;ptrs.set(e.pointerId,[e.clientX,e.clientY]);const r=view.getBoundingClientRect();
-  if(ptrs.size===1&&start.pts.length===1){const[p]=[...ptrs.values()];S.ox=clamp(start.ox+(p[0]-start.pts[0][0])/r.width,-.6,.6);S.oy=clamp(start.oy+(p[1]-start.pts[0][1])/r.height,-.6,.6)}
+  const R=target==='route';
+  if(ptrs.size===1&&start.pts.length===1){const[p]=[...ptrs.values()];const dx=(p[0]-start.pts[0][0])/r.width,dy=(p[1]-start.pts[0][1])/r.height;
+    if(R){S.rt.x=+clamp(start.rx+dx,-.7,.7).toFixed(3);S.rt.y=+clamp(start.ry+dy,-.7,.7).toFixed(3)}else{S.ox=clamp(start.ox+dx,-.6,.6);S.oy=clamp(start.oy+dy,-.6,.6)}}
   else if(ptrs.size===2&&start.pts.length===2){const[a,b]=[...ptrs.values()];const d0=Math.hypot(start.pts[0][0]-start.pts[1][0],start.pts[0][1]-start.pts[1][1]),d1=Math.hypot(a[0]-b[0],a[1]-b[1]);
-    S.scale=Math.round(clamp(start.scale*d1/Math.max(d0,1),40,160));
-    const a0=Math.atan2(start.pts[1][1]-start.pts[0][1],start.pts[1][0]-start.pts[0][0]),a1=Math.atan2(b[1]-a[1],b[0]-a[0]);S.rot=Math.round(clamp(start.rot+(a1-a0)*180/Math.PI,-30,30))}
+    const a0=Math.atan2(start.pts[1][1]-start.pts[0][1],start.pts[1][0]-start.pts[0][0]),a1=Math.atan2(b[1]-a[1],b[0]-a[0]),da=(a1-a0)*180/Math.PI;
+    if(R){S.rt.scale=Math.round(clamp(start.rscale*d1/Math.max(d0,1),20,400));S.rt.rot=Math.round(wrap(start.rrot+da))}
+    else{S.scale=Math.round(clamp(start.scale*d1/Math.max(d0,1),40,160));S.rot=Math.round(wrap(start.rot+da))}}
   syncInputs();schedule()});
 const up=e=>{ptrs.delete(e.pointerId);start=snap()};view.addEventListener('pointerup',up);view.addEventListener('pointercancel',up);
-view.addEventListener('wheel',e=>{e.preventDefault();S.scale=Math.round(clamp(S.scale-e.deltaY*.05,40,160));syncInputs();schedule()},{passive:false});
-function snap(){return{pts:[...ptrs.values()].map(p=>[...p]),ox:S.ox,oy:S.oy,scale:S.scale,rot:S.rot}}
+view.addEventListener('wheel',e=>{e.preventDefault();if(hitRoute(...canvasPt(e))){S.sel='route';S.rt.scale=Math.round(clamp(S.rt.scale-e.deltaY*.2,20,400))}else{S.sel='stats';S.scale=Math.round(clamp(S.scale-e.deltaY*.05,40,160))}syncInputs();schedule()},{passive:false});
+function snap(){return{pts:[...ptrs.values()].map(p=>[...p]),ox:S.ox,oy:S.oy,scale:S.scale,rot:S.rot,rx:S.rt.x,ry:S.rt.y,rscale:S.rt.scale,rrot:S.rt.rot}}
+const wrap=v=>((v+180)%360+360)%360-180;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
 // route pad
