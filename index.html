@@ -1,0 +1,898 @@
+<!doctype html><html lang="th"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0E1D38">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RunStats">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/favicon.png">
+<style>@font-face{font-family:'Kanit';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/kanit-thai-400-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Kanit';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/kanit-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Kanit';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/kanit-thai-500-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Kanit';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/kanit-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Kanit';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/kanit-thai-600-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Kanit';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/kanit-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Kanit';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/kanit-thai-700-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Kanit';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/kanit-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Prompt';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/prompt-thai-400-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Prompt';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/prompt-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Prompt';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/prompt-thai-500-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Prompt';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/prompt-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Prompt';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/prompt-thai-600-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Prompt';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/prompt-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Prompt';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/prompt-thai-700-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Prompt';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/prompt-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Mitr';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/mitr-thai-400-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Mitr';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/mitr-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Mitr';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/mitr-thai-500-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Mitr';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/mitr-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Mitr';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/mitr-thai-600-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Mitr';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/mitr-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Mitr';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/mitr-thai-700-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Mitr';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/mitr-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Bai Jamjuree';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/bai-jamjuree-thai-400-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Bai Jamjuree';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/bai-jamjuree-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Bai Jamjuree';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/bai-jamjuree-thai-500-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Bai Jamjuree';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/bai-jamjuree-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Bai Jamjuree';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/bai-jamjuree-thai-600-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Bai Jamjuree';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/bai-jamjuree-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Bai Jamjuree';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/bai-jamjuree-thai-700-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Bai Jamjuree';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/bai-jamjuree-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Chakra Petch';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/chakra-petch-thai-400-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Chakra Petch';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/chakra-petch-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Chakra Petch';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/chakra-petch-thai-500-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Chakra Petch';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/chakra-petch-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Chakra Petch';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/chakra-petch-thai-600-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Chakra Petch';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/chakra-petch-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Chakra Petch';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/chakra-petch-thai-700-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'Chakra Petch';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/chakra-petch-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'IBM Plex Sans Thai';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/ibm-plex-sans-thai-thai-400-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'IBM Plex Sans Thai';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/ibm-plex-sans-thai-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'IBM Plex Sans Thai';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/ibm-plex-sans-thai-thai-500-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'IBM Plex Sans Thai';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/ibm-plex-sans-thai-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'IBM Plex Sans Thai';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/ibm-plex-sans-thai-thai-600-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}@font-face{font-family:'IBM Plex Sans Thai';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/ibm-plex-sans-thai-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}:root{padding-top:env(safe-area-inset-top,0px)}</style>
+<title>RunStats สติกเกอร์วิ่ง</title>
+
+<style>
+/* Layout: app shell. Preview stage pinned on top (phone) or left (desktop); tabbed control panel; sticky save bar */
+:root{
+  --bg:#EDF0F5; --surface:#FFFFFF; --sunk:#F4F6FA; --ink:#14213A; --muted:#5A6478; --line:#D5DBE5;
+  --accent:#1E3A6E; --accent-ink:#FFFFFF; --hot:#FF5A1F;
+  --ui:"IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --num:"Kanit","IBM Plex Sans Thai",system-ui,sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0C1220; --surface:#141C2D; --sunk:#0F1626; --ink:#E5EAF2; --muted:#8D99AE; --line:#263148;
+  --accent:#8EAEE8; --accent-ink:#0C1220; --hot:#FF7442; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0C1220; --surface:#141C2D; --sunk:#0F1626; --ink:#E5EAF2; --muted:#8D99AE; --line:#263148;
+  --accent:#8EAEE8; --accent-ink:#0C1220; --hot:#FF7442; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--ui);margin:0;padding-inline:16px;padding-block:0;-webkit-tap-highlight-color:transparent}
+.app{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,460px);gap:24px;align-items:start;padding-block:16px 110px}
+.top{grid-column:1/-1;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{width:38px;height:38px;border-radius:10px;flex:none}
+.top h1{font:700 22px/1.1 var(--num);margin:0}
+.top p{margin:0;color:var(--muted);font-size:13px}
+.stage{position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px);display:flex;flex-direction:column;align-items:center;gap:10px;min-width:0;z-index:2}
+.frame{position:relative;border-radius:14px;overflow:hidden;max-width:100%;touch-action:none;
+  background-color:#9aa3b1;
+  background-image:linear-gradient(45deg,#b7bec9 25%,transparent 25%),linear-gradient(-45deg,#b7bec9 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#b7bec9 75%),linear-gradient(-45deg,transparent 75%,#b7bec9 75%);
+  background-size:22px 22px;background-position:0 0,0 11px,11px -11px,-11px 0;
+  box-shadow:0 12px 32px rgba(10,20,40,.18)}
+.frame>*{position:absolute;inset:0;width:100%;height:100%;display:block}
+.frame video{object-fit:cover}
+#view{cursor:grab}
+#view:active{cursor:grabbing}
+.toolbar{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.tb{font:600 13px var(--ui);border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+.tb[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.hint{font-size:12.5px;color:var(--muted);margin:0;text-align:center;max-width:52ch}
+.panel{min-width:0;display:flex;flex-direction:column;gap:12px}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:1}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:1 0 auto;font:600 14px var(--ui);border:0;background:transparent;color:var(--muted);padding:8px 12px;border-radius:9px;cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+section.pane{display:flex;flex-direction:column;gap:12px}
+fieldset{border:1px solid var(--line);background:var(--surface);border-radius:14px;margin:0;padding:12px 14px 14px;display:grid;gap:12px;min-width:0}
+legend{font:600 12px var(--ui);letter-spacing:.7px;text-transform:uppercase;color:var(--muted);padding:0 6px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0}
+.f>span{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.f>span output{font-family:var(--num);color:var(--ink)}
+input[type=text],input[type=number],select,textarea{font:500 15px var(--ui);color:var(--ink);background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-width:0}
+input.num,textarea.num{font-family:var(--num)}
+textarea{resize:vertical;min-height:42px}
+input[type=color]{width:100%;height:40px;border:1px solid var(--line);border-radius:8px;background:var(--sunk);padding:3px;cursor:pointer}
+input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=checkbox],input[type=radio]{accent-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+label.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 9px;cursor:pointer;font-size:14px;background:var(--sunk);user-select:none}
+label.chip:has(input:checked){border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--surface)}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+label.card{position:relative;border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;cursor:pointer;background:var(--sunk);font-size:12.5px;line-height:1.3;color:var(--muted)}
+label.card b{display:block;font:600 15px var(--num);color:var(--ink)}
+label.card input{position:absolute;opacity:0;pointer-events:none}
+label.card:has(input:checked){border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 1px var(--accent)}
+label.card:focus-within,label.chip:focus-within{outline:2px solid var(--hot);outline-offset:2px}
+.presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.preset{border:1px solid var(--line);border-radius:10px;padding:8px;cursor:pointer;background:var(--sunk);color:var(--ink);font:600 13px var(--ui);display:flex;flex-direction:column;gap:6px;align-items:flex-start;text-align:left}
+.preset i{display:flex;gap:3px}
+.preset i b{width:16px;height:16px;border-radius:50%;box-shadow:0 0 0 1px var(--line)}
+button,.btn{font:600 14px var(--ui);border-radius:var(--r);padding:9px 14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+button.danger{color:#D23B2E}
+button:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
+.routebox{display:grid;grid-template-columns:minmax(0,170px) minmax(0,1fr);gap:12px;align-items:start}
+#pad{width:100%;aspect-ratio:1;background:var(--sunk);border:1px dashed var(--line);border-radius:10px;touch-action:none;cursor:crosshair;display:block}
+.stack{display:flex;flex-direction:column;gap:8px;min-width:0}
+.list{display:flex;flex-direction:column;gap:6px}
+.item{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--sunk)}
+.item div{min-width:0}
+.item b{display:block;font:600 14px var(--num);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item small{color:var(--muted)}
+.item button{padding:6px 10px;font-size:13px}
+.empty{color:var(--muted);font-size:13.5px;margin:0}
+.savebar{position:fixed;left:0;right:0;bottom:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);z-index:5}
+.savebar .in{max-width:1180px;margin:0 auto;display:flex;gap:8px;align-items:center}
+.savebar select{width:auto;flex:1 1 auto;min-width:0}
+.savebar button{flex:none;padding:11px 18px;font-size:15px}
+.modal{position:fixed;inset:0;background:rgba(5,10,20,.75);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.modal .card2{background:var(--surface);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;align-items:stretch;max-height:100%;max-width:440px;width:100%}
+.modal .chk{background-color:#9aa3b1;background-image:linear-gradient(45deg,#b7bec9 25%,transparent 25%),linear-gradient(-45deg,#b7bec9 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#b7bec9 75%),linear-gradient(-45deg,transparent 75%,#b7bec9 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0;border-radius:10px;overflow:hidden;display:flex;justify-content:center;min-height:0}
+.modal img,.modal video{max-height:55vh;max-width:100%;object-fit:contain;display:block}
+.modal .acts{display:flex;gap:8px;flex-wrap:wrap}
+.modal .acts>*{flex:1 1 120px}
+.modal .hint{text-align:left}
+.progress{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.progress b{display:block;height:100%;background:var(--hot);width:0}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-weight:600;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
+@media (max-width:860px){
+  .app{grid-template-columns:minmax(0,1fr);gap:12px;padding-block:10px 110px}
+  .stage{background:var(--bg);padding-block:6px 4px;top:env(safe-area-inset-top,0px)}
+  .tabs{top:auto;position:static}
+  .top p{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head><body>
+
+<div class="app">
+  <header class="top">
+    <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#14284B"/><g transform="translate(10 12) scale(.36)"><path d="M8 69 L10 46 C10 38 15 34 22 35 L29 39 C35 45 42 45 46 40 L52 32 C55 29 60 30 61 34 L67 45 C75 50 88 52 94 60 C97 64 96 68 92 69 Z" fill="#fff"/><path d="M6 71 L94 71 C99 72 99 78 93 80 L13 80 C8 80 5 76 6 71 Z" fill="#FF5A1F"/><path d="M-24 44H-6M-26 54H-4M-18 62H-2" stroke="#FF5A1F" stroke-width="5" stroke-linecap="round"/></g></svg>
+    <div><h1>RunStats</h1><p>สติกเกอร์สถิติวิ่งจาก Apple Watch วางทับรูปหรือวิดีโอ</p></div>
+  </header>
+
+  <section class="stage" aria-label="ตัวอย่าง">
+    <div class="frame" id="frame">
+      <canvas id="bgc" aria-hidden="true"></canvas>
+      <video id="bgv" muted playsinline loop hidden></video>
+      <canvas id="view" aria-label="ตัวอย่างสติกเกอร์ ลากเพื่อย้าย ใช้สองนิ้วเพื่อย่อขยาย"></canvas>
+    </div>
+    <div class="toolbar" role="group" aria-label="สัดส่วนภาพ">
+      <button class="tb" data-ratio="9:16">9:16</button>
+      <button class="tb" data-ratio="4:5">4:5</button>
+      <button class="tb" data-ratio="1:1">1:1</button>
+      <button class="tb" data-ratio="16:9">16:9</button>
+      <button class="tb" id="resetPos">จัดกลาง</button>
+    </div>
+    <p class="hint">ลากสติกเกอร์เพื่อย้าย ใช้สองนิ้วย่อขยาย แตะสองครั้งเพื่อจัดกลาง ลายตารางคือส่วนโปร่งใส</p>
+  </section>
+
+  <div class="panel">
+    <nav class="tabs" role="tablist" aria-label="เมนู">
+      <button role="tab" data-tab="data" aria-selected="true">ข้อมูล</button>
+      <button role="tab" data-tab="layout">แบบ</button>
+      <button role="tab" data-tab="style">สไตล์</button>
+      <button role="tab" data-tab="route">เส้นทาง</button>
+      <button role="tab" data-tab="bg">พื้นหลัง</button>
+      <button role="tab" data-tab="lib">คลัง</button>
+    </nav>
+
+    <!-- DATA -->
+    <section class="pane" id="tab-data" role="tabpanel">
+      <fieldset>
+        <legend>ผลการวิ่ง</legend>
+        <div class="row">
+          <label class="f"><span>ระยะทาง (กม.)</span><input class="num" type="text" inputmode="decimal" data-k="run.dist"></label>
+          <label class="f"><span>เวลา ชม:นาที:วินาที</span><input class="num" type="text" data-k="run.time"></label>
+          <label class="f"><span>เพซ</span><input class="num" type="text" data-k="run.pace" id="paceIn"></label>
+        </div>
+        <label class="chip" style="justify-self:start"><input type="checkbox" data-k="run.paceAuto"> คำนวณเพซอัตโนมัติ</label>
+        <div class="row">
+          <label class="f"><span>หัวใจเฉลี่ย</span><input class="num" type="text" inputmode="numeric" data-k="run.hr"></label>
+          <label class="f"><span>รอบขา SPM</span><input class="num" type="text" inputmode="numeric" data-k="run.cad"></label>
+          <label class="f"><span>แคลอรีรวม</span><input class="num" type="text" inputmode="numeric" data-k="run.kcal"></label>
+          <label class="f"><span>ความสูง (ม.)</span><input class="num" type="text" inputmode="numeric" data-k="run.elev"></label>
+          <label class="f"><span>กำลัง (วัตต์)</span><input class="num" type="text" inputmode="numeric" data-k="run.power"></label>
+        </div>
+        <label class="f"><span>เวลาแต่ละกิโล (สปลิต)</span><textarea class="num" rows="2" data-k="run.splits"></textarea></label>
+        <label class="f"><span>หัวใจแต่ละกิโล (สำหรับกราฟ)</span><textarea class="num" rows="2" data-k="run.hrSplits"></textarea></label>
+      </fieldset>
+      <fieldset>
+        <legend>ข้อความ</legend>
+        <div class="row">
+          <label class="f"><span>ชื่อกิจกรรม</span><input type="text" data-k="run.title"></label>
+          <label class="f"><span>วันที่ / เวลา</span><input type="text" data-k="run.date"></label>
+        </div>
+        <label class="f"><span>สถานที่</span><input type="text" data-k="run.place"></label>
+        <label class="f"><span>แคปชัน (ใส่อีโมจิได้)</span><input type="text" data-k="caption" placeholder="เช่น วิ่งเย็นสบายๆ 🔥"></label>
+        <label class="f"><span>ข้อความท้าย / แบรนด์</span><input type="text" data-k="footer"></label>
+      </fieldset>
+      <fieldset>
+        <legend>สิ่งที่แสดง</legend>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" data-k="show.dist"> ระยะทาง</label>
+          <label class="chip"><input type="checkbox" data-k="show.pace"> เพซ</label>
+          <label class="chip"><input type="checkbox" data-k="show.time"> เวลา</label>
+          <label class="chip"><input type="checkbox" data-k="show.hr"> หัวใจ</label>
+          <label class="chip"><input type="checkbox" data-k="show.cad"> รอบขา</label>
+          <label class="chip"><input type="checkbox" data-k="show.kcal"> แคลอรี</label>
+          <label class="chip"><input type="checkbox" data-k="show.elev"> ความสูง</label>
+          <label class="chip"><input type="checkbox" data-k="show.power"> กำลัง</label>
+        </div>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" data-k="show.meta"> ชื่อ วันที่ สถานที่</label>
+          <label class="chip"><input type="checkbox" data-k="show.hrChart"> กราฟหัวใจ</label>
+          <label class="chip"><input type="checkbox" data-k="show.splits"> แท่งสปลิต</label>
+        </div>
+        <div class="row">
+          <label class="f"><span>หน่วย</span><select data-k="unit"><option value="km">กิโลเมตร</option><option value="mi">ไมล์</option></select></label>
+          <label class="f"><span>ภาษาบนสติกเกอร์</span><select data-k="lang"><option value="th">ไทย</option><option value="en">English</option></select></label>
+        </div>
+      </fieldset>
+    </section>
+
+    <!-- LAYOUT -->
+    <section class="pane" id="tab-layout" role="tabpanel" hidden>
+      <fieldset>
+        <legend>แม่แบบ</legend>
+        <div class="cards" role="radiogroup" aria-label="แม่แบบ">
+          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="classic"><b>คลาสสิก</b>เรียงกลาง</label>
+          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="hero"><b>ตัวเลขยักษ์</b>ระยะทางเด่น</label>
+          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="grid"><b>ตาราง</b>ครบทุกค่า</label>
+          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="splits"><b>สปลิต</b>แท่งรายกิโล</label>
+          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="bar"><b>แถบล่าง</b>เหมาะกับวิดีโอ</label>
+          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="badge"><b>เหรียญ</b>วงกลม</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>ไอคอน</legend>
+        <div class="cards" role="radiogroup" aria-label="ไอคอน">
+          <label class="card"><input type="radio" name="icon" data-k="icon" value="shoe"><b>รองเท้า</b></label>
+          <label class="card"><input type="radio" name="icon" data-k="icon" value="flame"><b>ไฟ</b></label>
+          <label class="card"><input type="radio" name="icon" data-k="icon" value="bolt"><b>สายฟ้า</b></label>
+          <label class="card"><input type="radio" name="icon" data-k="icon" value="medal"><b>เหรียญ</b></label>
+          <label class="card"><input type="radio" name="icon" data-k="icon" value="watch"><b>นาฬิกา</b></label>
+          <label class="card"><input type="radio" name="icon" data-k="icon" value="none"><b>ไม่มี</b></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>ตำแหน่งและขนาด</legend>
+        <div class="row">
+          <label class="f"><span>ตำแหน่งเริ่มต้น</span><select data-k="pos"><option value="center">กลาง</option><option value="top">บน</option><option value="bottom">ล่าง</option></select></label>
+          <label class="f"><span>ตัวอักษร</span><select data-k="font">
+            <option value="Kanit">Kanit สปอร์ต</option><option value="Prompt">Prompt โมเดิร์น</option><option value="Mitr">Mitr กลมมน</option><option value="Bai Jamjuree">Bai Jamjuree เท่</option><option value="Chakra Petch">Chakra Petch ดิจิทัล</option></select></label>
+        </div>
+        <label class="f"><span>ขนาด <output data-out="scale"></output></span><input type="range" min="40" max="160" step="1" data-k="scale"></label>
+        <label class="f"><span>หมุน <output data-out="rot"></output></span><input type="range" min="-30" max="30" step="1" data-k="rot"></label>
+      </fieldset>
+    </section>
+
+    <!-- STYLE -->
+    <section class="pane" id="tab-style" role="tabpanel" hidden>
+      <fieldset>
+        <legend>ธีมสำเร็จรูป</legend>
+        <div class="presets" id="presetGrid"></div>
+      </fieldset>
+      <fieldset>
+        <legend>สี</legend>
+        <div class="row">
+          <label class="f"><span>ตัวอักษร</span><input type="color" data-k="style.text"></label>
+          <label class="f"><span>สีหลัก</span><input type="color" data-k="style.accent"></label>
+          <label class="f"><span>สีรอง</span><input type="color" data-k="style.accent2"></label>
+        </div>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" data-k="style.grad"> ตัวเลขไล่สี</label>
+          <label class="chip"><input type="checkbox" data-k="style.stroke"> ขอบตัวอักษร</label>
+          <label class="chip"><input type="checkbox" data-k="style.upper"> ป้ายตัวพิมพ์ใหญ่</label>
+        </div>
+        <div class="row">
+          <label class="f"><span>สีขอบ</span><input type="color" data-k="style.strokeColor"></label>
+          <label class="f"><span>ความหนาขอบ <output data-out="style.strokeW"></output></span><input type="range" min="2" max="16" data-k="style.strokeW"></label>
+        </div>
+        <label class="f"><span>เงา <output data-out="style.shadow"></output></span><input type="range" min="0" max="100" data-k="style.shadow"></label>
+      </fieldset>
+      <fieldset>
+        <legend>กรอบรองพื้น</legend>
+        <div class="row">
+          <label class="f"><span>แบบ</span><select data-k="style.panel"><option value="none">ไม่มี</option><option value="solid">ทึบ/โปร่งแสง</option><option value="glass">กระจกเบลอ</option><option value="outline">เส้นขอบ</option></select></label>
+          <label class="f"><span>สีกรอบ</span><input type="color" data-k="style.panelColor"></label>
+        </div>
+        <label class="f"><span>ความทึบ <output data-out="style.panelAlpha"></output></span><input type="range" min="5" max="100" data-k="style.panelAlpha"></label>
+        <label class="f"><span>มุมโค้ง <output data-out="style.radius"></output></span><input type="range" min="0" max="80" data-k="style.radius"></label>
+        <p class="hint" style="text-align:left">กระจกเบลอจะเบลอรูปพื้นหลังจริงเมื่อบันทึกแบบมีพื้นหลัง ส่วน PNG โปร่งใสจะเป็นแผ่นโปร่งแสง</p>
+      </fieldset>
+      <fieldset>
+        <legend>สไตล์ของฉัน</legend>
+        <div class="row" style="grid-template-columns:minmax(0,1fr) auto">
+          <input type="text" id="styleName" placeholder="ตั้งชื่อสไตล์" aria-label="ชื่อสไตล์">
+          <button id="saveStyle">บันทึกสไตล์</button>
+        </div>
+        <div class="list" id="styleList"></div>
+      </fieldset>
+    </section>
+
+    <!-- ROUTE -->
+    <section class="pane" id="tab-route" role="tabpanel" hidden>
+      <fieldset>
+        <legend>ที่มาของเส้นทาง</legend>
+        <div class="routebox">
+          <canvas id="pad" width="600" height="600" aria-label="วาดเส้นทางด้วยนิ้ว"></canvas>
+          <div class="stack">
+            <label class="chip"><input type="radio" name="rmode" data-k="route.mode" value="preset"> เส้นทางตัวอย่าง</label>
+            <label class="chip"><input type="radio" name="rmode" data-k="route.mode" value="drawn"> วาดเอง</label>
+            <label class="chip"><input type="radio" name="rmode" data-k="route.mode" value="gpx"> จากไฟล์ GPX</label>
+            <label class="chip"><input type="radio" name="rmode" data-k="route.mode" value="none"> ไม่แสดง</label>
+            <button id="clearPad">ล้างแล้ววาดใหม่</button>
+          </div>
+        </div>
+        <label class="f"><span>นำเข้าไฟล์ GPX (เส้นทาง GPS จริง)</span><input type="file" id="gpxIn" accept=".gpx,application/gpx+xml,application/xml,text/xml"></label>
+        <p class="hint" style="text-align:left">ส่งออก GPX จาก Apple Watch ได้ด้วยแอปฟรีอย่าง HealthFit หรือ RunGap แล้วเลือกไฟล์ที่นี่ ระยะทางในไฟล์จะถูกกรอกให้ด้วย</p>
+      </fieldset>
+      <fieldset>
+        <legend>สไตล์เส้นทาง</legend>
+        <div class="cards" role="radiogroup" aria-label="สไตล์เส้นทาง">
+          <label class="card"><input type="radio" name="rstyle" data-k="route.style" value="solid"><b>เส้นทึบ</b></label>
+          <label class="card"><input type="radio" name="rstyle" data-k="route.style" value="glow"><b>เรืองแสง</b></label>
+          <label class="card"><input type="radio" name="rstyle" data-k="route.style" value="grad"><b>ไล่สี</b></label>
+          <label class="card"><input type="radio" name="rstyle" data-k="route.style" value="dash"><b>ประ</b></label>
+          <label class="card"><input type="radio" name="rstyle" data-k="route.style" value="double"><b>สองชั้น</b></label>
+          <label class="card"><input type="radio" name="rstyle" data-k="route.style" value="dots"><b>จุดเรียง</b></label>
+        </div>
+        <label class="f"><span>ความหนา <output data-out="route.width"></output></span><input type="range" min="3" max="24" data-k="route.width"></label>
+        <label class="f"><span>ขนาดเส้นทาง <output data-out="route.size"></output></span><input type="range" min="50" max="160" data-k="route.size"></label>
+        <label class="chip" style="justify-self:start"><input type="checkbox" data-k="route.dots"> จุดเริ่ม (เขียว) / จบ (แดง)</label>
+      </fieldset>
+    </section>
+
+    <!-- BACKGROUND -->
+    <section class="pane" id="tab-bg" role="tabpanel" hidden>
+      <fieldset>
+        <legend>รูปหรือวิดีโอพื้นหลัง</legend>
+        <label class="f"><span>เลือกรูปหรือวิดีโอ</span><input type="file" id="mediaIn" accept="image/*,video/*"></label>
+        <button id="clearMedia" hidden>เอาพื้นหลังออก</button>
+        <p class="hint" style="text-align:left">ใช้ดูตัวอย่าง หรือบันทึกรวมเป็นภาพเดียว ถ้าแค่ต้องการสติกเกอร์ไปวางในแอปตัดต่อ ไม่ต้องใส่พื้นหลัง</p>
+      </fieldset>
+      <fieldset>
+        <legend>ปรับรูป</legend>
+        <label class="f"><span>ซูม <output data-out="bg.zoom"></output></span><input type="range" min="100" max="300" data-k="bg.zoom"></label>
+        <div class="row">
+          <label class="f"><span>เลื่อนซ้าย-ขวา</span><input type="range" min="-50" max="50" data-k="bg.x"></label>
+          <label class="f"><span>เลื่อนขึ้น-ลง</span><input type="range" min="-50" max="50" data-k="bg.y"></label>
+        </div>
+        <div class="cards" role="radiogroup" aria-label="ฟิลเตอร์">
+          <label class="card"><input type="radio" name="flt" data-k="bg.filter" value="none"><b>ปกติ</b></label>
+          <label class="card"><input type="radio" name="flt" data-k="bg.filter" value="bw"><b>ขาวดำ</b></label>
+          <label class="card"><input type="radio" name="flt" data-k="bg.filter" value="warm"><b>อุ่น</b></label>
+          <label class="card"><input type="radio" name="flt" data-k="bg.filter" value="cool"><b>เย็น</b></label>
+          <label class="card"><input type="radio" name="flt" data-k="bg.filter" value="fade"><b>ฟิล์มซีด</b></label>
+          <label class="card"><input type="radio" name="flt" data-k="bg.filter" value="punch"><b>สีจัด</b></label>
+        </div>
+        <label class="f"><span>ความสว่าง <output data-out="bg.bright"></output></span><input type="range" min="-60" max="60" data-k="bg.bright"></label>
+        <label class="f"><span>คอนทราสต์ <output data-out="bg.contrast"></output></span><input type="range" min="-60" max="60" data-k="bg.contrast"></label>
+        <label class="f"><span>ความอิ่มสี <output data-out="bg.sat"></output></span><input type="range" min="-100" max="100" data-k="bg.sat"></label>
+        <label class="f"><span>ขอบมืด <output data-out="bg.vignette"></output></span><input type="range" min="0" max="100" data-k="bg.vignette"></label>
+        <label class="f"><span>ไล่เงาด้านล่าง (ให้ตัวหนังสืออ่านง่าย) <output data-out="bg.fadeBottom"></output></span><input type="range" min="0" max="100" data-k="bg.fadeBottom"></label>
+      </fieldset>
+    </section>
+
+    <!-- LIBRARY -->
+    <section class="pane" id="tab-lib" role="tabpanel" hidden>
+      <fieldset>
+        <legend>ประวัติการวิ่ง</legend>
+        <button class="primary" id="saveRun">เก็บรอบนี้ไว้ในประวัติ</button>
+        <div class="list" id="runList"></div>
+      </fieldset>
+      <fieldset>
+        <legend>ตั้งค่า</legend>
+        <div class="row">
+          <label class="f"><span>ความละเอียดตอนบันทึก</span><select data-k="res"><option value="1">มาตรฐาน (1080)</option><option value="2">สูงพิเศษ (2160)</option></select></label>
+        </div>
+        <button class="danger" id="resetAll">ล้างค่าทั้งหมดกลับเป็นค่าเริ่มต้น</button>
+      </fieldset>
+    </section>
+  </div>
+</div>
+
+<div class="savebar">
+  <div class="in">
+    <select id="exportType" aria-label="ชนิดไฟล์">
+      <option value="png">PNG โปร่งใส (สติกเกอร์)</option>
+      <option value="jpg">JPG รวมพื้นหลัง</option>
+      <option value="video">วิดีโอรวมสติกเกอร์ (ทดลอง)</option>
+    </select>
+    <button class="primary" id="exportBtn">บันทึก</button>
+  </div>
+</div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-label="ผลลัพธ์">
+  <div class="card2">
+    <div class="chk" id="resultBox"></div>
+    <div class="progress" id="prog" hidden><b></b></div>
+    <p class="hint" id="resultHint"></p>
+    <div class="acts">
+      <button class="primary" id="shareBtn">บันทึก / แชร์</button>
+      <button id="closeModal">ปิด</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const RATIOS={'9:16':[1080,1920],'4:5':[1080,1350],'1:1':[1080,1080],'16:9':[1920,1080]};
+// Today's route traced from the Apple Fitness map (Phanom Thuan): start mid-road, north to the turn, south to the finish
+const PRESET=[[437,335],[440,300],[443,260],[446,222],[443,260],[440,300],[437,335],[433,400],[430,460],[427,505],[422,522],[425,535]];
+const DEF={
+  run:{title:'วิ่งกลางแจ้ง',date:'12 ต.ค. 2569 · 17:19',place:'อ.พนมทวน จ.กาญจนบุรี',dist:'5.11',time:'0:46:53',pace:'9:10',paceAuto:true,
+       hr:'160',cad:'133',kcal:'440',elev:'2',power:'137',splits:'7:44, 8:22, 10:54, 8:58, 9:21',hrSplits:'151, 163, 154, 165, 168'},
+  show:{dist:true,pace:true,time:true,hr:false,cad:false,kcal:false,elev:false,power:false,meta:false,hrChart:false,splits:false},
+  caption:'',footer:'PATTARAKORN SUTTIPOL',unit:'km',lang:'th',
+  tpl:'classic',icon:'shoe',pos:'center',font:'Kanit',scale:100,rot:0,ox:0,oy:0,ratio:'9:16',res:'1',
+  style:{text:'#ffffff',accent:'#ff5a1f',accent2:'#ffd23f',grad:false,stroke:false,strokeColor:'#000000',strokeW:6,shadow:55,upper:false,
+         panel:'none',panelColor:'#0b1426',panelAlpha:55,radius:36},
+  route:{mode:'preset',drawn:[],gpx:[],style:'solid',width:10,size:100,dots:false},
+  bg:{zoom:100,x:0,y:0,filter:'none',bright:0,contrast:0,sat:0,vignette:0,fadeBottom:0}
+};
+const PRESETS=[
+  {n:'ส้มคลาสสิก',s:{text:'#ffffff',accent:'#ff5a1f',accent2:'#ffd23f',grad:false,stroke:false,shadow:55,panel:'none'}},
+  {n:'นีออนกลางคืน',s:{text:'#ffffff',accent:'#3cf0ff',accent2:'#ff3cac',grad:true,stroke:false,shadow:85,panel:'none'}},
+  {n:'กรมท่าโปร',s:{text:'#ffffff',accent:'#ffb703',accent2:'#8ecae6',grad:false,stroke:false,shadow:20,panel:'solid',panelColor:'#14284b',panelAlpha:78,radius:36}},
+  {n:'ทองแชมป์',s:{text:'#fff6da',accent:'#e8b13b',accent2:'#fff0b8',grad:true,stroke:true,strokeColor:'#2a1d00',strokeW:5,shadow:60,panel:'none'}},
+  {n:'สติกเกอร์ขาว',s:{text:'#111827',accent:'#ff5a1f',accent2:'#111827',grad:false,stroke:false,shadow:0,panel:'solid',panelColor:'#ffffff',panelAlpha:94,radius:44}},
+  {n:'มินิมอลดำ',s:{text:'#111111',accent:'#111111',accent2:'#6b7280',grad:false,stroke:false,shadow:0,panel:'none'}},
+  {n:'ป่าเขียว',s:{text:'#ffffff',accent:'#3ddc97',accent2:'#c6f6d5',grad:true,stroke:false,shadow:60,panel:'glass',panelColor:'#06281c',panelAlpha:35,radius:40}},
+  {n:'สปอร์ตแดง',s:{text:'#ffffff',accent:'#ff2d55',accent2:'#ffffff',grad:false,stroke:true,strokeColor:'#000000',strokeW:7,shadow:30,panel:'none'}},
+  {n:'กระจกฝ้า',s:{text:'#ffffff',accent:'#ffd23f',accent2:'#ffffff',grad:false,stroke:false,shadow:25,panel:'glass',panelColor:'#ffffff',panelAlpha:18,radius:48}}
+];
+const T={
+  th:{dist:'ระยะทาง',pace:'เพซ',time:'เวลา',hr:'หัวใจเฉลี่ย',cad:'รอบขา',kcal:'แคลอรี',elev:'ความสูงที่ได้',power:'กำลังเฉลี่ย',km:'กม.',mi:'ไมล์',kmL:'กิโลเมตร',miL:'ไมล์',kc:'กิโลแคล',m:'ม.',splits:'สปลิต',hrChart:'หัวใจรายกิโล',h:'ชม.',mn:'น.',s:'วิ.'},
+  en:{dist:'Distance',pace:'Pace',time:'Time',hr:'Avg HR',cad:'Cadence',kcal:'Calories',elev:'Elev Gain',power:'Avg Power',km:'km',mi:'mi',kmL:'KILOMETERS',miL:'MILES',kc:'kcal',m:'m',splits:'Splits',hrChart:'Heart rate per km',h:'h',mn:'m',s:'s'}
+};
+
+// ---------- state ----------
+const clone=o=>JSON.parse(JSON.stringify(o));
+function merge(a,b){for(const k in b){if(b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k])&&a[k]&&typeof a[k]==='object')merge(a[k],b[k]);else if(k in a)a[k]=b[k]}return a}
+const store={get(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch(e){return f}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let S=merge(clone(DEF),store.get('rs.state',{}));
+const getP=(p)=>p.split('.').reduce((o,k)=>o?.[k],S);
+const setP=(p,v)=>{const ks=p.split('.');const last=ks.pop();ks.reduce((o,k)=>o[k],S)[last]=v};
+
+// ---------- utils ----------
+function parseT(str){const p=String(str).trim().split(/[:'"’”]+/).filter(Boolean).map(Number);if(!p.length||p.some(isNaN))return NaN;return p.reduce((a,v)=>a*60+v,0)}
+function mmss(sec){sec=Math.round(sec);return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0')}
+function timeLabel(sec,L){sec=Math.round(sec);const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return h?`${h}${L.h} ${m}${L.mn}`:`${m}${L.mn} ${s}${L.s}`}
+function chaikin(p){if(p.length<3)return p;const o=[p[0]];for(let i=0;i<p.length-1;i++){const a=p[i],b=p[i+1];o.push([.75*a[0]+.25*b[0],.75*a[1]+.25*b[1]],[.25*a[0]+.75*b[0],.25*a[1]+.75*b[1]])}o.push(p[p.length-1]);return o}
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`}
+function dims(){const[w,h]=RATIOS[S.ratio]||RATIOS['9:16'];const r=+S.res||1;return[w,h]}
+
+function derive(){
+  const L=T[S.lang],r=S.run,mi=S.unit==='mi';
+  let dist=parseFloat(String(r.dist).replace(',','.'));const tsec=parseT(r.time);
+  const dd=mi&&isFinite(dist)?dist*0.621371:dist;
+  let pace=r.pace;if(r.paceAuto&&dd>0&&tsec>0){pace=mmss(tsec/dd);if(S.run.pace!==pace){S.run.pace=pace;const pi=$('paceIn');if(document.activeElement!==pi)pi.value=pace}}
+  const unit=mi?L.mi:L.km;
+  const all=[
+    {k:'dist',label:L.dist,val:isFinite(dd)?dd.toFixed(2):'',unit},
+    {k:'pace',label:L.pace,val:String(pace).trim(),unit:'/'+unit},
+    {k:'time',label:L.time,val:tsec>0?timeLabel(tsec,L):'',unit:''},
+    {k:'hr',label:L.hr,val:String(r.hr).trim(),unit:'BPM'},
+    {k:'cad',label:L.cad,val:String(r.cad).trim(),unit:'SPM'},
+    {k:'kcal',label:L.kcal,val:String(r.kcal).trim(),unit:L.kc},
+    {k:'elev',label:L.elev,val:String(r.elev).trim(),unit:L.m},
+    {k:'power',label:L.power,val:String(r.power).trim(),unit:'W'}
+  ];
+  const stats=all.filter(s=>S.show[s.k]&&s.val);
+  if(S.style.upper&&S.lang==='en')stats.forEach(s=>s.label=s.label.toUpperCase());
+  const m=S.route.mode;
+  const route=m==='preset'?PRESET:m==='drawn'?chaikin(chaikin(S.route.drawn)):m==='gpx'?S.route.gpx:[];
+  return{L,stats,route,
+    splits:String(r.splits).split(/[,\s]+/).map(parseT).filter(x=>x>0).slice(0,12),
+    hrs:String(r.hrSplits).split(/[,\s]+/).map(Number).filter(x=>x>0).slice(0,20),
+    unitLong:mi?L.miL:L.kmL,distVal:isFinite(dd)?dd.toFixed(2):'',pace,tsec};
+}
+
+// ---------- drawing primitives ----------
+let SC=1;
+const F=(w,px)=>`${w} ${Math.max(1,px).toFixed(1)}px "${S.font}", "Kanit", sans-serif`;
+function setShadow(ctx){const a=S.style.shadow/100;if(a>0){ctx.shadowColor=`rgba(0,0,0,${(.25+a*.45).toFixed(2)})`;ctx.shadowBlur=(4+a*26)*SC;ctx.shadowOffsetY=2*SC*a}else{ctx.shadowColor='transparent'}}
+function txt(ctx,str,x,y,size,weight,align,kind){
+  if(!str)return 0;ctx.font=F(weight,size);ctx.textAlign=align;const st=S.style;
+  if('letterSpacing' in ctx)ctx.letterSpacing='0px';
+  const w=ctx.measureText(str).width;
+  if(st.stroke&&kind!=='label'){ctx.save();ctx.lineJoin='round';ctx.lineWidth=st.strokeW*SC*(size/100+.5);ctx.strokeStyle=st.strokeColor;ctx.strokeText(str,x,y);ctx.restore()}
+  ctx.save();if(st.stroke&&kind!=='label')ctx.shadowColor='transparent';
+  if(kind==='label')ctx.globalAlpha*=.86;
+  if(kind==='val'&&st.grad){const sx=align==='center'?x-w/2:align==='right'?x-w:x;const g=ctx.createLinearGradient(sx,y-size*.8,sx+w,y);g.addColorStop(0,st.accent);g.addColorStop(1,st.accent2);ctx.fillStyle=g}
+  ctx.fillText(str,x,y);ctx.restore();return w;
+}
+function valW(ctx,val,unit,size){ctx.font=F(700,size);let w=ctx.measureText(val).width;if(unit){ctx.font=F(600,size*.42);w+=ctx.measureText(unit).width+size*.1}return w}
+function drawVal(ctx,x,y,val,unit,size,align){
+  const tot=valW(ctx,val,unit,size);let sx=align==='center'?x-tot/2:align==='right'?x-tot:x;
+  const w1=txt(ctx,val,sx,y,size,700,'left','val');
+  if(unit)txt(ctx,unit,sx+w1+size*.1,y,size*.42,600,'left','val');
+}
+function label(ctx,str,x,y,size,align){txt(ctx,str,x,y,size,500,align,'label')}
+function rrect(ctx,x,y,w,h,r){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+
+// Icons: each drawn in local units 50 tall; w = local width
+const SHOE_U=new Path2D('M8 69 L10 46 C10 38 15 34 22 35 L29 39 C35 45 42 45 46 40 L52 32 C55 29 60 30 61 34 L67 45 C75 50 88 52 94 60 C97 64 96 68 92 69 Z');
+const SHOE_S=new Path2D('M6 71 L94 71 C99 72 99 78 93 80 L13 80 C8 80 5 76 6 71 Z');
+const FLAME_O=new Path2D('M20 0 C24 10 36 18 36 32 C36 43 29 50 20 50 C11 50 4 43 4 33 C4 25 9 20 12 14 C13 20 15 23 18 24 C17 15 17 8 20 0 Z');
+const FLAME_I=new Path2D('M20 24 C22 30 28 33 28 40 C28 46 24 50 20 50 C16 50 12 46 12 41 C12 36 16 33 17 29 C18 32 19 33 20 33 C19 30 19 27 20 24 Z');
+const BOLT=new Path2D('M24 0 L5 29 L18 29 L12 50 L35 18 L21 18 L29 0 Z');
+const ICONS={
+  shoe:{w:124,ox:26,oy:30,draw(ctx,st){ctx.lineCap='round';ctx.strokeStyle=st.accent;ctx.lineWidth=4.2;[[-24,44,-6],[-26,54,-4],[-18,62,-2]].forEach(([a,y,b])=>{ctx.beginPath();ctx.moveTo(a,y);ctx.lineTo(b,y);ctx.stroke()});
+    ctx.fillStyle=st.text;ctx.fill(SHOE_U);ctx.shadowColor='transparent';ctx.fillStyle=st.accent;ctx.fill(SHOE_S);
+    ctx.lineWidth=3;[[53,40,59,37],[57,46,63,43],[61,52,67,49]].forEach(([a,b,c,e])=>{ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c,e);ctx.stroke()});
+    ctx.lineWidth=2.6;ctx.beginPath();ctx.moveTo(20,58);ctx.quadraticCurveTo(45,64,74,56);ctx.stroke()}},
+  flame:{w:40,ox:0,oy:0,draw(ctx,st){ctx.fillStyle=st.accent;ctx.fill(FLAME_O);ctx.shadowColor='transparent';ctx.fillStyle=st.accent2;ctx.fill(FLAME_I)}},
+  bolt:{w:40,ox:0,oy:0,draw(ctx,st){ctx.fillStyle=st.accent;ctx.fill(BOLT);ctx.shadowColor='transparent';ctx.lineWidth=1.6;ctx.strokeStyle=st.text;ctx.lineJoin='round';ctx.stroke(BOLT)}},
+  medal:{w:40,ox:0,oy:0,draw(ctx,st){ctx.fillStyle=st.accent2;[[8,0,18,0,24,18,14,18],[32,0,22,0,16,18,26,18]].forEach(p=>{ctx.beginPath();ctx.moveTo(p[0],p[1]);for(let i=2;i<8;i+=2)ctx.lineTo(p[i],p[i+1]);ctx.closePath();ctx.fill()});
+    ctx.beginPath();ctx.arc(20,34,15.5,0,7);ctx.fillStyle=st.accent;ctx.fill();ctx.shadowColor='transparent';ctx.beginPath();ctx.arc(20,34,10,0,7);ctx.lineWidth=2.4;ctx.strokeStyle=st.text;ctx.stroke();
+    ctx.beginPath();for(let i=0;i<10;i++){const r=i%2?2.6:6,a=-Math.PI/2+i*Math.PI/5;ctx.lineTo(20+r*Math.cos(a),34+r*Math.sin(a))}ctx.closePath();ctx.fillStyle=st.text;ctx.fill()}},
+  watch:{w:40,ox:0,oy:0,draw(ctx,st){ctx.fillStyle=st.accent;rrect(ctx,15,0,10,6,2);ctx.fill();ctx.lineWidth=4.5;ctx.strokeStyle=st.text;ctx.beginPath();ctx.arc(20,29,17.5,0,7);ctx.stroke();ctx.shadowColor='transparent';
+    ctx.lineCap='round';ctx.strokeStyle=st.accent;ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(20,29);ctx.lineTo(20,17);ctx.stroke();ctx.beginPath();ctx.moveTo(20,29);ctx.lineTo(28,33);ctx.stroke();ctx.beginPath();ctx.arc(20,29,2.6,0,7);ctx.fillStyle=st.accent;ctx.fill()}}
+};
+function iconW(h){const ic=ICONS[S.icon];return ic?ic.w*h/50:0}
+function drawIcon(ctx,x,top,h,align){
+  const ic=ICONS[S.icon];if(!ic)return;const k=h/50,w=ic.w*k;
+  const left=align==='center'?x-w/2:align==='right'?x-w:x;
+  ctx.save();ctx.translate(left+ic.ox*k,top-ic.oy*k);ctx.scale(k,k);setShadowLocal(ctx,k);ic.draw(ctx,S.style);ctx.restore();
+}
+function setShadowLocal(ctx,k){/* shadow blur is in device px, unaffected by scale */setShadow(ctx)}
+
+function drawRoute(ctx,pts,bx,by,bw,bh,align){
+  if(pts.length<2)return;const R=S.route;const sz=R.size/100;
+  const cx=bx+bw/2,cy=by+bh/2;bw*=sz;bh*=sz;bx=cx-bw/2;by=cy-bh/2;
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
+  pts.forEach(([x,y])=>{x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)});
+  const pw=Math.max(x1-x0,1e-9),ph=Math.max(y1-y0,1e-9),k=Math.min(bw/pw,bh/ph),dw=pw*k,dh=ph*k;
+  const ox=align==='left'?bx:align==='right'?bx+bw-dw:bx+(bw-dw)/2,oy=by+(bh-dh)/2;
+  const P=([x,y])=>[ox+(x-x0)*k,oy+(y-y0)*k];const st=S.style,lw=R.width*SC;
+  const path=()=>{ctx.beginPath();pts.forEach((p,i)=>{const[x,y]=P(p);i?ctx.lineTo(x,y):ctx.moveTo(x,y)})};
+  ctx.save();ctx.lineJoin='round';ctx.lineCap='round';setShadow(ctx);
+  if(R.style==='glow'){ctx.shadowColor=st.accent;ctx.shadowBlur=lw*3;ctx.shadowOffsetY=0;ctx.strokeStyle=st.accent;ctx.lineWidth=lw;path();ctx.stroke();ctx.shadowBlur=lw*1.2;ctx.strokeStyle=st.accent2;ctx.lineWidth=lw*.4;path();ctx.stroke()}
+  else if(R.style==='grad'){const a=P(pts[0]),b=P(pts[pts.length-1]);const g=ctx.createLinearGradient(ox,oy,ox+dw,oy+dh);g.addColorStop(0,st.accent);g.addColorStop(1,st.accent2);ctx.strokeStyle=g;ctx.lineWidth=lw;path();ctx.stroke()}
+  else if(R.style==='dash'){ctx.setLineDash([lw*1.6,lw*1.4]);ctx.strokeStyle=st.accent;ctx.lineWidth=lw;path();ctx.stroke()}
+  else if(R.style==='double'){ctx.strokeStyle=st.text;ctx.lineWidth=lw*1.9;path();ctx.stroke();ctx.shadowColor='transparent';ctx.strokeStyle=st.accent;ctx.lineWidth=lw;path();ctx.stroke()}
+  else if(R.style==='dots'){ctx.fillStyle=st.accent;let acc=0,prev=P(pts[0]);const gap=lw*1.9;ctx.beginPath();ctx.arc(prev[0],prev[1],lw*.55,0,7);ctx.fill();
+    for(let i=1;i<pts.length;i++){const c=P(pts[i]);let dx=c[0]-prev[0],dy=c[1]-prev[1],dl=Math.hypot(dx,dy);while(acc+dl>=gap){const t=(gap-acc)/dl;const q=[prev[0]+dx*t,prev[1]+dy*t];ctx.beginPath();ctx.arc(q[0],q[1],lw*.55,0,7);ctx.fill();prev=q;dx=c[0]-prev[0];dy=c[1]-prev[1];dl=Math.hypot(dx,dy);acc=0}acc+=dl;prev=c}}
+  else{ctx.strokeStyle=st.accent;ctx.lineWidth=lw;path();ctx.stroke()}
+  if(R.dots){ctx.setLineDash([]);ctx.shadowColor='transparent';[[pts[0],'#2BD46B'],[pts[pts.length-1],'#FF3B30']].forEach(([p,c])=>{const[x,y]=P(p);ctx.beginPath();ctx.arc(x,y,lw*1.15,0,7);ctx.fillStyle=c;ctx.fill();ctx.lineWidth=lw*.4;ctx.strokeStyle='#fff';ctx.stroke()})}
+  ctx.restore();
+}
+function drawHrChart(ctx,hrs,x,y,w,h,L){
+  label(ctx,L.hrChart,x,y+28*SC,28*SC,'left');
+  const top=y+60*SC,ph=h-100*SC;if(hrs.length<2)return;
+  const lo=Math.min(...hrs)-4,hi=Math.max(...hrs)+4,st=S.style;
+  const P=(v,i)=>[x+20*SC+i*(w-40*SC)/(hrs.length-1),top+ph-(v-lo)/(hi-lo)*ph];
+  ctx.save();setShadow(ctx);
+  const g=ctx.createLinearGradient(0,top,0,top+ph);g.addColorStop(0,hexA(st.accent,.45));g.addColorStop(1,hexA(st.accent,0));
+  ctx.beginPath();hrs.forEach((v,i)=>{const[a,b]=P(v,i);i?ctx.lineTo(a,b):ctx.moveTo(a,b)});ctx.lineTo(...[P(hrs[hrs.length-1],hrs.length-1)[0],top+ph]);ctx.lineTo(P(hrs[0],0)[0],top+ph);ctx.closePath();
+  ctx.save();ctx.shadowColor='transparent';ctx.fillStyle=g;ctx.fill();ctx.restore();
+  ctx.strokeStyle=st.accent;ctx.lineWidth=6*SC;ctx.lineJoin='round';ctx.beginPath();hrs.forEach((v,i)=>{const[a,b]=P(v,i);i?ctx.lineTo(a,b):ctx.moveTo(a,b)});ctx.stroke();
+  const mx=hrs.indexOf(Math.max(...hrs));
+  hrs.forEach((v,i)=>{const[a,b]=P(v,i);ctx.beginPath();ctx.arc(a,b,(i===mx?9:6)*SC,0,7);ctx.fillStyle=i===mx?st.accent2:st.text;ctx.fill();
+    if(hrs.length<=10)txt(ctx,String(v),a,b-18*SC,24*SC,600,'center','plain')});
+  ctx.restore();
+}
+function drawSplitBars(ctx,sp,x,y,w,L){
+  label(ctx,L.splits,x,y+28*SC,28*SC,'left');y+=60*SC;
+  const fast=Math.min(...sp),maxW=w-210*SC,st=S.style;
+  sp.forEach((v,i)=>{const ry=y+i*56*SC;txt(ctx,String(i+1),x,ry+30*SC,30*SC,600,'left','plain');
+    const bw=Math.max(maxW*fast/v,40*SC);ctx.save();setShadow(ctx);ctx.fillStyle=v===fast?st.accent2:st.accent;rrect(ctx,x+56*SC,ry+6*SC,bw,28*SC,14*SC);ctx.fill();ctx.restore();
+    txt(ctx,mmss(v),x+56*SC+bw+18*SC,ry+31*SC,30*SC,600,'left','plain')});
+}
+
+// ---------- panel ----------
+let BGSRC=null; // canvas with the filtered background, when composing with background
+function drawPanel(ctx,x,y,w,h){
+  const st=S.style;if(st.panel==='none')return;const pad=46*SC,r=st.radius*SC;
+  const X=x-pad,Y=y-pad,Wd=w+pad*2,Hd=h+pad*2;
+  ctx.save();ctx.shadowColor='transparent';
+  if(st.panel==='outline'){rrect(ctx,X,Y,Wd,Hd,r);ctx.lineWidth=5*SC;ctx.strokeStyle=hexA(st.accent,Math.max(.3,st.panelAlpha/100));ctx.stroke()}
+  else{
+    if(st.panel==='glass'&&BGSRC&&PANEL_BLUR){PANEL_BLUR(ctx,X,Y,Wd,Hd,r)}
+    rrect(ctx,X,Y,Wd,Hd,r);ctx.fillStyle=hexA(st.panelColor,st.panelAlpha/100);ctx.fill();
+    if(st.panel==='glass'){ctx.lineWidth=2*SC;ctx.strokeStyle='rgba(255,255,255,.35)';ctx.stroke()}
+  }
+  ctx.restore();
+}
+let PANEL_BLUR=null;
+
+// ---------- layout ----------
+function placeY(W,H,bh){const m=H*(H>W*1.5?.12:.08);return S.pos==='top'?m:S.pos==='bottom'?H-bh-m:(H-bh)/2}
+function stackRows(ctx,W,H,rows,box){
+  const bh=rows.reduce((a,r)=>a+r.h,0);let y=placeY(W,H,bh);drawPanel(ctx,box.x,y,box.w,bh);
+  rows.forEach(r=>{r.draw(y);y+=r.h});
+}
+function common(d,align,x,cw){
+  const top={},s=SC,L=d.L;
+  top.icon=S.icon!=='none'?{h:(align==='center'?150:125)*s,draw:y=>drawIcon(CTX,x,y,(align==='center'?105:90)*s,align)}:null;
+  top.meta=S.show.meta?{h:130*s,draw:y=>{txt(CTX,S.run.title,x,y+46*s,46*s,600,align,'plain');label(CTX,[S.run.place,S.run.date].filter(Boolean).join('  ·  '),x,y+92*s,28*s,align)}}:null;
+  top.caption=S.caption?{h:76*s,draw:y=>txt(CTX,S.caption,x,y+46*s,40*s,500,align,'plain')}:null;
+  top.footer=S.footer?{h:72*s,draw:y=>{CTX.save();CTX.font=F(700,32*s);const sp=7*s;if('letterSpacing' in CTX){CTX.letterSpacing=sp+'px'}CTX.textAlign=align;CTX.fillStyle=S.style.text;setShadow(CTX);CTX.fillText(S.footer.toUpperCase(),align==='center'?x+sp/2:x,y+44*s);CTX.restore()}}:null;
+  const hl=align==='center'?x-cw/2:x;
+  top.hr=S.show.hrChart&&d.hrs.length>1?{h:250*s,draw:y=>drawHrChart(CTX,d.hrs,hl,y,cw,250*s,L)}:null;
+  top.splits=S.show.splits&&d.splits.length?{h:(70+d.splits.length*56)*s,draw:y=>drawSplitBars(CTX,d.splits,hl,y,cw,L)}:null;
+  return top;
+}
+let CTX=null;
+const TPL={
+  classic(W,H,d){
+    const s=SC,cx=W/2,cw=Math.min(760*s,W-140*s),c=common(d,'center',cx,cw);const hasR=d.route.length>1;
+    const rows=[c.icon,c.meta,
+      ...d.stats.map(t=>({h:196*s,draw:y=>{label(CTX,t.label,cx,y+32*s,32*s,'center');drawVal(CTX,cx,y+140*s,t.val,t.unit,104*s,'center')}})),
+      hasR?{h:350*s,draw:y=>drawRoute(CTX,d.route,cx-280*s,y+10*s,560*s,310*s,'center')}:null,
+      c.hr,c.caption,c.footer].filter(Boolean);
+    stackRows(CTX,W,H,rows,{x:cx-cw/2,w:cw});
+  },
+  hero(W,H,d){
+    const s=SC,cx=W/2,cw=Math.min(860*s,W-140*s),c=common(d,'center',cx,cw);const hasR=d.route.length>1;
+    const main=d.stats.find(t=>t.k==='dist')||d.stats[0];const rest=d.stats.filter(t=>t!==main).slice(0,3);
+    const rows=[c.icon,c.meta,
+      main?{h:420*s,draw:y=>{const v=main.k==='dist'?main.val:main.val;CTX.save();CTX.font=F(700,300*s);let size=300*s;const w=CTX.measureText(v).width;if(w>cw)size*=cw/w;CTX.restore();
+        txt(CTX,v,cx,y+size*.92,size,700,'center','val');label(CTX,main.k==='dist'?d.unitLong:(main.label+(main.unit?' · '+main.unit:'')),cx,y+size*.92+70*s,44*s,'center')}}:null,
+      rest.length?{h:180*s,draw:y=>{const n=rest.length,colW=cw/n;rest.forEach((t,i)=>{const x=cx-cw/2+colW*(i+.5);label(CTX,t.label,x,y+34*s,28*s,'center');drawVal(CTX,x,y+112*s,t.val,t.unit,68*s,'center');
+        if(i){CTX.save();CTX.globalAlpha=.45;CTX.fillStyle=S.style.text;CTX.fillRect(cx-cw/2+colW*i-1.5*s,y+8*s,3*s,120*s);CTX.restore()}})}}:null,
+      hasR?{h:330*s,draw:y=>drawRoute(CTX,d.route,cx-260*s,y+20*s,520*s,290*s,'center')}:null,
+      c.hr,c.splits,c.caption,c.footer].filter(Boolean);
+    stackRows(CTX,W,H,rows,{x:cx-cw/2,w:cw});
+  },
+  grid(W,H,d){
+    const s=SC,cw=Math.min(900*s,W-140*s),x0=(W-cw)/2,c=common(d,'left',x0,cw);const hasR=d.route.length>1;
+    const[hero,...rest]=d.stats;const pairs=[];for(let i=0;i<rest.length;i+=2)pairs.push(rest.slice(i,i+2));
+    const rows=[c.icon,c.meta,
+      hero?{h:260*s,draw:y=>{if(hasR)drawRoute(CTX,d.route,x0+cw-250*s,y+8*s,250*s,210*s,'right');label(CTX,hero.label,x0,y+36*s,34*s,'left');drawVal(CTX,x0,y+212*s,hero.val,hero.unit,180*s,'left')}}:
+        hasR?{h:240*s,draw:y=>drawRoute(CTX,d.route,x0,y,cw,220*s,'left')}:null,
+      pairs.length?{h:14*s,draw:y=>{CTX.save();CTX.globalAlpha=.5;CTX.fillStyle=S.style.text;CTX.fillRect(x0,y,cw,3*s);CTX.restore()}}:null,
+      ...pairs.map(p=>({h:150*s,draw:y=>p.forEach((t,i)=>{const x=x0+i*cw/2;label(CTX,t.label,x,y+42*s,30*s,'left');drawVal(CTX,x,y+122*s,t.val,t.unit,78*s,'left')})})),
+      c.hr,c.splits,c.caption,c.footer].filter(Boolean);
+    stackRows(CTX,W,H,rows,{x:x0,w:cw});
+  },
+  splits(W,H,d){
+    const s=SC,cw=Math.min(900*s,W-140*s),x0=(W-cw)/2,c=common(d,'left',x0,cw);const hasR=d.route.length>1;
+    const[hero,...rest0]=d.stats;const rest=rest0.slice(0,3);
+    const rows=[c.icon,c.meta,
+      hero?{h:236*s,draw:y=>{if(hasR)drawRoute(CTX,d.route,x0+cw-230*s,y+6*s,230*s,200*s,'right');label(CTX,hero.label,x0,y+34*s,32*s,'left');drawVal(CTX,x0,y+196*s,hero.val,hero.unit,165*s,'left')}}:null,
+      rest.length?{h:150*s,draw:y=>rest.forEach((t,i)=>{const x=x0+i*cw/3;label(CTX,t.label,x,y+34*s,28*s,'left');drawVal(CTX,x,y+108*s,t.val,t.unit,66*s,'left')})}:null,
+      d.splits.length?{h:(70+d.splits.length*56)*s,draw:y=>drawSplitBars(CTX,d.splits,x0,y,cw,d.L)}:null,
+      c.hr,c.caption,c.footer].filter(Boolean);
+    stackRows(CTX,W,H,rows,{x:x0,w:cw});
+  },
+  bar(W,H,d){
+    const s=SC,cw=W-130*s,x0=65*s,hasR=d.route.length>1,st=d.stats.slice(0,4);
+    const rows=[];
+    if(S.show.meta)rows.push({h:96*s,draw:y=>{txt(CTX,S.run.title,x0,y+42*s,42*s,600,'left','plain');label(CTX,[S.run.place,S.run.date].filter(Boolean).join('  ·  '),x0+cw,y+42*s,26*s,'right')}});
+    if(S.icon!=='none'||hasR)rows.push({h:150*s,draw:y=>{let x=x0;
+      if(S.icon!=='none'){drawIcon(CTX,x,y+20*s,96*s,'left');x+=iconW(96*s)+50*s}
+      if(hasR)drawRoute(CTX,d.route,x,y,260*s,130*s,'left')}});
+    if(st.length)rows.push({h:190*s,draw:y=>{const n=st.length,colW=cw/n;
+      st.forEach((t,i)=>{const cx=x0+colW*i;label(CTX,t.label,cx,y+40*s,30*s,'left');
+        let size=92*s;const w=valW(CTX,t.val,t.unit,size);if(w>colW-24*s)size*=(colW-24*s)/w;drawVal(CTX,cx,y+150*s,t.val,t.unit,size,'left');
+        if(i){CTX.save();CTX.globalAlpha=.4;CTX.fillStyle=S.style.text;CTX.shadowColor='transparent';CTX.fillRect(cx-14*s,y+14*s,3*s,150*s);CTX.restore()}})}});
+    if(S.caption||S.footer)rows.push({h:70*s,draw:y=>{if(S.caption)txt(CTX,S.caption,x0,y+44*s,34*s,500,'left','plain');if(S.footer){CTX.save();CTX.font=F(700,28*s);if('letterSpacing' in CTX)CTX.letterSpacing=6*s+'px';CTX.textAlign='right';CTX.fillStyle=S.style.text;setShadow(CTX);CTX.fillText(S.footer.toUpperCase(),x0+cw,y+44*s);CTX.restore()}}});
+    stackRows(CTX,W,H,rows,{x:x0,w:cw});
+  },
+  badge(W,H,d){
+    const s=SC,cx=W/2,D=Math.min(660*s,W-160*s),c=common(d,'center',cx,D);const main=d.stats.find(t=>t.k==='dist')||d.stats[0];const rest=d.stats.filter(t=>t!==main).slice(0,2);
+    const rows=[c.meta,{h:D+50*s,draw:y=>{
+      const cy=y+D/2,R=D/2,st=S.style;CTX.save();setShadow(CTX);
+      CTX.beginPath();CTX.arc(cx,cy,R,0,7);CTX.lineWidth=16*s;CTX.strokeStyle=st.accent;CTX.stroke();
+      CTX.beginPath();CTX.arc(cx,cy,R-26*s,0,7);CTX.lineWidth=3*s;CTX.strokeStyle=hexA(st.text,.7);CTX.stroke();
+      for(let i=0;i<60;i++){const a=i/60*Math.PI*2,r1=R-40*s,r2=R-(i%5?48:58)*s;CTX.beginPath();CTX.moveTo(cx+r1*Math.cos(a),cy+r1*Math.sin(a));CTX.lineTo(cx+r2*Math.cos(a),cy+r2*Math.sin(a));CTX.lineWidth=(i%5?2:4)*s;CTX.strokeStyle=hexA(st.text,.55);CTX.stroke()}
+      CTX.restore();
+      if(S.icon!=='none')drawIcon(CTX,cx,cy-R*.62,R*.24,'center');
+      if(main){let size=R*.55;const w=valW(CTX,main.val,'',size);if(w>R*1.4)size*=R*1.4/w;txt(CTX,main.val,cx,cy+size*.32,size,700,'center','val');label(CTX,main.k==='dist'?d.unitLong:main.label,cx,cy+size*.32+52*s,30*s,'center')}
+      if(rest.length)label(CTX,rest.map(t=>t.val+(t.unit?' '+t.unit:'')).join('  ·  '),cx,cy+R*.62,30*s,'center');
+    }},c.caption,c.footer].filter(Boolean);
+    stackRows(CTX,W,H,rows,{x:cx-D/2,w:D});
+  }
+};
+
+// ---------- background ----------
+let media=null,mediaKind=null;const bgCache={key:'',canvas:null};
+function filtered(W,H){
+  if(mediaKind!=='image'||!media)return null;const b=S.bg;const key=[W,H,b.zoom,b.x,b.y,b.filter,b.bright,b.contrast,b.sat,b.vignette,b.fadeBottom,media.src].join('|');
+  if(bgCache.key===key)return bgCache.canvas;
+  const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d',{willReadFrequently:true});
+  coverDraw(x,media,media.naturalWidth,media.naturalHeight,W,H);
+  pixelAdjust(x,W,H);overlays(x,W,H);bgCache.key=key;bgCache.canvas=c;return c;
+}
+function coverDraw(x,src,iw,ih,W,H){if(!iw||!ih)return;const b=S.bg,r=Math.max(W/iw,H/ih)*b.zoom/100,w=iw*r,h=ih*r;x.drawImage(src,(W-w)/2+(b.x/100)*Math.max(w-W,W*.3),(H-h)/2+(b.y/100)*Math.max(h-H,H*.3),w,h)}
+function pixelAdjust(x,W,H){
+  const b=S.bg;let br=b.bright,ct=b.contrast,sa=b.sat,warm=0,fade=0;
+  if(b.filter==='bw')sa=-100;if(b.filter==='warm')warm=18;if(b.filter==='cool')warm=-18;if(b.filter==='fade'){fade=1;ct-=12}if(b.filter==='punch'){ct+=22;sa+=40}
+  if(!br&&!ct&&!sa&&!warm&&!fade)return;
+  const im=x.getImageData(0,0,W,H),p=im.data,f=(259*(ct*2.55+255))/(255*(259-ct*2.55)),sf=1+sa/100,bb=br*1.6;
+  for(let i=0;i<p.length;i+=4){let r=p[i],g=p[i+1],bl=p[i+2];
+    r=f*(r-128)+128+bb;g=f*(g-128)+128+bb;bl=f*(bl-128)+128+bb;
+    const gr=.299*r+.587*g+.114*bl;r=gr+(r-gr)*sf;g=gr+(g-gr)*sf;bl=gr+(bl-gr)*sf;
+    r+=warm;bl-=warm;if(fade){r=r*.82+34;g=g*.82+30;bl=bl*.82+38}
+    p[i]=r;p[i+1]=g;p[i+2]=bl}
+  x.putImageData(im,0,0);
+}
+function overlays(x,W,H){
+  const b=S.bg;
+  if(b.vignette){const g=x.createRadialGradient(W/2,H/2,Math.min(W,H)*.3,W/2,H/2,Math.hypot(W,H)/2);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,`rgba(0,0,0,${b.vignette/100*.85})`);x.fillStyle=g;x.fillRect(0,0,W,H)}
+  if(b.fadeBottom){const g=x.createLinearGradient(0,H*.35,0,H);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,`rgba(0,0,0,${b.fadeBottom/100*.85})`);x.fillStyle=g;x.fillRect(0,0,W,H)}
+}
+function cssFilter(){const b=S.bg;let br=1+b.bright/100,ct=1+b.contrast/100,sa=1+b.sat/100,ex='';
+  if(b.filter==='bw')sa=0;if(b.filter==='warm')ex=' sepia(.25)';if(b.filter==='cool')ex=' hue-rotate(-12deg)';if(b.filter==='fade'){ct-=.15;ex=' brightness(1.05)'}if(b.filter==='punch'){ct+=.22;sa+=.4}
+  return `brightness(${br}) contrast(${ct}) saturate(${sa})${ex}`}
+
+// ---------- compose ----------
+function composite(ctx,W,H,mult,bgSource){
+  // bgSource: canvas/video drawn first (or null for transparent)
+  ctx.clearRect(0,0,W,H);
+  if(bgSource)ctx.drawImage(bgSource,0,0,W,H);
+  BGSRC=bgSource;
+  PANEL_BLUR=bgSource?(c,X,Y,w,h,r)=>{ // blur the real background inside the panel, in overlay space mapped through the transform
+    c.save();rrect(c,X,Y,w,h,r);c.clip();const m=c.getTransform().inverse();c.setTransform(1,0,0,1,0,0);
+    const small=document.createElement('canvas'),k=.06;small.width=Math.max(1,W*k|0);small.height=Math.max(1,H*k|0);small.getContext('2d').drawImage(bgSource,0,0,small.width,small.height);
+    const s2=document.createElement('canvas');s2.width=small.width*4;s2.height=small.height*4;const g2=s2.getContext('2d');g2.imageSmoothingQuality='high';g2.drawImage(small,0,0,s2.width,s2.height);
+    c.imageSmoothingQuality='high';c.drawImage(s2,0,0,W,H);c.restore();
+  }:null;
+  // overlay drawn straight onto target with transform so the glass blur can sample the background
+  ctx.save();ctx.translate(W/2+S.ox*W,H/2+S.oy*H);ctx.rotate(S.rot*Math.PI/180);ctx.translate(-W/2,-H/2);
+  const prev=CTX;CTX=ctx;SC=Math.min(W/1080,H/1350)*S.scale/100*mult;ctx.textBaseline='alphabetic';ctx.fillStyle=S.style.text;
+  const d=derive();(TPL[S.tpl]||TPL.classic)(W,H,d);CTX=prev;ctx.restore();
+  BGSRC=null;PANEL_BLUR=null;
+}
+
+// ---------- preview ----------
+const view=$('view'),bgc=$('bgc'),bgv=$('bgv'),frame=$('frame');let raf=0;
+function schedule(){if(!raf)raf=requestAnimationFrame(()=>{raf=0;draw()})}
+function draw(){
+  const[W,H]=dims();
+  for(const c of[view,bgc])if(c.width!==W||c.height!==H){c.width=W;c.height=H}
+  frame.style.aspectRatio=`${W}/${H}`;const narrow=matchMedia('(max-width:860px)').matches;
+  frame.style.width=`min(100%, calc(${narrow?44:70}vh * ${W/H}))`;
+  const bg=filtered(W,H);const bx=bgc.getContext('2d');bx.clearRect(0,0,W,H);if(bg)bx.drawImage(bg,0,0);
+  bgv.style.filter=mediaKind==='video'?cssFilter():'';
+  bgv.style.transform=mediaKind==='video'?`translate(${S.bg.x/4}%,${S.bg.y/4}%) scale(${S.bg.zoom/100})`:'';
+  // preview: draw overlay with background for glass blur only on photo
+  const vx=view.getContext('2d');
+  const glass=bg&&S.style.panel==='glass';composite(vx,W,H,1,glass?bg:null);
+  bgc.style.visibility=glass?'hidden':''; // the view already holds the background when the glass panel samples it
+  document.querySelectorAll('[data-ratio]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ratio===S.ratio));
+  document.querySelectorAll('[data-out]').forEach(o=>{const v=getP(o.dataset.out);o.textContent=['scale','route.size','bg.zoom','style.panelAlpha','style.shadow'].includes(o.dataset.out)?v+'%':o.dataset.out==='rot'?v+'°':v});
+  drawPad();store.set('rs.state',S);
+}
+
+// ---------- bindings ----------
+function syncInputs(){
+  document.querySelectorAll('[data-k]').forEach(el=>{const v=getP(el.dataset.k);
+    if(el.type==='checkbox')el.checked=!!v;else if(el.type==='radio')el.checked=String(v)===el.value;else if(document.activeElement!==el)el.value=v??''});
+}
+document.addEventListener('input',e=>{const el=e.target;if(!el.dataset||!el.dataset.k)return;
+  let v=el.type==='checkbox'?el.checked:el.value;if(el.type==='range')v=+v;
+  if(el.type==='radio'&&!el.checked)return;
+  if(el.dataset.k==='run.pace')S.run.paceAuto=false,syncCheck('run.paceAuto');
+  setP(el.dataset.k,v);
+  if(el.dataset.k==='tpl')onTpl(v);
+  schedule();});
+document.addEventListener('change',e=>{if(e.target.dataset&&e.target.dataset.k&&e.target.type==='radio'){setP(e.target.dataset.k,e.target.value);if(e.target.dataset.k==='tpl')onTpl(e.target.value);schedule()}});
+function syncCheck(k){const el=document.querySelector(`[data-k="${k}"]`);if(el)el.checked=!!getP(k)}
+function onTpl(t){if(t==='bar'){S.pos='bottom';S.show.hr=true;}syncInputs()}
+
+document.querySelectorAll('[role=tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[role=tab]').forEach(x=>x.setAttribute('aria-selected',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.hidden=p.id!=='tab-'+b.dataset.tab);if(b.dataset.tab==='route')drawPad()});
+document.querySelectorAll('[data-ratio]').forEach(b=>b.onclick=()=>{S.ratio=b.dataset.ratio;bgCache.key='';schedule()});
+$('resetPos').onclick=()=>{S.ox=0;S.oy=0;S.rot=0;S.scale=100;syncInputs();schedule()};
+
+// drag + pinch on preview
+const ptrs=new Map();let start=null,lastTap=0;
+view.addEventListener('pointerdown',e=>{view.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);start=snap();
+  const now=Date.now();if(now-lastTap<300&&ptrs.size===1){S.ox=0;S.oy=0;syncInputs();schedule()}lastTap=now});
+view.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;ptrs.set(e.pointerId,[e.clientX,e.clientY]);const r=view.getBoundingClientRect();
+  if(ptrs.size===1&&start.pts.length===1){const[p]=[...ptrs.values()];S.ox=clamp(start.ox+(p[0]-start.pts[0][0])/r.width,-.6,.6);S.oy=clamp(start.oy+(p[1]-start.pts[0][1])/r.height,-.6,.6)}
+  else if(ptrs.size===2&&start.pts.length===2){const[a,b]=[...ptrs.values()];const d0=Math.hypot(start.pts[0][0]-start.pts[1][0],start.pts[0][1]-start.pts[1][1]),d1=Math.hypot(a[0]-b[0],a[1]-b[1]);
+    S.scale=Math.round(clamp(start.scale*d1/Math.max(d0,1),40,160));
+    const a0=Math.atan2(start.pts[1][1]-start.pts[0][1],start.pts[1][0]-start.pts[0][0]),a1=Math.atan2(b[1]-a[1],b[0]-a[0]);S.rot=Math.round(clamp(start.rot+(a1-a0)*180/Math.PI,-30,30))}
+  syncInputs();schedule()});
+const up=e=>{ptrs.delete(e.pointerId);start=snap()};view.addEventListener('pointerup',up);view.addEventListener('pointercancel',up);
+view.addEventListener('wheel',e=>{e.preventDefault();S.scale=Math.round(clamp(S.scale-e.deltaY*.05,40,160));syncInputs();schedule()},{passive:false});
+function snap(){return{pts:[...ptrs.values()].map(p=>[...p]),ox:S.ox,oy:S.oy,scale:S.scale,rot:S.rot}}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+// route pad
+const pad=$('pad'),pctx=pad.getContext('2d');let drawing=false;
+function drawPad(){
+  pctx.clearRect(0,0,600,600);const m=S.route.mode;const pts=m==='preset'?PRESET:m==='drawn'?S.route.drawn:m==='gpx'?S.route.gpx:[];
+  if(pts.length<2){pctx.fillStyle=getComputedStyle(document.body).color;pctx.globalAlpha=.45;pctx.font='500 30px "IBM Plex Sans Thai",sans-serif';pctx.textAlign='center';pctx.fillText(m==='gpx'?'ยังไม่มีไฟล์ GPX':'ลากเพื่อวาดเส้นทาง',300,310);pctx.globalAlpha=1;return}
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;pts.forEach(([x,y])=>{x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)});
+  const fit=m!=='drawn',k=fit?Math.min(500/Math.max(x1-x0,1e-9),500/Math.max(y1-y0,1e-9)):1,ox=fit?300-(x0+x1)/2*k:0,oy=fit?300-(y0+y1)/2*k:0;
+  pctx.lineWidth=10;pctx.lineCap=pctx.lineJoin='round';pctx.strokeStyle=S.style.accent;
+  pctx.beginPath();pts.forEach(([x,y],i)=>i?pctx.lineTo(ox+x*k,oy+y*k):pctx.moveTo(ox+x*k,oy+y*k));pctx.stroke();
+}
+function padPt(e){const r=pad.getBoundingClientRect();return[(e.clientX-r.left)/r.width*600,(e.clientY-r.top)/r.height*600]}
+pad.addEventListener('pointerdown',e=>{drawing=true;pad.setPointerCapture(e.pointerId);S.route.drawn=[padPt(e)];S.route.mode='drawn';syncInputs();schedule()});
+pad.addEventListener('pointermove',e=>{if(!drawing)return;const p=padPt(e),l=S.route.drawn[S.route.drawn.length-1];if(Math.hypot(p[0]-l[0],p[1]-l[1])>6){S.route.drawn.push(p);schedule()}});
+pad.addEventListener('pointerup',()=>{drawing=false;schedule()});
+$('clearPad').onclick=()=>{S.route.drawn=[];S.route.mode='drawn';syncInputs();schedule()};
+
+// GPX import
+$('gpxIn').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{
+  const xml=new DOMParser().parseFromString(await f.text(),'application/xml');
+  const pts=[...xml.querySelectorAll('trkpt,rtept')].map(n=>[+n.getAttribute('lat'),+n.getAttribute('lon')]).filter(p=>isFinite(p[0])&&isFinite(p[1]));
+  if(pts.length<2)throw 0;
+  const lat0=pts[0][0]*Math.PI/180;let dist=0;
+  for(let i=1;i<pts.length;i++){const[a,b]=[pts[i-1],pts[i]];const dl=(b[0]-a[0])*Math.PI/180,dn=(b[1]-a[1])*Math.PI/180;const h=Math.sin(dl/2)**2+Math.cos(a[0]*Math.PI/180)*Math.cos(b[0]*Math.PI/180)*Math.sin(dn/2)**2;dist+=12742*Math.asin(Math.sqrt(h))}
+  let proj=pts.map(([la,lo])=>[lo*Math.cos(lat0)*1e4,-la*1e4]);
+  const step=Math.max(1,Math.floor(proj.length/800));proj=proj.filter((_,i)=>i%step===0||i===proj.length-1);
+  S.route.gpx=proj;S.route.mode='gpx';S.run.dist=dist.toFixed(2);
+  const times=[...xml.querySelectorAll('trkpt time')].map(t=>Date.parse(t.textContent)).filter(isFinite);
+  if(times.length>1&&!S.run.time){S.run.time=new Date(times[times.length-1]-times[0]).toISOString().substr(11,8)}
+  syncInputs();schedule();toast(`นำเข้าเส้นทางแล้ว ${dist.toFixed(2)} กม.`);
+}catch(err){toast('อ่านไฟล์ GPX ไม่ได้ ลองไฟล์อื่น')}e.target.value=''};
+
+// media
+$('mediaIn').onchange=e=>{const f=e.target.files[0];if(!f)return;const url=URL.createObjectURL(f);
+  if(f.type.startsWith('video')){media=bgv;mediaKind='video';bgv.src=url;bgv.hidden=false;bgv.play().catch(()=>{});}
+  else{const im=new Image();im.onload=()=>{media=im;mediaKind='image';bgv.hidden=true;bgv.removeAttribute('src');bgCache.key='';schedule()};im.src=url}
+  $('clearMedia').hidden=false;$('exportType').value=f.type.startsWith('video')?'video':'jpg';schedule();e.target.value=''};
+$('clearMedia').onclick=()=>{media=null;mediaKind=null;bgv.pause();bgv.hidden=true;bgv.removeAttribute('src');bgCache.key='';$('clearMedia').hidden=true;$('exportType').value='png';schedule()};
+
+// presets & saved styles
+const STYLE_KEYS=['style','tpl','icon','font','route.style','route.width','route.dots'];
+function renderPresets(){const g=$('presetGrid');g.innerHTML='';PRESETS.forEach(p=>{const b=document.createElement('button');b.className='preset';b.type='button';
+  b.innerHTML=`<i><b style="background:${p.s.text}"></b><b style="background:${p.s.accent}"></b><b style="background:${p.s.accent2}"></b></i>`;
+  b.append(document.createTextNode(p.n));b.onclick=()=>{Object.assign(S.style,clone(DEF.style),p.s);syncInputs();schedule();toast('ใช้ธีม '+p.n)};g.append(b)})}
+function snapStyle(){return{style:clone(S.style),tpl:S.tpl,icon:S.icon,font:S.font,route:{style:S.route.style,width:S.route.width,dots:S.route.dots}}}
+function renderStyles(){const list=store.get('rs.styles',[]),el=$('styleList');el.innerHTML='';if(!list.length){el.innerHTML='<p class="empty">ยังไม่มีสไตล์ที่บันทึก ตั้งชื่อแล้วกดบันทึกสไตล์</p>';return}
+  list.forEach((it,i)=>{const r=document.createElement('div');r.className='item';const d=document.createElement('div');const b=document.createElement('b');b.textContent=it.name;const sm=document.createElement('small');sm.textContent=it.v.font+' · '+it.v.tpl;d.append(b,sm);
+    const u=document.createElement('button');u.textContent='ใช้';u.onclick=()=>{const v=it.v;Object.assign(S.style,v.style);S.tpl=v.tpl;S.icon=v.icon;S.font=v.font;Object.assign(S.route,v.route);syncInputs();ensureFont().then(schedule);toast('ใช้สไตล์ '+it.name)};
+    const x=document.createElement('button');x.textContent='ลบ';x.className='danger';x.onclick=()=>{list.splice(i,1);store.set('rs.styles',list);renderStyles()};r.append(d,u,x);el.append(r)})}
+$('saveStyle').onclick=()=>{const n=$('styleName').value.trim()||('สไตล์ '+new Date().toLocaleDateString('th-TH'));const list=store.get('rs.styles',[]);list.unshift({name:n,v:snapStyle()});store.set('rs.styles',list.slice(0,30));$('styleName').value='';renderStyles();toast('บันทึกสไตล์แล้ว')};
+
+// run history
+function renderRuns(){const list=store.get('rs.runs',[]),el=$('runList');el.innerHTML='';if(!list.length){el.innerHTML='<p class="empty">ยังไม่มีประวัติ กดปุ่มด้านบนเพื่อเก็บรอบนี้</p>';return}
+  list.forEach((it,i)=>{const r=document.createElement('div');r.className='item';const d=document.createElement('div');const b=document.createElement('b');b.textContent=`${it.run.dist} กม. · ${it.run.title}`;const sm=document.createElement('small');sm.textContent=`${it.run.date} · เพซ ${it.run.pace}`;d.append(b,sm);
+    const u=document.createElement('button');u.textContent='เปิด';u.onclick=()=>{Object.assign(S.run,it.run);if(it.route){S.route.mode=it.route.mode;S.route.drawn=it.route.drawn||[];S.route.gpx=it.route.gpx||[]}syncInputs();schedule();toast('เปิดรอบ '+it.run.date)};
+    const x=document.createElement('button');x.textContent='ลบ';x.className='danger';x.onclick=()=>{list.splice(i,1);store.set('rs.runs',list);renderRuns()};r.append(d,u,x);el.append(r)})}
+$('saveRun').onclick=()=>{const list=store.get('rs.runs',[]);list.unshift({run:clone(S.run),route:{mode:S.route.mode,drawn:S.route.drawn,gpx:S.route.gpx}});store.set('rs.runs',list.slice(0,60));renderRuns();toast('เก็บรอบนี้แล้ว')};
+$('resetAll').onclick=()=>{if($('resetAll').dataset.arm){S=clone(DEF);syncInputs();ensureFont().then(schedule);delete $('resetAll').dataset.arm;$('resetAll').textContent='ล้างค่าทั้งหมดกลับเป็นค่าเริ่มต้น';toast('กลับเป็นค่าเริ่มต้นแล้ว')}
+  else{$('resetAll').dataset.arm=1;$('resetAll').textContent='กดอีกครั้งเพื่อยืนยัน';setTimeout(()=>{delete $('resetAll').dataset.arm;$('resetAll').textContent='ล้างค่าทั้งหมดกลับเป็นค่าเริ่มต้น'},3000)}};
+
+// ---------- export ----------
+function toast(m){const t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2600)}
+let result=null;
+function fileName(ext){return `run-${String(S.run.dist).replace(/[^\d.]/g,'')}km-${Date.now().toString(36)}.${ext}`}
+async function exportStill(kind){
+  const mult=+S.res||1;const[W0,H0]=dims();const W=W0*mult,H=H0*mult;
+  const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  let bg=null;
+  if(kind==='jpg'){if(mediaKind==='image')bg=filtered(W,H);else if(mediaKind==='video'){const t=document.createElement('canvas');t.width=W;t.height=H;const tx=t.getContext('2d');tx.filter=cssFilter();coverDraw(tx,bgv,bgv.videoWidth,bgv.videoHeight,W,H);tx.filter='none';overlays(tx,W,H);bg=t}
+    else{const t=document.createElement('canvas');t.width=W;t.height=H;const tx=t.getContext('2d');tx.fillStyle='#000';tx.fillRect(0,0,W,H);bg=t}}
+  composite(x,W,H,mult,bg);
+  const blob=await new Promise(r=>c.toBlob(r,kind==='jpg'?'image/jpeg':'image/png',.93));
+  showResult(blob,fileName(kind==='jpg'?'jpg':'png'),'image');
+}
+async function exportVideo(){
+  if(mediaKind!=='video'){toast('เลือกวิดีโอในแท็บพื้นหลังก่อน');return}
+  if(!view.captureStream||!window.MediaRecorder){toast('เบราว์เซอร์นี้ยังสร้างวิดีโอไม่ได้ ใช้ PNG โปร่งใสวางในแอปตัดต่อแทน');return}
+  const[W,H]=dims();const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const types=['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm'];const mime=types.find(t=>MediaRecorder.isTypeSupported(t))||'';
+  const stream=c.captureStream(30);const rec=new MediaRecorder(stream,mime?{mimeType:mime,videoBitsPerSecond:9e6}:{});const chunks=[];rec.ondataavailable=e=>e.data.size&&chunks.push(e.data);
+  const ov=document.createElement('canvas');ov.width=W;ov.height=H;composite(ov.getContext('2d'),W,H,1,null);
+  openModal();$('resultBox').innerHTML='';$('prog').hidden=false;$('resultHint').textContent='กำลังสร้างวิดีโอ เปิดหน้านี้ค้างไว้จนเสร็จ';$('shareBtn').disabled=true;
+  const v=bgv;v.loop=false;v.currentTime=0;await new Promise(r=>v.onseeked=r);const dur=Math.min(v.duration||60,60);
+  const f=cssFilter();let stop=false;rec.start(250);await v.play();
+  await new Promise(res=>{const tick=()=>{if(stop)return;x.filter=f;coverDraw(x,v,v.videoWidth,v.videoHeight,W,H);x.filter='none';overlays(x,W,H);x.drawImage(ov,0,0);
+    $('prog').firstElementChild.style.width=(v.currentTime/dur*100)+'%';
+    if(v.ended||v.currentTime>=dur){stop=true;res();return}requestAnimationFrame(tick)};tick()});
+  v.pause();v.loop=true;await new Promise(r=>{rec.onstop=r;rec.stop()});v.play().catch(()=>{});
+  const ext=(rec.mimeType||mime).includes('mp4')?'mp4':'webm';$('prog').hidden=true;
+  showResult(new Blob(chunks,{type:rec.mimeType||mime}),fileName(ext),'video');
+}
+function openModal(){$('modal').hidden=false}
+function showResult(blob,name,kind){
+  result={blob,name};openModal();$('prog').hidden=true;$('shareBtn').disabled=false;
+  const url=URL.createObjectURL(blob);const box=$('resultBox');box.innerHTML='';
+  const el=document.createElement(kind==='video'?'video':'img');el.src=url;if(kind==='video'){el.controls=true;el.playsInline=true;el.muted=true}else el.alt='ภาพที่สร้าง';box.append(el);
+  $('resultHint').textContent=kind==='video'?'กดบันทึก/แชร์ แล้วเลือก "บันทึกวิดีโอ" (วิดีโอไม่มีเสียง ใส่เพลงต่อในแอปโซเชียลได้)':
+    'กดบันทึก/แชร์ แล้วเลือก "บันทึกภาพ" เพื่อเก็บลงคลังรูป หรือกดค้างที่รูปเพื่อบันทึก';
+}
+$('shareBtn').onclick=async()=>{if(!result)return;const{blob,name}=result;
+  // 1) inside a claude.ai artifact
+  try{if(window.claude?.use){const dl=await window.claude.use('downloads');if(dl){await dl.save({filename:name,data:blob});toast('บันทึกแล้ว');return}}}catch(e){if(e&&e.code==='declined'){toast('ยกเลิกการบันทึก');return}}
+  // 2) phone share sheet (iPhone: Save Image / Save Video)
+  const file=new File([blob],name,{type:blob.type});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file]});return}catch(e){if(e.name==='AbortError')return}}
+  // 3) plain download
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.append(a);a.click();a.remove();toast('ดาวน์โหลดแล้ว');
+};
+$('closeModal').onclick=()=>{$('modal').hidden=true};
+$('modal').onclick=e=>{if(e.target===$('modal'))$('modal').hidden=true};
+$('exportBtn').onclick=()=>{const k=$('exportType').value;if(k==='video')exportVideo();else exportStill(k)};
+
+// ---------- fonts ----------
+async function ensureFont(){try{await Promise.all([400,500,600,700].map(w=>document.fonts.load(`${w} 40px "${S.font}"`,'ระยะทาง 0123 กม.')))}catch(e){}}
+document.addEventListener('change',e=>{if(e.target.dataset?.k==='font')ensureFont().then(schedule)});
+
+// ---------- boot ----------
+renderPresets();renderStyles();renderRuns();syncInputs();draw();
+ensureFont().then(draw);document.fonts&&document.fonts.ready.then(draw);
+addEventListener('resize',schedule);
+if('serviceWorker' in navigator&&location.protocol==='https:'&&!/claude|anthropic/.test(location.hostname))navigator.serviceWorker.register('sw.js').catch(()=>{});
+})();
+</script>
+
+</body></html>
