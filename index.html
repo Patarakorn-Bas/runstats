@@ -265,6 +265,37 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
         <label class="f"><span>แคปชัน (ใส่อีโมจิได้)</span><input type="text" data-k="caption" placeholder="เช่น วิ่งเย็นสบายๆ 🔥"></label>
         <label class="f"><span>ข้อความท้าย / แบรนด์</span><input type="text" data-k="footer"></label>
       </fieldset>
+      <fieldset>
+        <legend>สภาพอากาศ</legend>
+        <label class="chip" style="justify-self:start"><input type="checkbox" data-k="wx.on"> แสดงสภาพอากาศบนสติกเกอร์</label>
+        <label class="f"><span>ขนาดแถบสภาพอากาศ <output data-out="wxSize"></output></span><input type="range" min="60" max="220" step="5" data-k="wxSize"></label>
+        <div class="row" style="grid-template-columns:minmax(0,1fr) auto">
+          <input type="text" id="wxCity" placeholder="ชื่อเมืองหรือจังหวัด เช่น กาญจนบุรี" aria-label="ชื่อเมือง">
+          <button type="button" id="wxFind">ค้นหา</button>
+        </div>
+        <div class="chips">
+          <button type="button" class="tb" id="wxGeo">ใช้ตำแหน่งปัจจุบัน</button>
+          <label class="chip"><input type="checkbox" data-k="wx.useTime"> ใช้วันเวลาที่ออกกำลังกาย</label>
+        </div>
+        <p class="hint" style="text-align:left" id="wxStatus">ดึงอุณหภูมิ ความชื้น ลม และ PM2.5 ย้อนหลังตามวันเวลาที่กรอกไว้ ฟรีจาก Open-Meteo หรือกรอกเองด้านล่าง</p>
+        <div class="row">
+          <label class="f"><span>สภาพอากาศ</span><select data-k="wx.cond"><option value="clear">แจ่มใส</option><option value="partly">มีเมฆบางส่วน</option><option value="cloudy">เมฆมาก</option><option value="rain">ฝนตก</option><option value="storm">พายุฝนฟ้าคะนอง</option><option value="fog">หมอก</option><option value="wind">ลมแรง</option><option value="night">กลางคืน</option></select></label>
+          <label class="f"><span>อุณหภูมิ °C</span><input class="num" type="text" inputmode="decimal" data-k="wx.temp"></label>
+          <label class="f"><span>รู้สึกเหมือน °C</span><input class="num" type="text" inputmode="decimal" data-k="wx.feels"></label>
+          <label class="f"><span>ความชื้น %</span><input class="num" type="text" inputmode="numeric" data-k="wx.hum"></label>
+          <label class="f"><span>ลม กม./ชม.</span><input class="num" type="text" inputmode="decimal" data-k="wx.wind"></label>
+          <label class="f"><span>PM2.5</span><input class="num" type="text" inputmode="numeric" data-k="wx.pm"></label>
+        </div>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" data-k="wxshow.icon"> ไอคอนอากาศ</label>
+          <label class="chip"><input type="checkbox" data-k="wxshow.temp"> อุณหภูมิ</label>
+          <label class="chip"><input type="checkbox" data-k="wxshow.cond"> คำบรรยาย</label>
+          <label class="chip"><input type="checkbox" data-k="wxshow.feels"> รู้สึกเหมือน</label>
+          <label class="chip"><input type="checkbox" data-k="wxshow.hum"> ความชื้น</label>
+          <label class="chip"><input type="checkbox" data-k="wxshow.wind"> ลม</label>
+          <label class="chip"><input type="checkbox" data-k="wxshow.pm"> PM2.5</label>
+        </div>
+      </fieldset>
       <fieldset class="run-only">
         <legend>สิ่งที่แสดง</legend>
         <div class="chips">
@@ -326,6 +357,7 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
       <fieldset>
         <legend>ไอคอน</legend>
         <div class="cards icons" id="iconGrid" role="radiogroup" aria-label="ไอคอน"></div>
+        <label class="f"><span>ขนาดไอคอน <output data-out="iconSize"></output></span><input type="range" min="50" max="300" step="5" data-k="iconSize"></label>
         <p class="hint" style="text-align:left">ไอคอนใช้สีตัวอักษร สีหลัก และสีรองจากแท็บสไตล์ เปลี่ยนสีแล้วไอคอนเปลี่ยนตาม</p>
       </fieldset>
       <fieldset>
@@ -527,6 +559,9 @@ const DEF={
   gym:{title:'เวทเทรนนิ่ง',date:'',place:'',time:'1:05:20',kcal:'410',hr:'128',wunit:'kg',muscles:['อก','ไหล่','หลังแขน'],
     ex:[{name:'Bench Press',sets:4,reps:8,kg:60,pr:true},{name:'Incline DB Press',sets:3,reps:10,kg:22,pr:false},{name:'Overhead Press',sets:3,reps:8,kg:35,pr:false},{name:'Lateral Raise',sets:3,reps:15,kg:8,pr:false},{name:'Tricep Pushdown',sets:3,reps:12,kg:25,pr:false}]},
   gshow:{vol:true,time:true,kcal:true,hr:false,sets:false,count:false,prs:false,list:true,bars:false,muscles:true},
+  iconSize:100,wxSize:100,
+  wx:{on:false,useTime:true,cond:'cloudy',temp:'29',feels:'',hum:'79',wind:'',pm:'',place:'',lat:null,lon:null},
+  wxshow:{icon:true,temp:true,cond:false,feels:false,hum:true,wind:false,pm:false},
   tpl:'classic',icon:'blade',numFont:'',pos:'center',font:'Kanit',scale:100,rot:0,ox:0,oy:0,ratio:'9:16',res:'1',
   style:{text:'#ffffff',accent:'#ff5a1f',accent2:'#ffd23f',grad:false,stroke:false,strokeColor:'#000000',strokeW:6,shadow:55,upper:false,
          panel:'none',panelColor:'#0b1426',panelAlpha:55,radius:36},
@@ -788,7 +823,8 @@ function stackRows(ctx,W,H,rows,box){
 }
 function common(d,align,x,cw){
   const top={},s=SC,L=d.L;
-  top.icon=S.icon!=='none'?{h:(align==='center'?150:125)*s,draw:y=>drawIcon(CTX,x,y,(align==='center'?105:90)*s,align)}:null;
+  const ik=S.iconSize/100;top.icon=S.icon!=='none'?{h:((align==='center'?105:90)*ik+45)*s,draw:y=>drawIcon(CTX,x,y,(align==='center'?105:90)*s*ik,align)}:null;
+  top.wx=wxRowOn()?{h:96*s*wxK(),draw:y=>drawWeather(CTX,x,y,align,s)}:null;
   top.meta=S.show.meta?{h:130*s,draw:y=>{txt(CTX,META().title,x,y+46*s,46*s,600,align,'plain');label(CTX,[META().place,META().date].filter(Boolean).join('  ·  '),x,y+92*s,28*s,align)}}:null;
   top.caption=S.caption?{h:76*s,draw:y=>txt(CTX,S.caption,x,y+46*s,40*s,500,align,'plain')}:null;
   top.footer=S.footer?{h:72*s,draw:y=>{CTX.save();CTX.font=F(700,32*s);const sp=7*s;if('letterSpacing' in CTX){CTX.letterSpacing=sp+'px'}CTX.textAlign=align;CTX.fillStyle=S.style.text;setShadow(CTX);CTX.fillText(S.footer.toUpperCase(),align==='center'?x+sp/2:x,y+44*s);CTX.restore()}}:null;
@@ -802,7 +838,7 @@ let CTX=null;
 const TPL={
   classic(W,H,d){
     const s=SC,cx=W/2,cw=Math.min(760*s,W-140*s),c=common(d,'center',cx,cw);const hasR=d.route.length>1;
-    const rows=[c.icon,c.meta,c.muscles,
+    const rows=[c.icon,c.meta,c.muscles,c.wx,
       ...d.stats.map(t=>({h:196*s,draw:y=>{label(CTX,t.label,cx,y+32*s,32*s,'center');drawVal(CTX,cx,y+140*s,t.val,t.unit,104*s,'center')}})),
       hasR?{h:350*s,draw:y=>drawRoute(CTX,d.route,cx-280*s,y+10*s,560*s,310*s,'center')}:null,
       c.exlist,c.vbars,c.hr,c.caption,c.footer].filter(Boolean);
@@ -811,7 +847,7 @@ const TPL={
   hero(W,H,d){
     const s=SC,cx=W/2,cw=Math.min(860*s,W-140*s),c=common(d,'center',cx,cw);const hasR=d.route.length>1;
     const main=d.stats.find(t=>t.k==='dist')||d.stats[0];const rest=d.stats.filter(t=>t!==main).slice(0,3);
-    const rows=[c.icon,c.meta,c.muscles,
+    const rows=[c.icon,c.meta,c.muscles,c.wx,
       main?{h:420*s,draw:y=>{const v=main.k==='dist'?main.val:main.val;CTX.save();CTX.font=F(700,300*s);let size=300*s;const w=CTX.measureText(v).width;if(w>cw)size*=cw/w;CTX.restore();
         txt(CTX,v,cx,y+size*.92,size,700,'center','val');label(CTX,(main.k==='dist'||main.k==='vol')?d.unitLong:(main.label+(main.unit?' · '+main.unit:'')),cx,y+size*.92+70*s,44*s,'center')}}:null,
       rest.length?{h:180*s,draw:y=>{const n=rest.length,colW=cw/n;rest.forEach((t,i)=>{const x=cx-cw/2+colW*(i+.5);label(CTX,t.label,x,y+34*s,28*s,'center');drawVal(CTX,x,y+112*s,t.val,t.unit,68*s,'center');
@@ -823,7 +859,7 @@ const TPL={
   grid(W,H,d){
     const s=SC,cw=Math.min(900*s,W-140*s),x0=(W-cw)/2,c=common(d,'left',x0,cw);const hasR=d.route.length>1;
     const[hero,...rest]=d.stats;const pairs=[];for(let i=0;i<rest.length;i+=2)pairs.push(rest.slice(i,i+2));
-    const rows=[c.icon,c.meta,c.muscles,
+    const rows=[c.icon,c.meta,c.muscles,c.wx,
       hero?{h:260*s,draw:y=>{if(hasR)drawRoute(CTX,d.route,x0+cw-250*s,y+8*s,250*s,210*s,'right');label(CTX,hero.label,x0,y+36*s,34*s,'left');drawVal(CTX,x0,y+212*s,hero.val,hero.unit,180*s,'left')}}:
         hasR?{h:240*s,draw:y=>drawRoute(CTX,d.route,x0,y,cw,220*s,'left')}:null,
       pairs.length?{h:14*s,draw:y=>{CTX.save();CTX.globalAlpha=.5;CTX.fillStyle=S.style.text;CTX.fillRect(x0,y,cw,3*s);CTX.restore()}}:null,
@@ -834,7 +870,7 @@ const TPL={
   splits(W,H,d){
     const s=SC,cw=Math.min(900*s,W-140*s),x0=(W-cw)/2,c=common(d,'left',x0,cw);const hasR=d.route.length>1;
     const[hero,...rest0]=d.stats;const rest=rest0.slice(0,3);
-    const rows=[c.icon,c.meta,c.muscles,
+    const rows=[c.icon,c.meta,c.muscles,c.wx,
       hero?{h:236*s,draw:y=>{if(hasR)drawRoute(CTX,d.route,x0+cw-230*s,y+6*s,230*s,200*s,'right');label(CTX,hero.label,x0,y+34*s,32*s,'left');drawVal(CTX,x0,y+196*s,hero.val,hero.unit,165*s,'left')}}:null,
       rest.length?{h:150*s,draw:y=>rest.forEach((t,i)=>{const x=x0+i*cw/3;label(CTX,t.label,x,y+34*s,28*s,'left');drawVal(CTX,x,y+108*s,t.val,t.unit,66*s,'left')})}:null,
       d.splits.length?{h:(70+d.splits.length*56)*s,draw:y=>drawSplitBars(CTX,d.splits,x0,y,cw,d.L)}:null,
@@ -844,9 +880,10 @@ const TPL={
   bar(W,H,d){
     const s=SC,cw=W-130*s,x0=65*s,hasR=d.route.length>1,st=d.stats.slice(0,4);
     const rows=[];
+    if(wxRowOn())rows.push({h:96*s*wxK(),draw:y=>drawWeather(CTX,x0,y,'left',s)});
     if(S.show.meta)rows.push({h:96*s,draw:y=>{txt(CTX,META().title,x0,y+42*s,42*s,600,'left','plain');label(CTX,[META().place,META().date].filter(Boolean).join('  ·  '),x0+cw,y+42*s,26*s,'right')}});
     if(S.icon!=='none'||hasR)rows.push({h:150*s,draw:y=>{let x=x0;
-      if(S.icon!=='none'){drawIcon(CTX,x,y+20*s,96*s,'left');x+=iconW(96*s)+50*s}
+      if(S.icon!=='none'){const ih=Math.min(96*S.iconSize/100,140)*s;drawIcon(CTX,x,y+75*s-ih/2,ih,'left');x+=iconW(ih)+50*s}
       if(hasR)drawRoute(CTX,d.route,x,y,260*s,130*s,'left')}});
     if(st.length)rows.push({h:190*s,draw:y=>{const n=st.length,colW=cw/n;
       st.forEach((t,i)=>{const cx=x0+colW*i;label(CTX,t.label,cx,y+40*s,30*s,'left');
@@ -857,13 +894,13 @@ const TPL={
   },
   badge(W,H,d){
     const s=SC,cx=W/2,D=Math.min(660*s,W-160*s),c=common(d,'center',cx,D);const main=d.stats.find(t=>t.k==='dist')||d.stats[0];const rest=d.stats.filter(t=>t!==main).slice(0,2);
-    const rows=[c.meta,c.muscles,{h:D+50*s,draw:y=>{
+    const rows=[c.meta,c.muscles,c.wx,{h:D+50*s,draw:y=>{
       const cy=y+D/2,R=D/2,st=S.style;CTX.save();setShadow(CTX);
       CTX.beginPath();CTX.arc(cx,cy,R,0,7);CTX.lineWidth=16*s;CTX.strokeStyle=st.accent;CTX.stroke();
       CTX.beginPath();CTX.arc(cx,cy,R-26*s,0,7);CTX.lineWidth=3*s;CTX.strokeStyle=hexA(st.text,.7);CTX.stroke();
       for(let i=0;i<60;i++){const a=i/60*Math.PI*2,r1=R-40*s,r2=R-(i%5?48:58)*s;CTX.beginPath();CTX.moveTo(cx+r1*Math.cos(a),cy+r1*Math.sin(a));CTX.lineTo(cx+r2*Math.cos(a),cy+r2*Math.sin(a));CTX.lineWidth=(i%5?2:4)*s;CTX.strokeStyle=hexA(st.text,.55);CTX.stroke()}
       CTX.restore();
-      if(S.icon!=='none')drawIcon(CTX,cx,cy-R*.62,R*.24,'center');
+      if(S.icon!=='none'){const ih=R*.24*Math.min(S.iconSize/100,1.6);drawIcon(CTX,cx,cy-R*.5-ih/2,ih,'center')}
       if(main){let size=R*.55;const w=valW(CTX,main.val,'',size);if(w>R*1.4)size*=R*1.4/w;txt(CTX,main.val,cx,cy+size*.32,size,700,'center','val');label(CTX,(main.k==='dist'||main.k==='vol')?d.unitLong:main.label,cx,cy+size*.32+52*s,30*s,'center')}
       if(rest.length)label(CTX,rest.map(t=>t.val+(t.unit?' '+t.unit:'')).join('  ·  '),cx,cy+R*.62,30*s,'center');
     }},c.caption,c.footer].filter(Boolean);
@@ -920,10 +957,11 @@ function drawFreeRoute(ctx,W,H,mult,pts){
 }
 
 // Freeform layers: each part of the sticker is its own movable piece
-const LAYER_NAMES={muscles:'กล้ามเนื้อ',exlist:'รายการท่า',vbars:'กราฟน้ำหนักต่อท่า',icon:'ไอคอน',title:'ชื่อ วันที่ สถานที่',splits:'แท่งสปลิต',hr:'กราฟหัวใจ',caption:'แคปชัน',footer:'ข้อความท้าย',route:'เส้นทาง'};
+const LAYER_NAMES={weather:'สภาพอากาศ',muscles:'กล้ามเนื้อ',exlist:'รายการท่า',vbars:'กราฟน้ำหนักต่อท่า',icon:'ไอคอน',title:'ชื่อ วันที่ สถานที่',splits:'แท่งสปลิต',hr:'กราฟหัวใจ',caption:'แคปชัน',footer:'ข้อความท้าย',route:'เส้นทาง'};
 function layerList(d){
   const s=SC,L=[];
-  if(S.icon!=='none')L.push({id:'icon',h:.08,draw(c){const h=110*SC,w=iconW(h);drawIcon(c,0,-h/2,h,'center');return[w/2,h/2]}});
+  if(S.icon!=='none')L.push({id:'icon',h:.08*S.iconSize/100,draw(c){const h=110*SC*S.iconSize/100,w=iconW(h);drawIcon(c,0,-h/2,h,'center');return[w/2,h/2]}});
+  if(wxRowOn())L.push({id:'weather',h:.05,draw(c){const w=drawWeather(c,0,-48*SC*wxK(),'center',SC);return[w/2,48*SC*wxK()]}});
   if(S.show.meta)L.push({id:'title',h:.08,draw(c){const sub=[META().place,META().date].filter(Boolean).join('  ·  ');
     txt(c,META().title,0,-4*SC,46*SC,600,'center','plain');label(c,sub,0,42*SC,28*SC,'center');
     c.font=F(600,46*SC);let w=c.measureText(META().title).width;c.font=F(500,28*SC);w=Math.max(w,c.measureText(sub).width);return[w/2,56*SC]}});
@@ -1046,7 +1084,7 @@ function draw(){
   HITS=[];const glass=bg&&S.style.panel==='glass';composite(vx,W,H,1,glass?bg:null);drawSelection(vx);
   bgc.style.visibility=glass?'hidden':''; // the view already holds the background when the glass panel samples it
   document.querySelectorAll('[data-ratio]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ratio===S.ratio));$('freeBtn').setAttribute('aria-pressed',!!S.rt.free);
-  document.querySelectorAll('[data-out]').forEach(o=>{const v=getP(o.dataset.out);o.textContent=['scale','route.size','bg.zoom','style.panelAlpha','style.shadow','rt.scale'].includes(o.dataset.out)?v+'%':['rot','rt.rot'].includes(o.dataset.out)?v+'°':v});
+  document.querySelectorAll('[data-out]').forEach(o=>{const v=getP(o.dataset.out);o.textContent=['scale','route.size','bg.zoom','style.panelAlpha','style.shadow','rt.scale','iconSize','wxSize'].includes(o.dataset.out)?v+'%':['rot','rt.rot'].includes(o.dataset.out)?v+'°':v});
   if(ANIM)return;drawPad();renderIconCards();renderLayers();store.set('rs.state',S);
 }
 
@@ -1153,9 +1191,9 @@ $('saveStyle').onclick=()=>{const n=$('styleName').value.trim()||('สไตล�
 // run history
 function renderRuns(){const list=store.get('rs.runs',[]),el=$('runList');el.innerHTML='';if(!list.length){el.innerHTML='<p class="empty">ยังไม่มีประวัติ กดปุ่มด้านบนเพื่อเก็บรอบนี้</p>';return}
   list.forEach((it,i)=>{const r=document.createElement('div');r.className='item';const d=document.createElement('div');const b=document.createElement('b');const isG=it.mode==='gym'&&it.gym;b.textContent=isG?`เวท ${fmtInt(it.gym.ex.reduce((a,e)=>a+exVol(e),0))} ${it.gym.wunit} · ${it.gym.title}`:`${it.run.dist} กม. · ${it.run.title}`;const sm=document.createElement('small');sm.textContent=isG?`${it.gym.date||''} · ${it.gym.ex.length} ท่า`:`${it.run.date} · เพซ ${it.run.pace}`;d.append(b,sm);
-    const u=document.createElement('button');u.textContent='เปิด';u.onclick=()=>{if(it.mode==='gym'&&it.gym){S.mode='gym';S.gym=clone(it.gym);renderExEditor();syncGymUI();applyMode();syncInputs();schedule();toast('เปิดรายการเวทแล้ว');return}S.mode='run';applyMode();Object.assign(S.run,it.run);if(it.route){S.route.mode=it.route.mode;S.route.drawn=it.route.drawn||[];S.route.gpx=it.route.gpx||[];S.route.shot=it.route.shot||[]}syncInputs();schedule();toast('เปิดรอบ '+it.run.date)};
+    const u=document.createElement('button');u.textContent='เปิด';u.onclick=()=>{if(it.wx)Object.assign(S.wx,it.wx);if(it.mode==='gym'&&it.gym){S.mode='gym';S.gym=clone(it.gym);renderExEditor();syncGymUI();applyMode();syncInputs();schedule();toast('เปิดรายการเวทแล้ว');return}S.mode='run';applyMode();Object.assign(S.run,it.run);if(it.route){S.route.mode=it.route.mode;S.route.drawn=it.route.drawn||[];S.route.gpx=it.route.gpx||[];S.route.shot=it.route.shot||[]}syncInputs();schedule();toast('เปิดรอบ '+it.run.date)};
     const x=document.createElement('button');x.textContent='ลบ';x.className='danger';x.onclick=()=>{list.splice(i,1);store.set('rs.runs',list);renderRuns()};r.append(d,u,x);el.append(r)})}
-$('saveRun').onclick=()=>{const list=store.get('rs.runs',[]);list.unshift({mode:S.mode,gym:clone(S.gym),run:clone(S.run),route:{mode:S.route.mode,drawn:S.route.drawn,gpx:S.route.gpx,shot:S.route.shot}});store.set('rs.runs',list.slice(0,60));renderRuns();toast('เก็บรอบนี้แล้ว')};
+$('saveRun').onclick=()=>{const list=store.get('rs.runs',[]);list.unshift({mode:S.mode,wx:clone(S.wx),gym:clone(S.gym),run:clone(S.run),route:{mode:S.route.mode,drawn:S.route.drawn,gpx:S.route.gpx,shot:S.route.shot}});store.set('rs.runs',list.slice(0,60));renderRuns();toast('เก็บรอบนี้แล้ว')};
 $('resetAll').onclick=()=>{if($('resetAll').dataset.arm){S=clone(DEF);renderExEditor();syncGymUI();applyMode();syncInputs();ensureFont().then(schedule);delete $('resetAll').dataset.arm;$('resetAll').textContent='ล้างค่าทั้งหมดกลับเป็นค่าเริ่มต้น';toast('กลับเป็นค่าเริ่มต้นแล้ว')}
   else{$('resetAll').dataset.arm=1;$('resetAll').textContent='กดอีกครั้งเพื่อยืนยัน';setTimeout(()=>{delete $('resetAll').dataset.arm;$('resetAll').textContent='ล้างค่าทั้งหมดกลับเป็นค่าเริ่มต้น'},3000)}};
 
@@ -1253,6 +1291,7 @@ function parseWorkoutText(raw){
   const mr=new RegExp(`(\\d{1,2})\\s*(${TH_MONTHS.join('|')})\\s*(\\d{4})(?:\\s*(\\d{1,2}[:.]\\d{2}))?`);
   if((m=t.match(mr)))o.date=`${+m[1]} ${TH_SHORT[TH_MONTHS.indexOf(m[2])]} ${m[3]}${m[4]?' · '+m[4].replace('.',':'):''}`;
   else if((m=t.match(/(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{4})(?:\D{1,4}(\d{1,2}:\d{2}))?/i)))o.date=`${+m[1]} ${m[2][0].toUpperCase()+m[2].slice(1,3).toLowerCase()} ${m[3]}${m[4]?' · '+m[4]:''}`;
+  if((m=t.match(/(-?\d{1,2})\s*°[^\n%]{0,14}?(\d{1,3})\s*%/))){o.wxTemp=m[1];let hu=+m[2];if(hu>100)hu%=100;o.wxHum=String(hu)}
   if((m=t.match(/(วิ่งกลางแจ้ง|วิ่งในร่ม|เดินกลางแจ้ง|Outdoor Run|Indoor Run|Trail Run)/i)))o.title=m[1];
   if((m=t.match(/(เวทเทรนนิ่ง\S*|การฝึกความแข็งแรง\S*|(?:Traditional|Functional) Strength Training)/i))){o.title=m[1];o.activity='strength'}
   const exs=[];lines.forEach(l=>{const r=l.match(/^([A-Za-zก-๙][A-Za-zก-๙ ()'\-]{2,40}?)\s+(\d{1,2})\s*[x×X]\s*(\d{1,3})(?:\s*(?:@|·|-|,)?\s*(\d{1,3}(?:[.,]\d)?)\s*(kg|lb|กก))?/);
@@ -1314,14 +1353,14 @@ Reply with ONLY a JSON object, no prose, using null for anything not visible:
  "distance_km": number, "workout_time": "h:mm:ss" (moving/workout time, not elapsed), "avg_pace": "m:ss" per km,
  "avg_hr": number, "cadence_spm": number, "total_kcal": number, "elevation_gain_m": number, "avg_power_w": number,
  "splits": ["m:ss", ...] time of each lap or km in order, "split_hr": [number, ...] heart rate of each lap in order,
- "activity": "run" | "strength" | "other",
+ "activity": "run" | "strength" | "other", "weather_temp_c": number, "weather_humidity": number (percent), "weather": "clear"|"partly"|"cloudy"|"rain"|"storm"|"fog"|"wind"|"night" or null,
  "exercises": [{"name": string, "sets": number, "reps": number (typical reps per set), "weight_kg": number (heaviest working weight, converted to kg), "pr": boolean}] for strength workouts, else []}`;
 function fromClaude(j){const o={};if(!j||typeof j!=='object')return o;
   if(j.title)o.title=String(j.title);if(j.date)o.date=String(j.date);if(j.place)o.place=String(j.place);
   if(isFinite(j.distance_km))o.dist=(+j.distance_km).toFixed(2);if(j.workout_time)o.time=String(j.workout_time);if(j.avg_pace)o.pace=String(j.avg_pace);
   if(isFinite(j.avg_hr))o.hr=String(j.avg_hr);if(isFinite(j.cadence_spm))o.cad=String(j.cadence_spm);if(isFinite(j.total_kcal))o.kcal=String(j.total_kcal);
   if(isFinite(j.elevation_gain_m))o.elev=String(j.elevation_gain_m);if(isFinite(j.avg_power_w))o.power=String(j.avg_power_w);
-  if(j.activity)o.activity=String(j.activity);if(Array.isArray(j.exercises)&&j.exercises.length)o.exercises=j.exercises.filter(e=>e&&e.name).map(e=>({name:String(e.name),sets:+e.sets||'',reps:+e.reps||'',kg:isFinite(e.weight_kg)&&e.weight_kg?+(+e.weight_kg).toFixed(1):'',pr:!!e.pr}));
+  if(j.activity)o.activity=String(j.activity);if(isFinite(j.weather_temp_c)&&j.weather_temp_c!==null)o.wxTemp=String(j.weather_temp_c);if(isFinite(j.weather_humidity)&&j.weather_humidity!==null)o.wxHum=String(j.weather_humidity);if(j.weather&&WX_COND[j.weather])o.wxCond=j.weather;if(Array.isArray(j.exercises)&&j.exercises.length)o.exercises=j.exercises.filter(e=>e&&e.name).map(e=>({name:String(e.name),sets:+e.sets||'',reps:+e.reps||'',kg:isFinite(e.weight_kg)&&e.weight_kg?+(+e.weight_kg).toFixed(1):'',pr:!!e.pr}));
   if(Array.isArray(j.splits)&&j.splits.length)o.splits=j.splits.join(', ');if(Array.isArray(j.split_hr)&&j.split_hr.length)o.hrSplits=j.split_hr.join(', ');return o}
 const FOUND_LABEL={dist:'ระยะทาง',time:'เวลา',pace:'เพซ',hr:'หัวใจ',cad:'รอบขา',kcal:'แคลอรี',elev:'ความสูง',power:'กำลัง',splits:'สปลิต',hrSplits:'หัวใจรายกิโล',date:'วันที่',title:'ชื่อ',place:'สถานที่'};
 function aiStatus(text,frac){const box=$('aiStatus');box.hidden=false;$('aiText').textContent=text;$('aiBar').style.width=Math.round((frac||0)*100)+'%'}
@@ -1341,6 +1380,7 @@ async function readShots(files){
       let text='';for(let i=0;i<imgs.length;i++){aiStatus(`กำลังอ่านภาพ ${i+1}/${imgs.length}...`,.3+.65*i/imgs.length);const r=await w.recognize(ocrCanvas(imgs[i]));text+='\n'+r.data.text}
       o=parseWorkoutText(text);
     }
+    if(o.wxTemp||o.wxHum){if(o.wxTemp)S.wx.temp=o.wxTemp;if(o.wxHum)S.wx.hum=o.wxHum;if(o.wxCond)S.wx.cond=o.wxCond;S.wx.on=true;const sp=document.createElement('span');sp.className='found';sp.textContent=`อากาศ ${o.wxTemp||''}° ${o.wxHum?o.wxHum+'%':''}`;$('aiResult').append(sp)}
     const gymHit=o.activity==='strength'||(S.mode==='gym'&&o.activity!=='run');
     if(gymHit){if(S.mode!=='gym'){S.mode='gym';if(SHOE_KEYS.includes(S.icon))S.icon='dumbbell';applyMode()}
       ['title','date','place','time','kcal','hr'].forEach(k=>{if(o[k])S.gym[k]=o[k]});if(o.exercises)S.gym.ex=o.exercises;renderExEditor();
@@ -1509,6 +1549,84 @@ document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{if(S.mode===b
   if(S.mode==='gym'&&SHOE_KEYS.includes(S.icon))S.icon='dumbbell';if(S.mode==='run'&&GYM_KEYS.includes(S.icon))S.icon='blade';
   if(S.tpl==='splits'&&S.mode==='gym')S.tpl='classic';
   S.layoutIds='';applyMode();syncInputs();schedule()});
+
+// ---------- weather ----------
+const WX_COND={clear:'แจ่มใส',partly:'มีเมฆบางส่วน',cloudy:'เมฆมาก',rain:'ฝนตก',storm:'พายุฝนฟ้าคะนอง',fog:'หมอก',wind:'ลมแรง',night:'กลางคืน'};
+const WX_COND_EN={clear:'Clear',partly:'Partly cloudy',cloudy:'Cloudy',rain:'Rain',storm:'Thunderstorm',fog:'Fog',wind:'Windy',night:'Clear night'};
+const CLOUD=P2('M13 38 C6 38 2 33 2 28 C2 22 7 18 12 19 C14 12 20 8 27 8 C35 8 41 14 41 21 C46 21 49 25 49 30 C49 35 45 38 40 38 Z');
+const SMALL_CLOUD=P2('M17 41 C11 41 8 37 8 33 C8 28 12 25 16 26 C18 20 23 17 29 17 C36 17 41 22 41 28 C45 28 48 31 48 35 C48 39 45 41 41 41 Z');
+function drawWxIcon(c,kind,st){ // 50x50 local box
+  const sun=(cx,cy,r)=>{c.fillStyle=st.accent2;c.beginPath();c.arc(cx,cy,r,0,7);c.fill();c.strokeStyle=st.accent2;c.lineWidth=3;c.lineCap='round';
+    for(let i=0;i<8;i++){const a=i*Math.PI/4;c.beginPath();c.moveTo(cx+Math.cos(a)*(r+4),cy+Math.sin(a)*(r+4));c.lineTo(cx+Math.cos(a)*(r+9),cy+Math.sin(a)*(r+9));c.stroke()}};
+  if(kind==='clear')sun(25,25,10);
+  else if(kind==='night'){c.fillStyle=st.accent2;c.beginPath();c.arc(24,25,16,0,7);c.fill();erase(c,()=>{c.beginPath();c.arc(33,19,14,0,7);c.fill()})}
+  else if(kind==='partly'){sun(17,17,8);erase(c,()=>{c.lineWidth=5;c.stroke(SMALL_CLOUD);c.fill(SMALL_CLOUD)});c.fillStyle=st.text;c.fill(SMALL_CLOUD)}
+  else if(kind==='fog'){c.fillStyle=st.text;c.save();c.translate(0,-6);c.fill(CLOUD);c.restore();erase(c,()=>{c.fillRect(0,25,50,3)});
+    c.strokeStyle=st.accent;c.lineWidth=3.4;c.lineCap='round';[[6,38,44],[12,45,38]].forEach(([a,y,b])=>{c.beginPath();c.moveTo(a,y);c.lineTo(b,y);c.stroke()})}
+  else if(kind==='wind'){c.strokeStyle=st.text;c.lineWidth=3.6;c.lineCap='round';c.beginPath();c.moveTo(4,18);c.lineTo(32,18);c.arc(32,12,6,Math.PI/2,-Math.PI*.9,true);c.stroke();
+    c.beginPath();c.moveTo(4,28);c.lineTo(40,28);c.arc(40,34,6,-Math.PI/2,Math.PI*.9);c.stroke();c.strokeStyle=st.accent;c.beginPath();c.moveTo(10,38);c.lineTo(26,38);c.stroke()}
+  else{c.fillStyle=st.text;c.save();c.translate(0,-4);c.fill(CLOUD);c.restore();
+    if(kind==='rain'){c.strokeStyle=st.accent;c.lineWidth=3.4;c.lineCap='round';[14,25,36].forEach(x=>{c.beginPath();c.moveTo(x,38);c.lineTo(x-4,47);c.stroke()})}
+    if(kind==='storm'){c.fillStyle=st.accent2;c.beginPath();c.moveTo(27,32);c.lineTo(18,44);c.lineTo(25,44);c.lineTo(21,52);c.lineTo(33,39);c.lineTo(26,39);c.lineTo(30,32);c.closePath();c.fill()}}
+}
+function wxItems(){
+  const w=S.wx,sh=S.wxshow,th=S.lang==='th',out=[];
+  if(sh.temp&&w.temp!=='')out.push({big:true,val:Math.round(+w.temp)+'°',unit:'C'});
+  if(sh.cond&&w.cond)out.push({label:th?'สภาพอากาศ':'Weather',val:(th?WX_COND:WX_COND_EN)[w.cond]||'',text:true});
+  if(sh.feels&&w.feels!=='')out.push({label:th?'รู้สึกเหมือน':'Feels like',val:Math.round(+w.feels)+'°'});
+  if(sh.hum&&w.hum!=='')out.push({label:th?'ความชื้น':'Humidity',val:Math.round(+w.hum)+'%'});
+  if(sh.wind&&w.wind!=='')out.push({label:th?'ลม':'Wind',val:Math.round(+w.wind)+(th?' กม./ชม.':' km/h')});
+  if(sh.pm&&w.pm!=='')out.push({label:'PM2.5',val:String(Math.round(+w.pm))});
+  return out;
+}
+function drawWeather(c,x,y,align,s){ // one row, 96*s*wxK() tall; returns width
+  s=s*wxK();
+  const items=wxItems(),ic=S.wxshow.icon&&S.wx.cond?60*s:0,gap=34*s;if(!items.length&&!ic)return 0;
+  const widths=items.map(it=>{if(it.big){c.font=FN(700,58*s);const a=c.measureText(it.val).width;c.font=FN(600,26*s);return a+c.measureText(it.unit).width+4*s}
+    c.font=F(500,22*s);const a=c.measureText(it.label).width;c.font=it.text?F(600,30*s):FN(600,32*s);return Math.max(a,c.measureText(it.val).width)});
+  const tot=(ic?ic+18*s:0)+widths.reduce((a,b)=>a+b,0)+gap*Math.max(0,items.length-1);
+  let cx=align==='center'?x-tot/2:align==='right'?x-tot:x;
+  if(ic){const cv=document.createElement('canvas'),k=ic/50,pad=Math.ceil(10*k);cv.width=Math.ceil(ic)+pad*2;cv.height=cv.width;const g=cv.getContext('2d');g.translate(pad,pad);g.scale(k,k);drawWxIcon(g,S.wx.cond,S.style);
+    c.save();setShadow(c);c.drawImage(cv,cx-pad,y+12*s-pad);c.restore();cx+=ic+18*s}
+  items.forEach((it,i)=>{
+    if(it.big){const w1=txt(c,it.val,cx,y+66*s,58*s,700,'left','val');txt(c,it.unit,cx+w1+4*s,y+66*s,26*s,600,'left','val')}
+    else{label(c,it.label,cx,y+30*s,22*s,'left');txt(c,it.val,cx,y+66*s,it.text?30*s:32*s,600,'left',it.text?'plain':'val')}
+    if(i<items.length-1){c.save();c.globalAlpha*=.4;c.fillStyle=S.style.text;c.shadowColor='transparent';c.fillRect(cx+widths[i]+gap/2-1.5*s,y+18*s,3*s,52*s);c.restore()}
+    cx+=widths[i]+gap});
+  return tot;
+}
+const wxK=()=>(S.wxSize||100)/100*1.25;
+const wxRowOn=()=>S.wx.on&&(wxItems().length>0||(S.wxshow.icon&&S.wx.cond));
+
+// fetch from Open-Meteo (free, no key)
+const MONTH_IDX=s=>{s=s.toLowerCase();let i=TH_SHORT.findIndex(m=>s.startsWith(m.replace(/\./g,'').slice(0,3))||s===m);if(i<0)i=TH_MONTHS.findIndex(m=>s.startsWith(m.slice(0,4)));if(i<0)i=EN_MONTHS.findIndex(m=>s.startsWith(m));return i};
+function activityTime(){const d=String(META().date||'');const m=d.match(/(\d{1,2})\s*([^\d\s·]+)\s*(\d{4})(?:\D+(\d{1,2})[:.](\d{2}))?/);
+  if(!m)return null;const mi=MONTH_IDX(m[2]);if(mi<0)return null;let y=+m[3];if(y>2400)y-=543;return new Date(y,mi,+m[1],m[4]?+m[4]:12,m[5]?+m[5]:0)}
+function codeToCond(code,isDay){if(code===0)return isDay?'clear':'night';if(code<=2)return isDay?'partly':'night';if(code===3)return'cloudy';if(code===45||code===48)return'fog';if(code>=95)return'storm';if((code>=51&&code<=67)||(code>=80&&code<=82))return'rain';return'cloudy'}
+function wxMsg(t){$('wxStatus').textContent=t}
+async function fetchWeather(lat,lon,placeName){
+  const when=S.wx.useTime?activityTime():null,t=when||new Date(),pad=n=>String(n).padStart(2,'0');
+  const ymd=`${t.getFullYear()}-${pad(t.getMonth()+1)}-${pad(t.getDate())}`,hourKey=`${ymd}T${pad(t.getHours())}:00`;
+  const ageDays=(Date.now()-t.getTime())/864e5;wxMsg('กำลังดึงสภาพอากาศ...');
+  try{
+    const vars='temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,is_day';
+    const url=ageDays>85?`https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${ymd}&end_date=${ymd}&hourly=${vars}&timezone=auto`
+      :`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=${vars}&past_days=${Math.min(92,Math.max(1,Math.ceil(ageDays)+1))}&forecast_days=1&timezone=auto`;
+    const r=await (await fetch(url)).json();const H=r.hourly;let i=H.time.indexOf(hourKey);if(i<0)i=H.time.findIndex(x=>x.startsWith(ymd));if(i<0)throw new Error('no hour');
+    Object.assign(S.wx,{temp:H.temperature_2m[i],hum:H.relative_humidity_2m[i],feels:H.apparent_temperature[i],wind:H.wind_speed_10m[i],cond:codeToCond(H.weather_code[i],H.is_day?H.is_day[i]:1),lat,lon,place:placeName||S.wx.place});
+    if(ageDays<=85){try{const a=await (await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm2_5&past_days=${Math.min(92,Math.max(1,Math.ceil(ageDays)+1))}&forecast_days=1&timezone=auto`)).json();
+      const j=a.hourly.time.indexOf(hourKey);if(j>=0&&a.hourly.pm2_5[j]!=null)S.wx.pm=Math.round(a.hourly.pm2_5[j])}catch(e){}}
+    S.wx.on=true;syncInputs();schedule();
+    wxMsg(`${placeName||'ตำแหน่งนี้'} · ${when?'เวลาที่ออกกำลังกาย '+hourKey.replace('T',' '):'ตอนนี้'} · ข้อมูลจาก Open-Meteo`);
+  }catch(e){wxMsg(location.hostname.includes('claude')?'หน้านี้ดึงข้อมูลอินเทอร์เน็ตไม่ได้ ใช้ในแอปที่ติดตั้ง หรือกรอกเองด้านล่าง':'ดึงสภาพอากาศไม่สำเร็จ ตรวจอินเทอร์เน็ต หรือกรอกเองด้านล่าง')}
+}
+$('wxGeo').onclick=()=>{if(!navigator.geolocation){wxMsg('เครื่องนี้ไม่รองรับตำแหน่ง ลองค้นหาด้วยชื่อเมืองแทน');return}wxMsg('กำลังหาตำแหน่ง...');
+  navigator.geolocation.getCurrentPosition(p=>fetchWeather(+p.coords.latitude.toFixed(3),+p.coords.longitude.toFixed(3),'ตำแหน่งปัจจุบัน'),
+    ()=>wxMsg('ไม่ได้รับอนุญาตให้ใช้ตำแหน่ง ลองค้นหาด้วยชื่อเมืองแทน'),{timeout:12000,maximumAge:600000})};
+$('wxFind').onclick=async()=>{let q=$('wxCity').value.trim();if(!q){const p=String(META().place||'');const m=p.match(/จ\.\s*(\S+)/);q=m?m[1]:p.trim();$('wxCity').value=q}
+  if(!q){wxMsg('พิมพ์ชื่อเมืองหรือจังหวัดก่อน');return}wxMsg('กำลังค้นหา '+q+'...');
+  try{const r=await (await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=1&language=th`)).json();const g=r.results&&r.results[0];if(!g)throw 0;
+    fetchWeather(g.latitude,g.longitude,g.name)}catch(e){wxMsg(location.hostname.includes('claude')?'หน้านี้ดึงข้อมูลอินเทอร์เน็ตไม่ได้ ใช้ในแอปที่ติดตั้ง หรือกรอกเองด้านล่าง':'ไม่พบชื่อนี้ ลองพิมพ์ชื่อจังหวัด เช่น กาญจนบุรี')}};
 
 // ---------- fonts ----------
 async function ensureFont(){try{const fams=[S.font,S.numFont].filter(Boolean);await Promise.all(fams.flatMap(f=>[400,500,600,700,800].map(w=>document.fonts.load(`${wfor(f,w)} 40px "${f}"`,'ระยะทาง 0123 กม.'))))}catch(e){}}
