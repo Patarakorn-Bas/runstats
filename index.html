@@ -251,6 +251,7 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
           <label class="f"><span>แคลอรีรวม</span><input class="num" type="text" inputmode="numeric" data-k="run.kcal"></label>
           <label class="f"><span>ความสูง (ม.)</span><input class="num" type="text" inputmode="numeric" data-k="run.elev"></label>
           <label class="f"><span>กำลัง (วัตต์)</span><input class="num" type="text" inputmode="numeric" data-k="run.power"></label>
+          <label class="f"><span>จำนวนก้าว</span><input class="num" type="text" inputmode="numeric" data-k="run.steps"></label>
         </div>
         <label class="f"><span>เวลาแต่ละกิโล (สปลิต)</span><textarea class="num" rows="2" data-k="run.splits"></textarea></label>
         <label class="f"><span>หัวใจแต่ละกิโล (สำหรับกราฟ)</span><textarea class="num" rows="2" data-k="run.hrSplits"></textarea></label>
@@ -307,6 +308,7 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
           <label class="chip"><input type="checkbox" data-k="show.kcal"> แคลอรี</label>
           <label class="chip"><input type="checkbox" data-k="show.elev"> ความสูง</label>
           <label class="chip"><input type="checkbox" data-k="show.power"> กำลัง</label>
+          <label class="chip"><input type="checkbox" data-k="show.steps"> จำนวนก้าว</label>
         </div>
         <div class="chips">
           <label class="chip"><input type="checkbox" data-k="show.meta"> ชื่อ วันที่ สถานที่</label>
@@ -326,6 +328,13 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
         <legend>แม่แบบ</legend>
         <div class="cards" role="radiogroup" aria-label="แม่แบบ">
           <label class="card"><input type="radio" name="tpl" data-k="tpl" value="free"><b>อิสระ</b>ลากได้ทุกชิ้น</label>
+          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="ticket"><b>ตั๋ว</b>วัน + ไอคอน</label>
+          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="routeback"><b>เส้นทางหลังตัวเลข</b>ตัวเลขทับเส้น</label>
+          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="side"><b>ข้างจอ</b>ตัวเลขแนวตั้ง</label>
+          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="dots"><b>รายการจุดไข่ปลา</b>เส้นทาง + รายการ</label>
+          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="pills"><b>แคปซูล</b>ป้ายเรียงแถว</label>
+          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="lapbars"><b>กราฟต่อรอบ</b>แท่งรายกิโล</label>
+          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="card"><b>การ์ด</b>เส้นทาง + สถิติ</label>
           <label class="card"><input type="radio" name="tpl" data-k="tpl" value="classic"><b>คลาสสิก</b>เรียงกลาง</label>
           <label class="card"><input type="radio" name="tpl" data-k="tpl" value="hero"><b>ตัวเลขยักษ์</b>ระยะทางเด่น</label>
           <label class="card"><input type="radio" name="tpl" data-k="tpl" value="grid"><b>ตาราง</b>ครบทุกค่า</label>
@@ -408,6 +417,14 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
         <p class="hint" style="text-align:left">กระจกเบลอจะเบลอรูปพื้นหลังจริงเมื่อบันทึกแบบมีพื้นหลัง ส่วน PNG โปร่งใสจะเป็นแผ่นโปร่งแสง</p>
       </fieldset>
       <fieldset>
+        <legend>แบรนด์ของคุณ</legend>
+        <label class="f"><span>ข้อความแบรนด์</span><input type="text" data-k="footer"></label>
+        <label class="btn filebtn" style="background:var(--sunk);color:var(--ink);border-color:var(--line)"><input type="file" id="logoIn" accept="image/png,image/*">อัปโหลดโลโก้ (PNG พื้นใส)</label>
+        <div class="chips"><label class="chip"><input type="checkbox" data-k="useLogo"> ใช้โลโก้แทนข้อความ</label><button type="button" class="tb" id="logoClear">ลบโลโก้</button></div>
+        <label class="f"><span>ขนาดโลโก้ <output data-out="logoSize"></output></span><input type="range" min="50" max="250" step="5" data-k="logoSize"></label>
+        <p class="hint" style="text-align:left">แบรนด์จะอยู่ในตำแหน่งที่แบบแอปวิ่งใช้วางโลโก้ ทุกแม่แบบ</p>
+      </fieldset>
+      <fieldset>
         <legend>สไตล์ของฉัน</legend>
         <div class="row" style="grid-template-columns:minmax(0,1fr) auto">
           <input type="text" id="styleName" placeholder="ตั้งชื่อสไตล์" aria-label="ชื่อสไตล์">
@@ -426,11 +443,17 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
           <div class="stack">
             <label class="chip"><input type="radio" name="rmode" data-k="route.mode" value="preset"> เส้นทางตัวอย่าง</label>
             <label class="chip"><input type="radio" name="rmode" data-k="route.mode" value="drawn"> วาดเอง</label>
-            <label class="chip"><input type="radio" name="rmode" data-k="route.mode" value="shot"> จากภาพหน้าจอ</label>
+            <label class="chip"><input type="radio" name="rmode" data-k="route.mode" value="shot"> จากภาพ</label>
             <label class="chip"><input type="radio" name="rmode" data-k="route.mode" value="gpx"> จากไฟล์ GPX</label>
             <label class="chip"><input type="radio" name="rmode" data-k="route.mode" value="none"> ไม่แสดง</label>
             <button id="clearPad">ล้างแล้ววาดใหม่</button>
           </div>
+        </div>
+        <label class="btn primary filebtn" id="routeImgBtn"><input type="file" id="routeImgIn" accept="image/*">ดึงเส้นทางจากภาพ</label>
+        <p class="hint" style="text-align:left">ใช้ได้กับภาพเส้นทางที่บันทึกจาก Strava, ภาพแผนที่ใน Apple Fitness หรือรูปที่มีเส้นทางสีส้ม แดง เหลือง แอปจะลอกรูปทรงเส้นทางให้ตรงตามภาพ</p>
+        <div class="row" style="grid-template-columns:minmax(0,1fr) auto;align-items:end">
+          <label class="f"><span>สีของเส้นในภาพ</span><select id="pickMode"><option value="">อัตโนมัติ (ส้ม แดง เหลือง)</option><option value="custom">สีอื่น เลือกเอง</option></select></label>
+          <input type="color" id="pickColor" value="#fc4c02" aria-label="สีเส้นในภาพ" style="width:56px" hidden>
         </div>
         <label class="f"><span>นำเข้าไฟล์ GPX (เส้นทาง GPS จริง)</span><input type="file" id="gpxIn" accept=".gpx,application/gpx+xml,application/xml,text/xml"></label>
         <p class="hint" style="text-align:left">ส่งออก GPX จาก Apple Watch ได้ด้วยแอปฟรีอย่าง HealthFit หรือ RunGap แล้วเลือกไฟล์ที่นี่ ระยะทางในไฟล์จะถูกกรอกให้ด้วย</p>
@@ -552,21 +575,21 @@ const RATIOS={'9:16':[1080,1920],'4:5':[1080,1350],'1:1':[1080,1080],'16:9':[192
 const PRESET=[[437,335],[440,300],[443,260],[446,222],[443,260],[440,300],[437,335],[433,400],[430,460],[427,505],[422,522],[425,535]];
 const DEF={
   run:{title:'วิ่งกลางแจ้ง',date:'12 ต.ค. 2569 · 17:19',place:'อ.พนมทวน จ.กาญจนบุรี',dist:'5.11',time:'0:46:53',pace:'9:10',paceAuto:true,
-       hr:'160',cad:'133',kcal:'440',elev:'2',power:'137',splits:'7:44, 8:22, 10:54, 8:58, 9:21',hrSplits:'151, 163, 154, 165, 168'},
-  show:{dist:true,pace:true,time:true,hr:false,cad:false,kcal:false,elev:false,power:false,meta:false,hrChart:false,splits:false},
+       hr:'160',cad:'133',kcal:'440',elev:'2',power:'137',steps:'',splits:'7:44, 8:22, 10:54, 8:58, 9:21',hrSplits:'151, 163, 154, 165, 168'},
+  show:{dist:true,pace:true,time:true,hr:false,cad:false,kcal:false,elev:false,power:false,steps:false,meta:false,hrChart:false,splits:false},
   caption:'',footer:'PATTARAKORN SUTTIPOL',unit:'km',lang:'th',
   mode:'run',
   gym:{title:'เวทเทรนนิ่ง',date:'',place:'',time:'1:05:20',kcal:'410',hr:'128',wunit:'kg',muscles:['อก','ไหล่','หลังแขน'],
     ex:[{name:'Bench Press',sets:4,reps:8,kg:60,pr:true},{name:'Incline DB Press',sets:3,reps:10,kg:22,pr:false},{name:'Overhead Press',sets:3,reps:8,kg:35,pr:false},{name:'Lateral Raise',sets:3,reps:15,kg:8,pr:false},{name:'Tricep Pushdown',sets:3,reps:12,kg:25,pr:false}]},
   gshow:{vol:true,time:true,kcal:true,hr:false,sets:false,count:false,prs:false,list:true,bars:false,muscles:true},
-  iconSize:100,wxSize:100,
+  iconSize:100,wxSize:100,useLogo:false,logoSize:100,
   wx:{on:false,useTime:true,cond:'cloudy',temp:'29',feels:'',hum:'79',wind:'',pm:'',place:'',lat:null,lon:null},
   wxshow:{icon:true,temp:true,cond:false,feels:false,hum:true,wind:false,pm:false},
   tpl:'classic',icon:'blade',numFont:'',pos:'center',font:'Kanit',scale:100,rot:0,ox:0,oy:0,ratio:'9:16',res:'1',
   style:{text:'#ffffff',accent:'#ff5a1f',accent2:'#ffd23f',grad:false,stroke:false,strokeColor:'#000000',strokeW:6,shadow:55,upper:false,
          panel:'none',panelColor:'#0b1426',panelAlpha:55,radius:36},
   layers:{},order:[],layoutTouched:false,layoutIds:'',anim:{dur:6,bg:'media'},rt:{free:false,x:0,y:.3,scale:90,rot:0,flip:false,behind:false},sel:'stats',
-  route:{mode:'preset',drawn:[],gpx:[],gpxD:null,gpxT:null,shot:[],style:'solid',width:10,size:100,dots:false},
+  route:{mode:'preset',drawn:[],gpx:[],gpxD:null,gpxT:null,shot:[],pick:'',style:'solid',width:10,size:100,dots:false},
   bg:{zoom:100,x:0,y:0,filter:'none',bright:0,contrast:0,sat:0,vignette:0,fadeBottom:0}
 };
 const PRESETS=[
@@ -583,8 +606,8 @@ const PRESETS=[
   {n:'กระจกฝ้า',s:{text:'#ffffff',accent:'#ffd23f',accent2:'#ffffff',grad:false,stroke:false,shadow:25,panel:'glass',panelColor:'#ffffff',panelAlpha:18,radius:48}}
 ];
 const T={
-  th:{dist:'ระยะทาง',pace:'เพซ',time:'เวลา',hr:'หัวใจเฉลี่ย',cad:'รอบขา',kcal:'แคลอรี',elev:'ความสูงที่ได้',power:'กำลังเฉลี่ย',km:'กม.',mi:'ไมล์',kmL:'กิโลเมตร',miL:'ไมล์',kc:'กิโลแคล',m:'ม.',splits:'สปลิต',hrChart:'หัวใจรายกิโล',vol:'น้ำหนักรวม',sets:'เซ็ตรวม',setU:'เซ็ต',count:'จำนวนท่า',exU:'ท่า',prs:'สถิติใหม่',exList:'ท่าที่เล่น',volBars:'น้ำหนักต่อท่า',h:'ชม.',mn:'น.',s:'วิ.'},
-  en:{dist:'Distance',pace:'Pace',time:'Time',hr:'Avg HR',cad:'Cadence',kcal:'Calories',elev:'Elev Gain',power:'Avg Power',km:'km',mi:'mi',kmL:'KILOMETERS',miL:'MILES',kc:'kcal',m:'m',splits:'Splits',hrChart:'Heart rate per km',vol:'Volume',sets:'Sets',setU:'sets',count:'Exercises',exU:'',prs:'New PRs',exList:'Workout',volBars:'Volume per exercise',h:'h',mn:'m',s:'s'}
+  th:{dist:'ระยะทาง',pace:'เพซ',time:'เวลา',hr:'หัวใจเฉลี่ย',cad:'รอบขา',kcal:'แคลอรี',elev:'ความสูงที่ได้',power:'กำลังเฉลี่ย',steps:'จำนวนก้าว',lapTitle:'ระยะ กม. ต่อรอบ',km:'กม.',mi:'ไมล์',kmL:'กิโลเมตร',miL:'ไมล์',kc:'กิโลแคล',m:'ม.',splits:'สปลิต',hrChart:'หัวใจรายกิโล',vol:'น้ำหนักรวม',sets:'เซ็ตรวม',setU:'เซ็ต',count:'จำนวนท่า',exU:'ท่า',prs:'สถิติใหม่',exList:'ท่าที่เล่น',volBars:'น้ำหนักต่อท่า',h:'ชม.',mn:'น.',s:'วิ.'},
+  en:{dist:'Distance',pace:'Pace',time:'Time',hr:'Avg HR',cad:'Cadence',kcal:'Calories',elev:'Elev Gain',power:'Avg Power',steps:'Steps',lapTitle:'Splits per km',km:'km',mi:'mi',kmL:'KILOMETERS',miL:'MILES',kc:'kcal',m:'m',splits:'Splits',hrChart:'Heart rate per km',vol:'Volume',sets:'Sets',setU:'sets',count:'Exercises',exU:'',prs:'New PRs',exList:'Workout',volBars:'Volume per exercise',h:'h',mn:'m',s:'s'}
 };
 
 // ---------- state ----------
@@ -620,7 +643,8 @@ function derive(){
     {k:'cad',label:L.cad,val:ani(String(r.cad).trim()),unit:'SPM'},
     {k:'kcal',label:L.kcal,val:ani(String(r.kcal).trim()),unit:L.kc},
     {k:'elev',label:L.elev,val:ani(String(r.elev).trim()),unit:L.m},
-    {k:'power',label:L.power,val:ani(String(r.power).trim()),unit:'W'}
+    {k:'power',label:L.power,val:ani(String(r.power).trim()),unit:'W'},
+    {k:'steps',label:L.steps,val:(()=>{const n=parseInt(String(r.steps).replace(/\D/g,''),10);return isFinite(n)?Math.round(n*P).toLocaleString('en-US'):''})(),unit:''}
   ];
   const stats=all.filter(s=>S.show[s.k]&&s.val);
   if(S.style.upper&&S.lang==='en')stats.forEach(s=>s.label=s.label.toUpperCase());
@@ -791,10 +815,10 @@ function drawHrChart(ctx,hrs,x,y,w,h,L){
     if(hrs.length<=10)txt(ctx,String(v),a,b-18*SC,24*SC,600,'center','plain')});
   ctx.restore();
 }
-function drawSplitBars(ctx,sp,x,y,w,L){
+function drawSplitBars(ctx,sp,x,y,w,L,labs){
   label(ctx,L.splits,x,y+28*SC,28*SC,'left');y+=60*SC;
   const fast=Math.min(...sp),maxW=w-210*SC,st=S.style;
-  sp.forEach((v,i)=>{const ry=y+i*56*SC;txt(ctx,String(i+1),x,ry+30*SC,30*SC,600,'left','plain');
+  sp.forEach((v,i)=>{const ry=y+i*56*SC;txt(ctx,labs?labs[i]:String(i+1),x,ry+30*SC,30*SC,600,'left','plain');
     const bw=Math.max(maxW*fast/v,40*SC);ctx.save();setShadow(ctx);ctx.fillStyle=v===fast?st.accent2:st.accent;rrect(ctx,x+56*SC,ry+6*SC,bw,28*SC,14*SC);ctx.fill();ctx.restore();
     txt(ctx,mmss(v),x+56*SC+bw+18*SC,ry+31*SC,30*SC,600,'left','plain')});
 }
@@ -827,11 +851,11 @@ function common(d,align,x,cw){
   top.wx=wxRowOn()?{h:96*s*wxK(),draw:y=>drawWeather(CTX,x,y,align,s)}:null;
   top.meta=S.show.meta?{h:130*s,draw:y=>{txt(CTX,META().title,x,y+46*s,46*s,600,align,'plain');label(CTX,[META().place,META().date].filter(Boolean).join('  ·  '),x,y+92*s,28*s,align)}}:null;
   top.caption=S.caption?{h:76*s,draw:y=>txt(CTX,S.caption,x,y+46*s,40*s,500,align,'plain')}:null;
-  top.footer=S.footer?{h:72*s,draw:y=>{CTX.save();CTX.font=F(700,32*s);const sp=7*s;if('letterSpacing' in CTX){CTX.letterSpacing=sp+'px'}CTX.textAlign=align;CTX.fillStyle=S.style.text;setShadow(CTX);CTX.fillText(S.footer.toUpperCase(),align==='center'?x+sp/2:x,y+44*s);CTX.restore()}}:null;
+  top.footer=hasBrand()?{h:(hasLogo()?96:72)*s,draw:y=>drawBrand(CTX,x,y+(hasLogo()?28:14)*s,40*s,align)}:null;
   const hl=align==='center'?x-cw/2:x;
   top.hr=S.show.hrChart&&d.hrs.length>1?{h:250*s,draw:y=>drawHrChart(CTX,d.hrs,hl,y,cw,250*s,L)}:null;
   Object.assign(top,gymRows(d,align,x,cw));
-  top.splits=S.show.splits&&d.splits.length?{h:(70+d.splits.length*56)*s,draw:y=>drawSplitBars(CTX,d.splits,hl,y,cw,L)}:null;
+  top.splits=S.show.splits&&d.splits.length?{h:(70+d.splits.length*56)*s,draw:y=>drawSplitBars(CTX,d.splits,hl,y,cw,L,splitLabels(d.splits.length))}:null;
   return top;
 }
 let CTX=null;
@@ -873,7 +897,7 @@ const TPL={
     const rows=[c.icon,c.meta,c.muscles,c.wx,
       hero?{h:236*s,draw:y=>{if(hasR)drawRoute(CTX,d.route,x0+cw-230*s,y+6*s,230*s,200*s,'right');label(CTX,hero.label,x0,y+34*s,32*s,'left');drawVal(CTX,x0,y+196*s,hero.val,hero.unit,165*s,'left')}}:null,
       rest.length?{h:150*s,draw:y=>rest.forEach((t,i)=>{const x=x0+i*cw/3;label(CTX,t.label,x,y+34*s,28*s,'left');drawVal(CTX,x,y+108*s,t.val,t.unit,66*s,'left')})}:null,
-      d.splits.length?{h:(70+d.splits.length*56)*s,draw:y=>drawSplitBars(CTX,d.splits,x0,y,cw,d.L)}:null,
+      d.splits.length?{h:(70+d.splits.length*56)*s,draw:y=>drawSplitBars(CTX,d.splits,x0,y,cw,d.L,splitLabels(d.splits.length))}:null,
       c.exlist,c.vbars,c.hr,c.caption,c.footer].filter(Boolean);
     stackRows(CTX,W,H,rows,{x:x0,w:cw});
   },
@@ -889,7 +913,7 @@ const TPL={
       st.forEach((t,i)=>{const cx=x0+colW*i;label(CTX,t.label,cx,y+40*s,30*s,'left');
         let size=92*s;const w=valW(CTX,t.val,t.unit,size);if(w>colW-24*s)size*=(colW-24*s)/w;drawVal(CTX,cx,y+150*s,t.val,t.unit,size,'left');
         if(i){CTX.save();CTX.globalAlpha=.4;CTX.fillStyle=S.style.text;CTX.shadowColor='transparent';CTX.fillRect(cx-14*s,y+14*s,3*s,150*s);CTX.restore()}})}});
-    if(S.caption||S.footer)rows.push({h:70*s,draw:y=>{if(S.caption)txt(CTX,S.caption,x0,y+44*s,34*s,500,'left','plain');if(S.footer){CTX.save();CTX.font=F(700,28*s);if('letterSpacing' in CTX)CTX.letterSpacing=6*s+'px';CTX.textAlign='right';CTX.fillStyle=S.style.text;setShadow(CTX);CTX.fillText(S.footer.toUpperCase(),x0+cw,y+44*s);CTX.restore()}}});
+    if(S.caption||hasBrand())rows.push({h:70*s,draw:y=>{if(S.caption)txt(CTX,S.caption,x0,y+44*s,34*s,500,'left','plain');if(hasBrand())drawBrand(CTX,x0+cw,y+12*s,36*s,'right')}});
     stackRows(CTX,W,H,rows,{x:x0,w:cw});
   },
   badge(W,H,d){
@@ -972,11 +996,10 @@ function layerList(d){
     if(S.gshow.list&&d.ex.length){const n=d.ex.length;L.push({id:'exlist',h:.04+n*.03,draw(c){const h=(70+n*56)*SC;drawExList(c,d,-430*SC,-h/2,860*SC);return[430*SC,h/2]}})}
     const vb=d.ex.filter(e=>exVol(e)>0).length;if(S.gshow.bars&&vb)L.push({id:'vbars',h:.04+vb*.038,draw(c){const h=(70+vb*72)*SC;drawVolBars(c,d,-430*SC,-h/2,860*SC);return[430*SC,h/2]}});
   }
-  if(S.show.splits&&d.splits.length){const n=d.splits.length;L.push({id:'splits',h:.04+n*.03,draw(c){const h=(70+n*56)*SC;drawSplitBars(c,d.splits,-450*SC,-h/2,900*SC,d.L);return[450*SC,h/2]}})}
+  if(S.show.splits&&d.splits.length){const n=d.splits.length;L.push({id:'splits',h:.04+n*.03,draw(c){const h=(70+n*56)*SC;drawSplitBars(c,d.splits,-450*SC,-h/2,900*SC,d.L,splitLabels(d.splits.length));return[450*SC,h/2]}})}
   if(S.show.hrChart&&d.hrs.length>1)L.push({id:'hr',h:.14,draw(c){drawHrChart(c,d.hrs,-450*SC,-125*SC,900*SC,250*SC,d.L);return[450*SC,125*SC]}});
   if(S.caption)L.push({id:'caption',h:.05,draw(c){txt(c,S.caption,0,14*SC,40*SC,500,'center','plain');c.font=F(500,40*SC);return[c.measureText(S.caption).width/2,34*SC]}});
-  if(S.footer)L.push({id:'footer',h:.05,draw(c){c.save();c.font=F(700,32*SC);const sp=7*SC;if('letterSpacing' in c)c.letterSpacing=sp+'px';c.textAlign='center';c.fillStyle=S.style.text;setShadow(c);
-    const tx=S.footer.toUpperCase();c.fillText(tx,sp/2,12*SC);const w=c.measureText(tx).width;c.restore();return[w/2,30*SC]}});
+  if(hasBrand())L.push({id:'footer',h:.05,draw(c){const w=drawBrand(c,0,-20*SC,40*SC,'center');return[w/2,(hasLogo()?40:30)*SC]}});
   const mi=L.findIndex(l=>l.id==='muscles');if(mi>0){const[m]=L.splice(mi,1);const at=L.findIndex(l=>l.id.startsWith('stat:'));L.splice(at<0?L.length:at,0,m)}
   return L;
 }
@@ -1084,7 +1107,7 @@ function draw(){
   HITS=[];const glass=bg&&S.style.panel==='glass';composite(vx,W,H,1,glass?bg:null);drawSelection(vx);
   bgc.style.visibility=glass?'hidden':''; // the view already holds the background when the glass panel samples it
   document.querySelectorAll('[data-ratio]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ratio===S.ratio));$('freeBtn').setAttribute('aria-pressed',!!S.rt.free);
-  document.querySelectorAll('[data-out]').forEach(o=>{const v=getP(o.dataset.out);o.textContent=['scale','route.size','bg.zoom','style.panelAlpha','style.shadow','rt.scale','iconSize','wxSize'].includes(o.dataset.out)?v+'%':['rot','rt.rot'].includes(o.dataset.out)?v+'°':v});
+  document.querySelectorAll('[data-out]').forEach(o=>{const v=getP(o.dataset.out);o.textContent=['scale','route.size','bg.zoom','style.panelAlpha','style.shadow','rt.scale','iconSize','wxSize','logoSize'].includes(o.dataset.out)?v+'%':['rot','rt.rot'].includes(o.dataset.out)?v+'°':v});
   if(ANIM)return;drawPad();renderIconCards();renderLayers();store.set('rs.state',S);
 }
 
@@ -1276,6 +1299,7 @@ function parseWorkoutText(raw){
   if(!hr){const mm=t.match(/(?:เฉลี่ย|avg\.?|average)\s*(\d{2,3})\s?[B8]PM/i);if(mm)o.hr=mm[1]}else o.hr=hr.m[1];
   // cadence, power, elevation, kcal
   if((m=t.match(/(\d{2,3})\s*[sS5][pP][mM]/)))o.cad=m[1];
+  if((m=t.match(/(\d{1,3}(?:,\d{3})+|\d{3,6})\s*(?:ก้าว|steps)/i)))o.steps=m[1].replace(/,/g,'');
   if((m=t.match(/(\d{2,4})\s*(?:วัตต|W\b)/)))o.power=m[1];
   if((m=t.match(/(?:^|[^\d.,])(\d{1,4})\s*ม\./m))||(m=t.match(/(?:^|[^\d.,])(\d{1,4})\s?(?:m|ft)\b(?!\s*\/)/m)))o.elev=m[1];
   const kc=[...t.matchAll(/(\d{2,4})\s*(?:กิโลแคล|kcal|cal\b|KCAL|CAL\b)/gi)].map(x=>+x[1]);if(kc.length)o.kcal=String(Math.max(...kc));
@@ -1300,32 +1324,76 @@ function parseWorkoutText(raw){
   return o;
 }
 
-// Trace the coloured route line (yellow/orange/red) from a map screenshot
-function routeFromImage(img){
-  const W=360,H=Math.round(img.naturalHeight*W/img.naturalWidth),c=document.createElement('canvas');c.width=W;c.height=H;
-  const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,W,H);const p=x.getImageData(0,0,W,H).data;
-  const y0=Math.round(H*.06),y1=Math.round(H*.56),cell=3,cols=Math.ceil(W/cell),hit=new Map();
-  // only map screenshots: most of the upper area is muted green/grey map ground
-  let mapPx=0,tot=0;for(let y=y0;y<y1;y+=3)for(let xx=0;xx<W;xx+=3){const i=(y*W+xx)*4,r=p[i],g=p[i+1],b=p[i+2],l=(r+g+b)/3;tot++;if(l>25&&l<170&&g>r+6&&g>=b-4)mapPx++}
-  if(mapPx/tot<.45)return null;
-  for(let y=y0;y<y1;y++)for(let xx=0;xx<W;xx++){const i=(y*W+xx)*4,r=p[i],g=p[i+1],b=p[i+2];
-    if(r>190&&b<110&&r-b>120&&g<r-25){const k=((y/cell)|0)*cols+((xx/cell)|0);hit.set(k,(hit.get(k)||0)+1)}}
-  const nodes=[...hit.entries()].filter(([,n])=>n>=2).map(([k])=>[k%cols,(k/cols)|0]);
-  if(nodes.length<12)return null;
-  // keep the largest connected group
-  const key=(a,b)=>a+','+b,set=new Set(nodes.map(n=>key(...n))),seen=new Set();let best=[];
-  for(const n of nodes){const k0=key(...n);if(seen.has(k0))continue;const comp=[],st=[n];seen.add(k0);
-    while(st.length){const[a,b]=st.pop();comp.push([a,b]);for(let dx=-2;dx<=2;dx++)for(let dy=-2;dy<=2;dy++){const k=key(a+dx,b+dy);if(set.has(k)&&!seen.has(k)){seen.add(k);st.push([a+dx,b+dy])}}}
-    if(comp.length>best.length)best=comp}
-  if(best.length<12)return null;
-  // order: start at an extreme cell, then walk to the nearest unvisited cell
-  const deg=n=>best.filter(m=>Math.abs(m[0]-n[0])<=1&&Math.abs(m[1]-n[1])<=1).length;
-  let cur=best.reduce((a,n)=>deg(n)<deg(a)?n:a,best[0]);const left=new Set(best.map(n=>key(...n)));const path=[cur];left.delete(key(...cur));
-  while(left.size){let bd=1e9,bn=null;for(const k of left){const[a,b]=k.split(',').map(Number);const d=(a-cur[0])**2+(b-cur[1])**2;if(d<bd){bd=d;bn=[a,b]}}
-    if(bd>64)break;left.delete(key(...bn));cur=bn;path.push(cur)}
-  // light smoothing and thinning
-  const sm=path.map((q,i)=>{const a=path[Math.max(0,i-2)],b=path[Math.min(path.length-1,i+2)];return[(a[0]+q[0]+b[0])/3,(a[1]+q[1]+b[1])/3]});
-  return sm.filter((_,i)=>i%2===0||i===sm.length-1);
+// Trace a coloured route line out of any image: a saved route sticker, a map screenshot or a photo with a route on it.
+// 1) mask route-coloured pixels  2) join small gaps  3) keep the most route-like blob
+// 4) thin it to a 1-pixel skeleton  5) walk the skeleton in order  6) simplify.
+function rgbHue(r,g,b){const mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;let h=0;
+  if(d){if(mx===r)h=((g-b)/d)%6;else if(mx===g)h=(b-r)/d+2;else h=(r-g)/d+4;h*=60;if(h<0)h+=360}
+  return[h,mx?d/mx:0,mx/255]}
+function routeFromImage(img,strict=true,pickHex=''){
+  const MAX=900,sc=Math.min(1,MAX/Math.max(img.naturalWidth,img.naturalHeight)),W=Math.max(8,Math.round(img.naturalWidth*sc)),H=Math.max(8,Math.round(img.naturalHeight*sc));
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const cx=cv.getContext('2d',{willReadFrequently:true});cx.drawImage(img,0,0,W,H);
+  const p=cx.getImageData(0,0,W,H).data,N=W*H;
+  let target=null;if(pickHex){const n=parseInt(pickHex.slice(1),16);target=rgbHue(n>>16&255,n>>8&255,n&255)[0]}
+  const build=t=>{const m=new Uint8Array(N);let c=0;for(let i=0;i<N;i++){const k=i*4;if(p[k+3]<100)continue;const r=p[k],g=p[k+1],b=p[k+2],[h,s,v]=rgbHue(r,g,b);
+      let ok;if(t!=null){const dh=Math.min(Math.abs(h-t),360-Math.abs(h-t));ok=dh<20&&s>.35&&v>.35}else ok=(h<=48||h>=355)&&s>.5&&v>.55&&r>150;
+      if(ok){m[i]=1;c++}}return[m,c]};
+  let mapLike=false;
+  if(strict){ // screenshot reading: skip dark app screens (charts, text) unless part of the screen is a map
+    let dark=0,map=0,tot=0;for(let i=0;i<N;i+=7){const k=i*4,r=p[k],g=p[k+1],b=p[k+2],l=(r+g+b)/3;tot++;if(p[k+3]>100&&l<45)dark++;if(l>25&&l<170&&g>r+6&&g>=b-4)map++}
+    mapLike=map/tot>=.2;if(!mapLike&&dark/tot>.6)return null}
+  let[mask,cnt]=build(target);
+  if(cnt<40&&target==null){ // nothing orange/red/yellow: fall back to the most common vivid colour
+    const hist=new Array(36).fill(0);for(let i=0;i<N;i++){const k=i*4;if(p[k+3]<100)continue;const[h,s,v]=rgbHue(p[k],p[k+1],p[k+2]);if(s>.55&&v>.5)hist[Math.floor(h/10)%36]++}
+    const bi=hist.indexOf(Math.max(...hist));if(hist[bi]>=40)[mask,cnt]=build(bi*10+5)}
+  if(cnt<40)return null;
+  // close small gaps (dashes, overlapping laps) with a 5x5 dilation
+  const dil=new Uint8Array(N),R=Math.max(2,Math.round(Math.max(W,H)/(mapLike?110:260)));
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){if(!mask[y*W+x])continue;for(let dy=-R;dy<=R;dy++){const yy=y+dy;if(yy<0||yy>=H)continue;for(let dx=-R;dx<=R;dx++){const xx=x+dx;if(xx>=0&&xx<W)dil[yy*W+xx]=1}}}
+  // connected blobs
+  const lab=new Int32Array(N).fill(-1),comps=[];const q=new Int32Array(N);
+  for(let i=0;i<N;i++){if(!dil[i]||lab[i]>=0)continue;let qh=0,qt=0;q[qt++]=i;lab[i]=comps.length;let n=0,x0=W,y0=H,x1=0,y1=0;
+    while(qh<qt){const j=q[qh++];n++;const x=j%W,y=(j/W)|0;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;
+      for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const xx=x+dx,yy=y+dy;if(xx<0||yy<0||xx>=W||yy>=H)continue;const k=yy*W+xx;if(dil[k]&&lab[k]<0){lab[k]=comps.length;q[qt++]=k}}}
+    comps.push({id:comps.length,n,x0,y0,x1,y1})}
+  const md=Math.min(W,H);
+  comps.forEach(c=>{const bw=c.x1-c.x0+1,bh=c.y1-c.y0+1;c.diag=Math.hypot(bw,bh);c.fill=c.n/(bw*bh);c.elong=Math.max(bw,bh)/Math.max(1,Math.min(bw,bh));
+    c.ok=mapLike?c.diag>=md*.1:c.diag>=md*(strict?.18:.08)&&(c.fill<=.35||(c.elong>6&&c.fill<=.75))});
+  let cands=comps.filter(c=>c.ok).sort((a,b)=>b.n-a.n).slice(0,6);
+  if(!cands.length&&!strict)cands=comps.sort((a,b)=>b.n-a.n).slice(0,1);
+  if(!cands.length)return null;
+  // thin each candidate (Zhang-Suen) and score it: long skeletons with few branch ends look like routes, text looks bushy
+  const skel=c=>{const bw=c.x1-c.x0+3,bh=c.y1-c.y0+3,g=new Uint8Array(bw*bh);
+    for(let y=c.y0;y<=c.y1;y++)for(let x=c.x0;x<=c.x1;x++)if(lab[y*W+x]===c.id)g[(y-c.y0+1)*bw+(x-c.x0+1)]=1;
+    for(let changed=true;changed;){changed=false;for(let step=0;step<2;step++){const del=[];
+      for(let y=1;y<bh-1;y++)for(let x=1;x<bw-1;x++){const i=y*bw+x;if(!g[i])continue;
+        const P=[g[i-bw],g[i-bw+1],g[i+1],g[i+bw+1],g[i+bw],g[i+bw-1],g[i-1],g[i-bw-1]];let B=0,A=0;for(let k=0;k<8;k++){B+=P[k];if(!P[k]&&P[(k+1)%8])A++}
+        if(B<2||B>6||A!==1)continue;
+        if(step===0?(P[0]&&P[2]&&P[4])||(P[2]&&P[4]&&P[6]):(P[0]&&P[2]&&P[6])||(P[0]&&P[4]&&P[6]))continue;del.push(i)}
+      if(del.length){changed=true;del.forEach(i=>g[i]=0)}}}
+    let Ls=0,E=0,J=0;for(let i=0;i<g.length;i++){if(!g[i])continue;Ls++;let d=0;for(const o of[-bw-1,-bw,-bw+1,-1,1,bw-1,bw,bw+1])if(g[i+o])d++;if(d===1)E++;else if(d>=4)J++}
+    const br=(E+J)/Math.max(Ls,1)*50;return{g,bw,bh,score:Ls/(1+br*br*br),br}};
+  let pick=null;for(const c of cands){const k=skel(c);if(strict&&k.br>6)continue;if(!pick||k.score>pick.score)pick=k}
+  if(!pick)return null;
+  const{g,bw,bh}=pick;
+  // walk the skeleton, preferring to keep going straight
+  const pts=[];for(let i=0;i<g.length;i++)if(g[i])pts.push(i);if(pts.length<8)return null;
+  const NB=[[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]],vis=new Uint8Array(g.length);
+  const deg=i=>{let d=0;const x=i%bw,y=(i/bw)|0;NB.forEach(([dx,dy])=>{if(g[(y+dy)*bw+x+dx])d++});return d};
+  let cur=pts.find(i=>deg(i)===1);if(cur==null)cur=pts[0];
+  const path=[cur];vis[cur]=1;let left=pts.length-1;
+  while(left>0){const x=cur%bw,y=(cur/bw)|0;const back=path[Math.max(0,path.length-4)],dx0=x-back%bw,dy0=y-((back/bw)|0),dl=Math.hypot(dx0,dy0)||1;
+    let nx=-1,bs=-9;NB.forEach(([dx,dy])=>{const k=(y+dy)*bw+x+dx;if(g[k]&&!vis[k]){const sc=(dx*dx0+dy*dy0)/(dl*Math.hypot(dx,dy));if(sc>bs){bs=sc;nx=k}}});
+    if(nx<0){let bd=1e9;for(const k of pts){if(vis[k])continue;const d=(k%bw-x)**2+(((k/bw)|0)-y)**2;if(d<bd){bd=d;nx=k}}
+      if(nx<0)break;if(Math.sqrt(bd)>12&&left<pts.length*.2)break}
+    vis[nx]=1;left--;path.push(nx);cur=nx}
+  let out=path.map(i=>[i%bw,(i/bw)|0]);
+  // close loops, then drop jitter (Douglas-Peucker)
+  const f=out[0],l=out[out.length-1];if(out.length>20&&Math.hypot(f[0]-l[0],f[1]-l[1])<Math.max(14,Math.hypot(bw,bh)*.06))out.push(f);
+  const rdp=(a,e)=>{if(a.length<3)return a;const[A,B]=[a[0],a[a.length-1]],dx=B[0]-A[0],dy=B[1]-A[1],L=Math.hypot(dx,dy);let mi=0,md=0;
+    for(let i=1;i<a.length-1;i++){const d=L?Math.abs(dy*a[i][0]-dx*a[i][1]+B[0]*A[1]-B[1]*A[0])/L:Math.hypot(a[i][0]-A[0],a[i][1]-A[1]);if(d>md){md=d;mi=i}}
+    return md>e?rdp(a.slice(0,mi+1),e).slice(0,-1).concat(rdp(a.slice(mi),e)):[A,B]};
+  out=rdp(out,.9);return out.length>=3?out:null;
 }
 
 function loadImg(file){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=rej;im.src=URL.createObjectURL(file)})}
@@ -1351,7 +1419,7 @@ const AI_PROMPT=`You read workout screenshots: running (Apple Fitness/Apple Watc
 Reply with ONLY a JSON object, no prose, using null for anything not visible:
 {"title": string (activity name as shown, e.g. "วิ่งกลางแจ้ง"), "date": string (day, short month, year as shown, plus start time, e.g. "12 ต.ค. 2569 · 17:19"), "place": string,
  "distance_km": number, "workout_time": "h:mm:ss" (moving/workout time, not elapsed), "avg_pace": "m:ss" per km,
- "avg_hr": number, "cadence_spm": number, "total_kcal": number, "elevation_gain_m": number, "avg_power_w": number,
+ "avg_hr": number, "cadence_spm": number, "total_kcal": number, "elevation_gain_m": number, "avg_power_w": number, "steps": number,
  "splits": ["m:ss", ...] time of each lap or km in order, "split_hr": [number, ...] heart rate of each lap in order,
  "activity": "run" | "strength" | "other", "weather_temp_c": number, "weather_humidity": number (percent), "weather": "clear"|"partly"|"cloudy"|"rain"|"storm"|"fog"|"wind"|"night" or null,
  "exercises": [{"name": string, "sets": number, "reps": number (typical reps per set), "weight_kg": number (heaviest working weight, converted to kg), "pr": boolean}] for strength workouts, else []}`;
@@ -1359,10 +1427,10 @@ function fromClaude(j){const o={};if(!j||typeof j!=='object')return o;
   if(j.title)o.title=String(j.title);if(j.date)o.date=String(j.date);if(j.place)o.place=String(j.place);
   if(isFinite(j.distance_km))o.dist=(+j.distance_km).toFixed(2);if(j.workout_time)o.time=String(j.workout_time);if(j.avg_pace)o.pace=String(j.avg_pace);
   if(isFinite(j.avg_hr))o.hr=String(j.avg_hr);if(isFinite(j.cadence_spm))o.cad=String(j.cadence_spm);if(isFinite(j.total_kcal))o.kcal=String(j.total_kcal);
-  if(isFinite(j.elevation_gain_m))o.elev=String(j.elevation_gain_m);if(isFinite(j.avg_power_w))o.power=String(j.avg_power_w);
+  if(isFinite(j.elevation_gain_m))o.elev=String(j.elevation_gain_m);if(isFinite(j.avg_power_w))o.power=String(j.avg_power_w);if(isFinite(j.steps)&&j.steps)o.steps=String(j.steps);
   if(j.activity)o.activity=String(j.activity);if(isFinite(j.weather_temp_c)&&j.weather_temp_c!==null)o.wxTemp=String(j.weather_temp_c);if(isFinite(j.weather_humidity)&&j.weather_humidity!==null)o.wxHum=String(j.weather_humidity);if(j.weather&&WX_COND[j.weather])o.wxCond=j.weather;if(Array.isArray(j.exercises)&&j.exercises.length)o.exercises=j.exercises.filter(e=>e&&e.name).map(e=>({name:String(e.name),sets:+e.sets||'',reps:+e.reps||'',kg:isFinite(e.weight_kg)&&e.weight_kg?+(+e.weight_kg).toFixed(1):'',pr:!!e.pr}));
   if(Array.isArray(j.splits)&&j.splits.length)o.splits=j.splits.join(', ');if(Array.isArray(j.split_hr)&&j.split_hr.length)o.hrSplits=j.split_hr.join(', ');return o}
-const FOUND_LABEL={dist:'ระยะทาง',time:'เวลา',pace:'เพซ',hr:'หัวใจ',cad:'รอบขา',kcal:'แคลอรี',elev:'ความสูง',power:'กำลัง',splits:'สปลิต',hrSplits:'หัวใจรายกิโล',date:'วันที่',title:'ชื่อ',place:'สถานที่'};
+const FOUND_LABEL={steps:'ก้าว',dist:'ระยะทาง',time:'เวลา',pace:'เพซ',hr:'หัวใจ',cad:'รอบขา',kcal:'แคลอรี',elev:'ความสูง',power:'กำลัง',splits:'สปลิต',hrSplits:'หัวใจรายกิโล',date:'วันที่',title:'ชื่อ',place:'สถานที่'};
 function aiStatus(text,frac){const box=$('aiStatus');box.hidden=false;$('aiText').textContent=text;$('aiBar').style.width=Math.round((frac||0)*100)+'%'}
 async function readShots(files){
   files=[...files].slice(0,4);if(!files.length)return;$('aiResult').innerHTML='';$('shotBtn').classList.add('busy');
@@ -1403,6 +1471,13 @@ async function readShots(files){
   finally{$('shotBtn').classList.remove('busy');$('shotIn').value=''}
 }
 $('shotIn').onchange=e=>readShots(e.target.files);
+$('pickMode').onchange=e=>{$('pickColor').hidden=e.target.value!=='custom';S.route.pick=e.target.value==='custom'?$('pickColor').value:''};
+$('pickColor').oninput=e=>{S.route.pick=e.target.value};
+$('routeImgIn').onchange=async e=>{const f=e.target.files[0];if(!f)return;$('routeImgBtn').classList.add('busy');
+  try{const im=await loadImg(f);const r=routeFromImage(im,false,S.route.pick);
+    if(r){S.route.shot=r;S.route.mode='shot';syncInputs();schedule();toast('ดึงเส้นทางจากภาพแล้ว')}
+    else toast('ไม่พบเส้นทางในภาพ ลองเลือก "สีอื่น" แล้วเลือกสีให้ตรงกับเส้น')}
+  catch(err){toast('เปิดภาพไม่ได้')}finally{$('routeImgBtn').classList.remove('busy');e.target.value=''}};
 (async()=>{const s=await getSample();$('aiEngine').textContent=s?'อ่านด้วย Claude (แม่นยำสุด ใช้โควตาบัญชี Claude ของคุณ)':
   'อ่านในเครื่องด้วย OCR ฟรี ภาพไม่ถูกส่งออกไปไหน ครั้งแรกต้องใช้เน็ตโหลดข้อมูลภาษาประมาณ 8 MB'})();
 
@@ -1628,12 +1703,121 @@ $('wxFind').onclick=async()=>{let q=$('wxCity').value.trim();if(!q){const p=Stri
   try{const r=await (await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=1&language=th`)).json();const g=r.results&&r.results[0];if(!g)throw 0;
     fetchWeather(g.latitude,g.longitude,g.name)}catch(e){wxMsg(location.hostname.includes('claude')?'หน้านี้ดึงข้อมูลอินเทอร์เน็ตไม่ได้ ใช้ในแอปที่ติดตั้ง หรือกรอกเองด้านล่าง':'ไม่พบชื่อนี้ ลองพิมพ์ชื่อจังหวัด เช่น กาญจนบุรี')}};
 
+// ---------- brand mark: uploaded logo or brand text ----------
+let LOGO_IMG=null;
+function loadLogo(){let u=null;try{u=localStorage.getItem('rs.logo')}catch(e){}if(!u){LOGO_IMG=null;return}const im=new Image();im.onload=()=>{LOGO_IMG=im;schedule()};im.src=u}
+const hasLogo=()=>S.useLogo&&LOGO_IMG&&LOGO_IMG.naturalWidth>0;
+const hasBrand=()=>hasLogo()||!!S.footer;
+function drawBrand(ctx,x,yTop,size,align,measureOnly){
+  if(hasLogo()){const h=size*1.5*(S.logoSize||100)/100,w=h*LOGO_IMG.naturalWidth/LOGO_IMG.naturalHeight;if(measureOnly)return w;
+    const left=align==='center'?x-w/2:align==='right'?x-w:x;ctx.save();setShadow(ctx);ctx.drawImage(LOGO_IMG,left,yTop+size/2-h/2,w,h);ctx.restore();return w}
+  if(!S.footer)return 0;const tx=S.footer.toUpperCase(),sp=size*.16;
+  ctx.save();ctx.font=F(800,size*.78);if('letterSpacing' in ctx)ctx.letterSpacing=sp+'px';const w=ctx.measureText(tx).width;
+  if(!measureOnly){ctx.textAlign='left';ctx.fillStyle=S.style.text;setShadow(ctx);const left=align==='center'?x-w/2:align==='right'?x-w:x;ctx.fillText(tx,left,yTop+size*.8)}
+  ctx.restore();return w;
+}
+$('logoIn').onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{
+    const k=Math.min(1,600/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);
+    c.getContext('2d').drawImage(im,0,0,c.width,c.height);const u=c.toDataURL('image/png');try{localStorage.setItem('rs.logo',u)}catch(err){}
+    LOGO_IMG=null;const j=new Image();j.onload=()=>{LOGO_IMG=j;S.useLogo=true;syncInputs();schedule();toast('ใส่โลโก้แล้ว')};j.src=u};im.src=URL.createObjectURL(f);e.target.value=''};
+$('logoClear').onclick=()=>{try{localStorage.removeItem('rs.logo')}catch(e){}LOGO_IMG=null;S.useLogo=false;syncInputs();schedule()};
+
+// ---------- date helpers ----------
+const TH_DAYS=['วันอาทิตย์','วันจันทร์','วันอังคาร','วันพุธ','วันพฤหัสบดี','วันศุกร์','วันเสาร์'],EN_DAYS=['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
+function actDate(){return activityTime()||new Date()}
+function dayName(){const d=actDate();return(S.lang==='th'?TH_DAYS:EN_DAYS)[d.getDay()]}
+function dateShort(full){const d=actDate();return S.lang==='th'?`${d.getDate()} ${TH_SHORT[d.getMonth()]}${full?' '+(d.getFullYear()+543):''}`:`${EN_MONTHS[d.getMonth()].toUpperCase()} ${d.getDate()}${full?', '+d.getFullYear():''}`}
+const statText=t=>`${t.val}${t.unit?' '+t.unit:''}`;
+function splitLabels(n){const dist=parseFloat(String(S.run.dist).replace(',','.'));const L=[];for(let i=0;i<n;i++)L.push(String(i+1));
+  if(S.mode!=='gym'&&isFinite(dist)&&n===Math.ceil(dist)&&dist%1>.04)L[n-1]=(dist%1).toFixed(1);return L}
+
+// ---------- app-style template pack ----------
+Object.assign(TPL,{
+  ticket(W,H,d){ // receipt-shaped card: brand, icon, weekday, date
+    const s=SC,cx=W/2,bw=560*s,ik=Math.min(S.iconSize/100,2),ih=S.icon!=='none'?110*s*ik:0,st=d.stats.slice(0,3),showStats=S.ticketStats!==false&&st.length;
+    const brandH=hasBrand()?110*s:30*s,bh=70*s+brandH+(ih?ih+60*s:0)+110*s+56*s+(showStats?70*s:0)+80*s;
+    const x0=cx-bw/2,y0=placeY(W,H,bh),n=14,tw=bw/n,dep=22*s;
+    CTX.save();CTX.beginPath();CTX.moveTo(x0,y0);CTX.lineTo(x0+bw,y0);CTX.lineTo(x0+bw,y0+bh-dep);
+    for(let i=0;i<n;i++){CTX.lineTo(x0+bw-(i+.5)*tw,y0+bh);CTX.lineTo(x0+bw-(i+1)*tw,y0+bh-dep)}CTX.closePath();
+    if(S.style.panel!=='none'){CTX.fillStyle=hexA(S.style.panelColor,S.style.panelAlpha/100);CTX.fill()}
+    setShadow(CTX);CTX.lineJoin='round';CTX.lineWidth=3*s;CTX.strokeStyle=S.style.text;CTX.stroke();CTX.restore();
+    let y=y0+70*s;if(hasBrand()){const bs=56*s*Math.min(1,(bw-90*s)/Math.max(1,drawBrand(CTX,0,0,56*s,'center',true)));drawBrand(CTX,cx,y+(56*s-bs)/2,bs,'center');y+=brandH}else y+=brandH;
+    if(ih){drawIcon(CTX,cx,y,ih,'center');y+=ih+60*s}
+    txt(CTX,dayName(),cx,y+86*s,96*s,700,'center','plain');y+=110*s;
+    label(CTX,dateShort(false),cx,y+34*s,34*s,'center');y+=56*s;
+    if(showStats)txt(CTX,st.map(statText).join('  ·  '),cx,y+44*s,32*s,600,'center','val');
+  },
+  side(W,H,d){ // brand top-left, big route, stats running down the right edge
+    const s=SC,m=90*s,top=300*s,bot=H-240*s;let y=200*s;
+    if(hasBrand()){drawBrand(CTX,m,y,58*s,'left');y+=100*s}
+    if(S.icon!=='none'){const ih=70*s*Math.min(S.iconSize/100,2.5);drawIcon(CTX,m,y,ih,'left');y+=ih+40*s}
+    if(d.route.length>1)drawRoute(CTX,d.route,m,Math.max(y+40*s,420*s),W-m-320*s,H-Math.max(y+40*s,420*s)-300*s,'center');
+    const st=d.stats,pairs=[];for(let i=0;i<st.length;i+=2)pairs.push(st.slice(i,i+2));
+    const seg=(bot-top)/Math.max(pairs.length,1);
+    pairs.forEach((pr,pi)=>{pr.forEach((t,li)=>{CTX.save();CTX.translate(W-150*s+li*60*s,top+pi*seg);CTX.rotate(Math.PI/2);
+      const lw=txt(CTX,t.label,0,0,26*s,500,'left','label');txt(CTX,statText(t),lw+18*s,0,30*s,600,'left','val');CTX.restore()})});
+  },
+  dots(W,H,d){ // route above a dotted list of stats
+    const s=SC,m=100*s,w=W-2*m,rh=58*s,st=d.stats,listH=st.length*rh,brandH=hasBrand()?90*s:0;
+    const yList=H-260*s-listH,brandY=yList-brandH;
+    if(d.route.length>1)drawRoute(CTX,d.route,m,230*s,w,Math.max(200*s,brandY-300*s),'center');
+    if(hasBrand())drawBrand(CTX,m,brandY,50*s,'left');
+    st.forEach((t,i)=>{const y=yList+i*rh+rh*.7,lw=txt(CTX,t.label,m,y,30*s,500,'left','label');
+      CTX.font=FN(600,30*s);const vw=CTX.measureText(statText(t)).width;txt(CTX,statText(t),W-m,y,30*s,600,'right','val');
+      CTX.save();CTX.fillStyle=S.style.text;CTX.globalAlpha*=.75;for(let x=m+lw+18*s;x<W-m-vw-18*s;x+=13*s){CTX.beginPath();CTX.arc(x,y-8*s,2.4*s,0,7);CTX.fill()}CTX.restore()});
+  },
+  routeback(W,H,d){ // big route drawn behind a centred stack of numbers
+    const s=SC,cx=W/2,rows=[];
+    if(hasBrand())rows.push({h:120*s,draw:y=>drawBrand(CTX,cx,y+20*s,60*s,'center')});
+    d.stats.forEach(t=>rows.push({h:160*s,draw:y=>{label(CTX,t.label,cx,y+32*s,30*s,'center');drawVal(CTX,cx,y+116*s,t.val,t.unit,80*s,'center')}}));
+    const bh=rows.reduce((a,r)=>a+r.h,0);let y=placeY(W,H,bh);
+    if(d.route.length>1)drawRoute(CTX,d.route,cx-380*s,y+(hasBrand()?90*s:-20*s),760*s,bh-(hasBrand()?60*s:-40*s),'center');
+    rows.forEach(r=>{r.draw(y);y+=r.h});
+  },
+  pills(W,H,d){ // rows of outlined capsules
+    const s=SC,ph=80*s,fs=35*s,pad=30*s,gap=14*s,maxW=W-130*s,items=[];
+    if(hasBrand())items.push({w:drawBrand(CTX,0,0,46*s,'left',true)+pad*2,draw:(x,y)=>drawBrand(CTX,x+pad,y+ph/2-23*s,46*s,'left')});
+    const dt=dateShort(true);CTX.font=F(500,fs);items.push({w:CTX.measureText(dt).width+pad*2,draw:(x,y)=>txt(CTX,dt,x+pad,y+ph*.67,fs,500,'left','plain')});
+    if(S.icon!=='none'){const ih=ph*.62;items.push({w:iconW(ih)+pad*2,draw:(x,y)=>drawIcon(CTX,x+pad,y+(ph-ih)/2,ih,'left')})}
+    d.stats.forEach(t=>{CTX.font=F(500,fs);const lw=CTX.measureText(t.label).width;CTX.font=FN(600,fs);const vw=CTX.measureText(statText(t)).width;
+      items.push({w:lw+vw+14*s+pad*2,draw:(x,y)=>{txt(CTX,t.label,x+pad,y+ph*.67,fs,500,'left','label');txt(CTX,statText(t),x+pad+lw+14*s,y+ph*.67,fs,600,'left','val')}})});
+    if(wxRowOn()&&S.wx.temp!==''){const tx=`${Math.round(+S.wx.temp)}°${S.wx.hum!==''?'  '+Math.round(+S.wx.hum)+'%':''}`;CTX.font=FN(600,fs);items.push({w:CTX.measureText(tx).width+pad*2,draw:(x,y)=>txt(CTX,tx,x+pad,y+ph*.67,fs,600,'left','val')})}
+    const rows=[[]];let rw=0;items.forEach(it=>{if(rw&&rw+gap+it.w>maxW){rows.push([]);rw=0}rows[rows.length-1].push(it);rw+=(rw?gap:0)+it.w});
+    let y=placeY(W,H,rows.length*(ph+gap));
+    rows.forEach(r=>{const tot=r.reduce((a,it)=>a+it.w,0)+gap*(r.length-1);let x=(W-tot)/2;
+      r.forEach(it=>{CTX.save();rrect(CTX,x,y,it.w,ph,ph/2);if(S.style.panel!=='none'){CTX.fillStyle=hexA(S.style.panelColor,S.style.panelAlpha/100);CTX.fill()}
+        setShadow(CTX);CTX.lineWidth=2.6*s;CTX.strokeStyle=S.style.text;CTX.stroke();CTX.restore();it.draw(x,y);x+=it.w+gap});y+=ph+gap});
+  },
+  lapbars(W,H,d){ // splits (or volume per exercise) with a big title
+    const s=SC,w=Math.min(900*s,W-160*s),x0=(W-w)/2;
+    if(d.gym){const vb=d.ex.filter(e=>exVol(e)>0).length,h=(70+vb*72)*s+(hasBrand()?110*s:0);let y=placeY(W,H,h);drawVolBars(CTX,d,x0,y,w);if(hasBrand())drawBrand(CTX,W/2,y+(70+vb*72)*s+30*s,46*s,'center');return}
+    const sp=d.splits,h=(110+sp.length*56)*s+(hasBrand()?110*s:0);let y=placeY(W,H,h);
+    txt(CTX,d.L.lapTitle,x0,y+48*s,48*s,700,'left','plain');
+    if(sp.length)drawSplitBars(CTX,sp,x0,y+30*s,w,{...d.L,splits:''},splitLabels(sp.length));
+    if(hasBrand())drawBrand(CTX,W/2,y+(110+sp.length*56)*s+30*s,46*s,'center');
+  },
+  card(W,H,d){ // rounded card: big route on top, title and stats below
+    const s=SC,m=70*s,cw=W-2*m,st=d.stats.slice(0,4),rows=Math.ceil(st.length/2),info=200*s+rows*150*s+30*s,ch=Math.min(H-160*s,info+Math.max(420*s,Math.min(760*s,H*.32)));
+    const x0=m,y0=placeY(W,H,ch),r=52*s,stl=S.style,a=Math.max(.45,stl.panelAlpha/100);
+    CTX.save();setShadow(CTX);rrect(CTX,x0,y0,cw,ch,r);const g=CTX.createLinearGradient(0,y0,0,y0+ch);g.addColorStop(0,hexA(stl.panelColor,a*.55));g.addColorStop(1,hexA(stl.panelColor,Math.min(1,a+.25)));CTX.fillStyle=g;CTX.fill();CTX.restore();
+    CTX.save();rrect(CTX,x0,y0,cw,ch,r);CTX.clip();CTX.strokeStyle=hexA(stl.text,.07);CTX.lineWidth=2*s;
+    for(let i=-12;i<24;i++){CTX.beginPath();CTX.moveTo(x0+i*110*s,y0);CTX.lineTo(x0+i*110*s+ch*.36,y0+ch);CTX.stroke();CTX.beginPath();CTX.moveTo(x0,y0+i*130*s);CTX.lineTo(x0+cw,y0+i*130*s-cw*.25);CTX.stroke()}
+    if(d.route.length>1)drawRoute(CTX,d.route,x0+70*s,y0+60*s,cw-140*s,ch-info-60*s,'center');CTX.restore();
+    CTX.save();rrect(CTX,x0,y0,cw,ch,r);CTX.lineWidth=2*s;CTX.strokeStyle=hexA(stl.text,.22);CTX.stroke();CTX.restore();
+    let y=y0+ch-info+20*s;const lx=x0+60*s;
+    if(S.icon!=='none')drawIcon(CTX,lx,y,64*s*Math.min(S.iconSize/100,1.6),'left');
+    if(hasBrand())drawBrand(CTX,x0+cw-60*s,y+10*s,44*s,'right');
+    y+=90*s;txt(CTX,META().title,lx,y+44*s,46*s,600,'left','plain');y+=90*s;
+    st.forEach((t,i)=>{const cx=lx+(i%2)*(cw-120*s)/2,ry=y+Math.floor(i/2)*150*s;label(CTX,t.label,cx,ry+30*s,28*s,'left');drawVal(CTX,cx,ry+110*s,t.val,t.unit,76*s,'left')});
+  }
+});
+
 // ---------- fonts ----------
 async function ensureFont(){try{const fams=[S.font,S.numFont].filter(Boolean);await Promise.all(fams.flatMap(f=>[400,500,600,700,800].map(w=>document.fonts.load(`${wfor(f,w)} 40px "${f}"`,'ระยะทาง 0123 กม.'))))}catch(e){}}
 document.addEventListener('change',e=>{if(['font','numFont'].includes(e.target.dataset?.k))ensureFont().then(schedule)});
 
 // ---------- boot ----------
-renderPresets();renderIconCards();renderStyles();renderRuns();renderExEditor();syncGymUI();applyMode();syncInputs();draw();
+loadLogo();renderPresets();renderIconCards();renderStyles();renderRuns();renderExEditor();syncGymUI();applyMode();syncInputs();draw();
 ensureFont().then(draw);document.fonts&&document.fonts.ready.then(draw);
 const fcss=document.getElementById('fontcss');if(fcss)fcss.addEventListener('load',()=>ensureFont().then(()=>{draw();renderIconCards()}));
 if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',schedule);
