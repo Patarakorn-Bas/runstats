@@ -145,13 +145,73 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
   .top p{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---- refined app chrome ---- */
+.top{grid-column:1/-1;display:flex;align-items:center;gap:12px;flex-wrap:nowrap}
+.top .brandtxt{flex:1;min-width:0}
+.top h1{font:700 21px/1.1 var(--num);letter-spacing:.2px}
+.top p{display:block;font-size:12.5px}
+.top .modes{width:auto;flex:none;grid-template-columns:auto auto;padding:3px;border-radius:999px}
+.top .modes button{padding:7px 16px;border-radius:999px;font-size:14px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}
+.seg{display:flex;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:3px}
+.seg .tb{border:0;background:transparent;border-radius:9px;padding:6px 10px;font:600 13px var(--num)}
+.seg .tb[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.ib{border:0;background:transparent;border-radius:9px;padding:6px;line-height:0;color:var(--ink);cursor:pointer}
+.ib svg,.tabs svg{width:20px;height:20px}
+.ib[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.ib:disabled{opacity:.3;cursor:default}
+.tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:2px;padding:4px;border-radius:14px}
+.tabs button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px 6px;font:600 11.5px var(--ui);border-radius:10px;white-space:nowrap;min-width:0}
+.tabs button span{overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+.tabs button[hidden]{display:none}
+fieldset{border-radius:16px;box-shadow:0 1px 2px rgba(10,20,40,.04)}
+legend{font:700 12px var(--ui);letter-spacing:.8px}
+.intro{background:linear-gradient(135deg,color-mix(in srgb,var(--hot) 14%,var(--surface)),var(--surface));border:1px solid color-mix(in srgb,var(--hot) 35%,var(--line));border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.intro b{font-family:var(--num)}
+.intro ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.intro li{display:flex;gap:10px;align-items:center}
+.intro li span{flex:none;width:24px;height:24px;border-radius:50%;background:var(--hot);color:#fff;display:grid;place-items:center;font:700 13px var(--num)}
+.intro .tb{align-self:flex-start}
+details.more{border-top:1px dashed var(--line);padding-top:10px}
+details.more>summary,details.fs>summary{cursor:pointer;list-style:none;font:600 14px var(--ui);color:var(--accent);display:flex;align-items:center;gap:6px}
+details.more>summary::-webkit-details-marker,details.fs>summary::-webkit-details-marker{display:none}
+details.more>summary::before,details.fs>summary::after{content:"";width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .15s}
+details.more[open]>summary::before,details.fs[open]>summary::after{transform:rotate(45deg)}
+details.more[open]>summary{margin-bottom:10px}
+details.more>.row,details.more>.f,details.more>.routebox,details.more>.chips,details.more>p{margin-top:10px}
+details.fs{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:14px 16px}
+details.fs>summary{justify-content:space-between;color:var(--ink);font:700 12px var(--ui);letter-spacing:.8px;text-transform:uppercase}
+details.fs .fsb{display:grid;gap:12px;margin-top:12px}
+.next{background:transparent;border:1.5px dashed var(--accent);color:var(--accent);border-radius:14px;padding:13px;font:700 15px var(--num)}
+#tplGrid{display:flex;flex-direction:column;gap:12px}
+#tplGrid h3{margin:0;font:600 12.5px var(--ui);color:var(--muted)}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+label.tcard{position:relative;display:flex;flex-direction:column;gap:6px;cursor:pointer;text-align:center;font:600 12.5px var(--ui);color:var(--ink)}
+label.tcard input{position:absolute;opacity:0;pointer-events:none}
+label.tcard canvas{width:100%;height:auto;border-radius:12px;display:block;box-shadow:0 0 0 1px var(--line);background:#1b2232;transition:box-shadow .12s,transform .12s}
+label.tcard:hover canvas{transform:translateY(-1px)}
+label.tcard:has(input:checked) canvas{box-shadow:0 0 0 3px var(--hot)}
+label.tcard:has(input:checked){color:var(--hot)}
+label.tcard:focus-within canvas{outline:2px solid var(--hot);outline-offset:2px}
+.savebar .in{gap:10px}
+.fmt{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px;min-width:0}
+.fmt button{border:0;background:transparent;border-radius:10px;padding:5px 2px;display:flex;flex-direction:column;align-items:center;line-height:1.15;color:var(--ink);min-width:0}
+.fmt b{font:700 13px var(--num);white-space:nowrap}
+.fmt small{font-size:10.5px;color:var(--muted)}
+.fmt button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.fmt button[aria-pressed="true"] small{color:inherit;opacity:.8}
+.savebar button.primary{background:var(--hot);border-color:var(--hot);color:#fff;padding:13px 22px;border-radius:14px;font:700 16px var(--num)}
+@media (max-width:860px){.top p{display:none}.stage .hint{display:none}}
 </style>
 </head><body>
 
 <div class="app">
   <header class="top">
     <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#14284B"/><g transform="translate(13 20) scale(.42)"><clipPath id="lc"><path d="M5 38 C3 30 5 20 9 13 L11 10 C13 8 16 8 17 11 C20 17 27 19 34 16 L48 10 C51 8.5 54 9 56 11 L62 18 C72 23 86 25 96 30 C102 33 104 37 101 40 C99 42 95 43 90 43 L14 44 C8 44 5 42 4 38 Z"/></clipPath><path d="M-6 17 L-24 17 L-26 20.5 L-8 20.5 Z M-4 25 L-28 25 L-30 28.5 L-6 28.5 Z M-6 33 L-20 33 L-22 36.5 L-8 36.5 Z" fill="#FF5A1F"/><path d="M5 38 C3 30 5 20 9 13 L11 10 C13 8 16 8 17 11 C20 17 27 19 34 16 L48 10 C51 8.5 54 9 56 11 L62 18 C72 23 86 25 96 30 C102 33 104 37 101 40 C99 42 95 43 90 43 L14 44 C8 44 5 42 4 38 Z" fill="#fff"/><path d="M0 34 C30 37 70 37 106 31 L106 48 L0 48 Z" fill="#FF5A1F" clip-path="url(#lc)"/></g></svg>
-    <div><h1>RunStats</h1><p>สติกเกอร์สถิติวิ่งจาก Apple Watch วางทับรูปหรือวิดีโอ</p></div>
+    <div class="brandtxt"><h1>RunStats</h1><p>สติกเกอร์สถิติออกกำลังกาย</p></div>
+    <div class="modes" role="group" aria-label="ประเภทกิจกรรม"><button type="button" data-mode="run">วิ่ง</button><button type="button" data-mode="gym">เวท</button></div>
   </header>
 
   <section class="stage" aria-label="ตัวอย่าง">
@@ -160,30 +220,38 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
       <video id="bgv" muted playsinline loop hidden></video>
       <canvas id="view" aria-label="ตัวอย่างสติกเกอร์ ลากเพื่อย้าย ใช้สองนิ้วเพื่อย่อขยาย"></canvas>
     </div>
-    <div class="toolbar" role="group" aria-label="สัดส่วนภาพ">
-      <button class="tb" data-ratio="9:16">9:16</button>
-      <button class="tb" data-ratio="4:5">4:5</button>
-      <button class="tb" data-ratio="1:1">1:1</button>
-      <button class="tb" data-ratio="16:9">16:9</button>
-      <button class="tb" id="resetPos">จัดกลาง</button>
-      <button class="tb" id="freeBtn">เส้นทางอิสระ</button>
+    <div class="toolbar">
+      <div class="seg" role="group" aria-label="สัดส่วนภาพ">
+        <button class="tb" data-ratio="9:16">9:16</button><button class="tb" data-ratio="4:5">4:5</button><button class="tb" data-ratio="1:1">1:1</button><button class="tb" data-ratio="16:9">16:9</button>
+      </div>
+      <div class="seg" role="group" aria-label="เครื่องมือ">
+        <button class="ib" id="undoBtn" title="ย้อนกลับ" aria-label="ย้อนกลับ"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></g></svg></button>
+        <button class="ib" id="redoBtn" title="ทำซ้ำ" aria-label="ทำซ้ำ"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14l5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/></g></svg></button>
+        <button class="ib" id="resetPos" title="จัดกลาง" aria-label="จัดกลาง"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="3"/></g></svg></button>
+        <button class="ib" id="freeBtn" title="เส้นทางอิสระ" aria-label="เส้นทางอิสระ"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l-2 3 2 3M19 9l2 3-2 3M9 5l3-2 3 2M9 19l3 2 3-2M12 3v18M3 12h18"/></g></svg></button>
+        <button class="ib" id="safeBtn" title="ขอบปลอดภัยของ Stories" aria-label="ขอบปลอดภัย"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M6 7h12M6 16h12" stroke-dasharray="2 2"/></g></svg></button>
+      </div>
     </div>
-    <p class="hint">ลากตัวเลขหรือเส้นทางเพื่อย้าย ใช้สองนิ้วย่อขยายและหมุน แตะสองครั้งเพื่อคืนค่า ลายตารางคือส่วนโปร่งใส</p>
+    <p class="hint">ลากเพื่อย้าย · สองนิ้วย่อขยายและหมุน · แตะสองครั้งคืนค่า</p>
   </section>
 
   <div class="panel">
-    <div class="modes" role="group" aria-label="ประเภทกิจกรรม"><button type="button" data-mode="run">วิ่ง</button><button type="button" data-mode="gym">เวทเทรนนิ่ง</button></div>
     <nav class="tabs" role="tablist" aria-label="เมนู">
-      <button role="tab" data-tab="data" aria-selected="true">ข้อมูล</button>
-      <button role="tab" data-tab="layout">แบบ</button>
-      <button role="tab" data-tab="style">สไตล์</button>
-      <button role="tab" data-tab="route" class="run-only">เส้นทาง</button>
-      <button role="tab" data-tab="bg">พื้นหลัง</button>
-      <button role="tab" data-tab="lib">คลัง</button>
+      <button role="tab" data-tab="data" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9z"/><path d="M7 5H5v15h14V5h-2"/><path d="M8.5 11h7M8.5 15h4.5"/></g></svg><span>ข้อมูล</span></button>
+      <button role="tab" data-tab="layout"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></g></svg><span>แบบ</span></button>
+      <button role="tab" data-tab="style"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></g></svg><span>ปรับแต่ง</span></button>
+      <button role="tab" data-tab="route" class="run-only"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h6a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h6"/></g></svg><span>เส้นทาง</span></button>
+      <button role="tab" data-tab="bg"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-5 4 4 3-3 4 4"/></g></svg><span>รูปพื้นหลัง</span></button>
+      <button role="tab" data-tab="lib"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v16l-5-3.5L7 20z"/></g></svg><span>บันทึกไว้</span></button>
     </nav>
 
     <!-- DATA -->
     <section class="pane" id="tab-data" role="tabpanel">
+      <div class="intro" id="intro">
+        <b>เริ่มต้นใน 3 ขั้น</b>
+        <ol><li><span>1</span>เลือกภาพหน้าจอผลออกกำลังกาย หรือกรอกตัวเลขเอง</li><li><span>2</span>ไปที่ <b>แบบ</b> แล้วแตะเลือกหน้าตาสติกเกอร์</li><li><span>3</span>กด <b>บันทึก</b> ด้านล่าง นำไปวางบนรูปหรือวิดีโอ</li></ol>
+        <button type="button" class="tb" id="introClose">เข้าใจแล้ว</button>
+      </div>
       <fieldset class="ai">
         <legend>อ่านผลจากภาพหน้าจอ</legend>
         <p class="hint" style="text-align:left">เลือกภาพหน้าจอจาก Apple Fitness ได้หลายภาพพร้อมกัน ทั้งผลวิ่งและเวทเทรนนิ่ง (หรือภาพรายการท่าจากแอปบันทึกเวท) แอปจะกรอกตัวเลขให้เอง</p>
@@ -247,55 +315,18 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
         <label class="chip" style="justify-self:start"><input type="checkbox" data-k="run.paceAuto"> คำนวณเพซอัตโนมัติ</label>
         <div class="row">
           <label class="f"><span>หัวใจเฉลี่ย</span><input class="num" type="text" inputmode="numeric" data-k="run.hr"></label>
-          <label class="f"><span>รอบขา SPM</span><input class="num" type="text" inputmode="numeric" data-k="run.cad"></label>
           <label class="f"><span>แคลอรีรวม</span><input class="num" type="text" inputmode="numeric" data-k="run.kcal"></label>
+        </div>
+        <label class="f"><span>เวลาแต่ละกิโล (สปลิต)</span><textarea class="num" rows="2" data-k="run.splits"></textarea></label>
+        <details class="more"><summary>ข้อมูลเพิ่มเติม</summary>
+        <div class="row">
+          <label class="f"><span>รอบขา SPM</span><input class="num" type="text" inputmode="numeric" data-k="run.cad"></label>
           <label class="f"><span>ความสูง (ม.)</span><input class="num" type="text" inputmode="numeric" data-k="run.elev"></label>
           <label class="f"><span>กำลัง (วัตต์)</span><input class="num" type="text" inputmode="numeric" data-k="run.power"></label>
           <label class="f"><span>จำนวนก้าว</span><input class="num" type="text" inputmode="numeric" data-k="run.steps"></label>
         </div>
-        <label class="f"><span>เวลาแต่ละกิโล (สปลิต)</span><textarea class="num" rows="2" data-k="run.splits"></textarea></label>
         <label class="f"><span>หัวใจแต่ละกิโล (สำหรับกราฟ)</span><textarea class="num" rows="2" data-k="run.hrSplits"></textarea></label>
-      </fieldset>
-      <fieldset>
-        <legend>ข้อความ</legend>
-        <div class="row run-only">
-          <label class="f"><span>ชื่อกิจกรรม</span><input type="text" data-k="run.title"></label>
-          <label class="f"><span>วันที่ / เวลา</span><input type="text" data-k="run.date"></label>
-        </div>
-        <label class="f run-only"><span>สถานที่</span><input type="text" data-k="run.place"></label>
-        <label class="f"><span>แคปชัน (ใส่อีโมจิได้)</span><input type="text" data-k="caption" placeholder="เช่น วิ่งเย็นสบายๆ 🔥"></label>
-        <label class="f"><span>ข้อความท้าย / แบรนด์</span><input type="text" data-k="footer"></label>
-      </fieldset>
-      <fieldset>
-        <legend>สภาพอากาศ</legend>
-        <label class="chip" style="justify-self:start"><input type="checkbox" data-k="wx.on"> แสดงสภาพอากาศบนสติกเกอร์</label>
-        <label class="f"><span>ขนาดแถบสภาพอากาศ <output data-out="wxSize"></output></span><input type="range" min="60" max="220" step="5" data-k="wxSize"></label>
-        <div class="row" style="grid-template-columns:minmax(0,1fr) auto">
-          <input type="text" id="wxCity" placeholder="ชื่อเมืองหรือจังหวัด เช่น กาญจนบุรี" aria-label="ชื่อเมือง">
-          <button type="button" id="wxFind">ค้นหา</button>
-        </div>
-        <div class="chips">
-          <button type="button" class="tb" id="wxGeo">ใช้ตำแหน่งปัจจุบัน</button>
-          <label class="chip"><input type="checkbox" data-k="wx.useTime"> ใช้วันเวลาที่ออกกำลังกาย</label>
-        </div>
-        <p class="hint" style="text-align:left" id="wxStatus">ดึงอุณหภูมิ ความชื้น ลม และ PM2.5 ย้อนหลังตามวันเวลาที่กรอกไว้ ฟรีจาก Open-Meteo หรือกรอกเองด้านล่าง</p>
-        <div class="row">
-          <label class="f"><span>สภาพอากาศ</span><select data-k="wx.cond"><option value="clear">แจ่มใส</option><option value="partly">มีเมฆบางส่วน</option><option value="cloudy">เมฆมาก</option><option value="rain">ฝนตก</option><option value="storm">พายุฝนฟ้าคะนอง</option><option value="fog">หมอก</option><option value="wind">ลมแรง</option><option value="night">กลางคืน</option></select></label>
-          <label class="f"><span>อุณหภูมิ °C</span><input class="num" type="text" inputmode="decimal" data-k="wx.temp"></label>
-          <label class="f"><span>รู้สึกเหมือน °C</span><input class="num" type="text" inputmode="decimal" data-k="wx.feels"></label>
-          <label class="f"><span>ความชื้น %</span><input class="num" type="text" inputmode="numeric" data-k="wx.hum"></label>
-          <label class="f"><span>ลม กม./ชม.</span><input class="num" type="text" inputmode="decimal" data-k="wx.wind"></label>
-          <label class="f"><span>PM2.5</span><input class="num" type="text" inputmode="numeric" data-k="wx.pm"></label>
-        </div>
-        <div class="chips">
-          <label class="chip"><input type="checkbox" data-k="wxshow.icon"> ไอคอนอากาศ</label>
-          <label class="chip"><input type="checkbox" data-k="wxshow.temp"> อุณหภูมิ</label>
-          <label class="chip"><input type="checkbox" data-k="wxshow.cond"> คำบรรยาย</label>
-          <label class="chip"><input type="checkbox" data-k="wxshow.feels"> รู้สึกเหมือน</label>
-          <label class="chip"><input type="checkbox" data-k="wxshow.hum"> ความชื้น</label>
-          <label class="chip"><input type="checkbox" data-k="wxshow.wind"> ลม</label>
-          <label class="chip"><input type="checkbox" data-k="wxshow.pm"> PM2.5</label>
-        </div>
+        </details>
       </fieldset>
       <fieldset class="run-only">
         <legend>สิ่งที่แสดง</legend>
@@ -320,28 +351,74 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
           <label class="f"><span>ภาษาบนสติกเกอร์</span><select data-k="lang"><option value="th">ไทย</option><option value="en">English</option></select></label>
         </div>
       </fieldset>
+      <fieldset>
+        <legend>ข้อความ</legend>
+        <div class="row run-only">
+          <label class="f"><span>ชื่อกิจกรรม</span><input type="text" data-k="run.title"></label>
+          <label class="f"><span>วันที่ / เวลา</span><input type="text" data-k="run.date"></label>
+        </div>
+        <label class="f run-only"><span>สถานที่</span><input type="text" data-k="run.place"></label>
+        <label class="f"><span>แคปชัน (ใส่อีโมจิได้)</span><input type="text" data-k="caption" placeholder="เช่น วิ่งเย็นสบายๆ 🔥"></label>
+        <label class="f"><span>ข้อความท้าย / แบรนด์</span><input type="text" data-k="footer"></label>
+      </fieldset>
+      <fieldset>
+        <legend>สภาพอากาศ</legend>
+        <label class="chip" style="justify-self:start"><input type="checkbox" data-k="wx.on"> แสดงสภาพอากาศบนสติกเกอร์</label>
+        <label class="f"><span>ขนาดแถบสภาพอากาศ <output data-out="wxSize"></output></span><input type="range" min="60" max="220" step="5" data-k="wxSize"></label>
+        <div class="row" style="grid-template-columns:minmax(0,1fr) auto">
+          <input type="text" id="wxCity" placeholder="ชื่อเมืองหรือจังหวัด เช่น กาญจนบุรี" aria-label="ชื่อเมือง">
+          <button type="button" id="wxFind">ค้นหา</button>
+        </div>
+        <div class="chips">
+          <button type="button" class="tb" id="wxGeo">ใช้ตำแหน่งปัจจุบัน</button>
+          <label class="chip"><input type="checkbox" data-k="wx.useTime"> ใช้วันเวลาที่ออกกำลังกาย</label>
+        </div>
+        <p class="hint" style="text-align:left" id="wxStatus">ดึงอุณหภูมิ ความชื้น ลม และ PM2.5 ย้อนหลังตามวันเวลาที่กรอกไว้ ฟรีจาก Open-Meteo หรือกรอกเองด้านล่าง</p>
+        <details class="more"><summary>กรอกเองและเลือกค่าที่แสดง</summary>
+        <div class="row">
+          <label class="f"><span>สภาพอากาศ</span><select data-k="wx.cond"><option value="clear">แจ่มใส</option><option value="partly">มีเมฆบางส่วน</option><option value="cloudy">เมฆมาก</option><option value="rain">ฝนตก</option><option value="storm">พายุฝนฟ้าคะนอง</option><option value="fog">หมอก</option><option value="wind">ลมแรง</option><option value="night">กลางคืน</option></select></label>
+          <label class="f"><span>อุณหภูมิ °C</span><input class="num" type="text" inputmode="decimal" data-k="wx.temp"></label>
+          <label class="f"><span>รู้สึกเหมือน °C</span><input class="num" type="text" inputmode="decimal" data-k="wx.feels"></label>
+          <label class="f"><span>ความชื้น %</span><input class="num" type="text" inputmode="numeric" data-k="wx.hum"></label>
+          <label class="f"><span>ลม กม./ชม.</span><input class="num" type="text" inputmode="decimal" data-k="wx.wind"></label>
+          <label class="f"><span>PM2.5</span><input class="num" type="text" inputmode="numeric" data-k="wx.pm"></label>
+        </div>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" data-k="wxshow.icon"> ไอคอนอากาศ</label>
+          <label class="chip"><input type="checkbox" data-k="wxshow.temp"> อุณหภูมิ</label>
+          <label class="chip"><input type="checkbox" data-k="wxshow.cond"> คำบรรยาย</label>
+          <label class="chip"><input type="checkbox" data-k="wxshow.feels"> รู้สึกเหมือน</label>
+          <label class="chip"><input type="checkbox" data-k="wxshow.hum"> ความชื้น</label>
+          <label class="chip"><input type="checkbox" data-k="wxshow.wind"> ลม</label>
+          <label class="chip"><input type="checkbox" data-k="wxshow.pm"> PM2.5</label>
+        </div>
+        </details>
+      </fieldset>
+      <button type="button" class="next" data-go="layout">ถัดไป: เลือกแบบสติกเกอร์ →</button>
     </section>
 
     <!-- LAYOUT -->
     <section class="pane" id="tab-layout" role="tabpanel" hidden>
       <fieldset>
-        <legend>แม่แบบ</legend>
-        <div class="cards" role="radiogroup" aria-label="แม่แบบ">
-          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="free"><b>อิสระ</b>ลากได้ทุกชิ้น</label>
-          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="ticket"><b>ตั๋ว</b>วัน + ไอคอน</label>
-          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="routeback"><b>เส้นทางหลังตัวเลข</b>ตัวเลขทับเส้น</label>
-          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="side"><b>ข้างจอ</b>ตัวเลขแนวตั้ง</label>
-          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="dots"><b>รายการจุดไข่ปลา</b>เส้นทาง + รายการ</label>
-          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="pills"><b>แคปซูล</b>ป้ายเรียงแถว</label>
-          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="lapbars"><b>กราฟต่อรอบ</b>แท่งรายกิโล</label>
-          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="card"><b>การ์ด</b>เส้นทาง + สถิติ</label>
-          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="classic"><b>คลาสสิก</b>เรียงกลาง</label>
-          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="hero"><b>ตัวเลขยักษ์</b>ระยะทางเด่น</label>
-          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="grid"><b>ตาราง</b>ครบทุกค่า</label>
-          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="splits"><b>สปลิต</b>แท่งรายกิโล</label>
-          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="bar"><b>แถบล่าง</b>เหมาะกับวิดีโอ</label>
-          <label class="card"><input type="radio" name="tpl" data-k="tpl" value="badge"><b>เหรียญ</b>วงกลม</label>
+        <legend>เลือกแบบ</legend>
+        <div id="tplGrid"></div>
+      </fieldset>
+      <fieldset>
+        <legend>ไอคอน</legend>
+        <div class="cards icons" id="iconGrid" role="radiogroup" aria-label="ไอคอน"></div>
+        <label class="f"><span>ขนาดไอคอน <output data-out="iconSize"></output></span><input type="range" min="50" max="300" step="5" data-k="iconSize"></label>
+        <p class="hint" style="text-align:left">ไอคอนใช้สีตัวอักษร สีหลัก และสีรองจากแท็บสไตล์ เปลี่ยนสีแล้วไอคอนเปลี่ยนตาม</p>
+      </fieldset>
+      <fieldset>
+        <legend>ตำแหน่งและขนาด</legend>
+        <div class="row">
+          <label class="f"><span>ตำแหน่งเริ่มต้น</span><select data-k="pos"><option value="center">กลาง</option><option value="top">บน</option><option value="bottom">ล่าง</option></select></label>
+          <label class="f"><span>ตัวอักษร</span><select data-k="font">
+            <option value="Kanit">Kanit สปอร์ต</option><option value="Prompt">Prompt โมเดิร์น</option><option value="Mitr">Mitr กลมมน</option><option value="Bai Jamjuree">Bai Jamjuree เท่</option><option value="Chakra Petch">Chakra Petch ดิจิทัล</option><option value="Anuphan">Anuphan มินิมอล</option><option value="K2D">K2D เทคโน</option><option value="Kodchasan">Kodchasan เหลี่ยมมน</option><option value="Krub">Krub คมชัด</option><option value="Chonburi">Chonburi หนาคลาสสิก</option><option value="Sriracha">Sriracha ลายมือปากกา</option><option value="Pattaya">Pattaya พู่กันหนา</option></select></label>
+          <label class="f"><span>ฟอนต์ตัวเลข</span><select data-k="numFont"><option value="">เหมือนตัวอักษรหลัก</option><option value="Bebas Neue">Bebas Neue สปอร์ตสูง</option><option value="Oswald">Oswald แคบหนา</option><option value="Teko">Teko สกอร์บอร์ด</option><option value="Anton">Anton ตัวหนาพิเศษ</option><option value="Big Shoulders Display">Big Shoulders สตรีท</option><option value="Saira Condensed">Saira Condensed เรซซิ่ง</option><option value="Barlow Condensed">Barlow Condensed อัตโนมัติ</option><option value="Orbitron">Orbitron ฟิวเจอร์</option><option value="Russo One">Russo One มอเตอร์สปอร์ต</option></select></label>
         </div>
+        <label class="f"><span>ขนาด <output data-out="scale"></output></span><input type="range" min="40" max="160" step="1" data-k="scale"></label>
+        <label class="f"><span>หมุน <output data-out="rot"></output></span><input type="range" min="-180" max="180" step="1" data-k="rot"></label>
       </fieldset>
       <fieldset id="layerBox" hidden>
         <legend>เลเยอร์</legend>
@@ -363,33 +440,23 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
         </div>
         <button type="button" class="primary" id="playAnim">▶ เล่นตัวอย่าง</button>
       </fieldset>
-      <fieldset>
-        <legend>ไอคอน</legend>
-        <div class="cards icons" id="iconGrid" role="radiogroup" aria-label="ไอคอน"></div>
-        <label class="f"><span>ขนาดไอคอน <output data-out="iconSize"></output></span><input type="range" min="50" max="300" step="5" data-k="iconSize"></label>
-        <p class="hint" style="text-align:left">ไอคอนใช้สีตัวอักษร สีหลัก และสีรองจากแท็บสไตล์ เปลี่ยนสีแล้วไอคอนเปลี่ยนตาม</p>
-      </fieldset>
-      <fieldset>
-        <legend>ตำแหน่งและขนาด</legend>
-        <div class="row">
-          <label class="f"><span>ตำแหน่งเริ่มต้น</span><select data-k="pos"><option value="center">กลาง</option><option value="top">บน</option><option value="bottom">ล่าง</option></select></label>
-          <label class="f"><span>ตัวอักษร</span><select data-k="font">
-            <option value="Kanit">Kanit สปอร์ต</option><option value="Prompt">Prompt โมเดิร์น</option><option value="Mitr">Mitr กลมมน</option><option value="Bai Jamjuree">Bai Jamjuree เท่</option><option value="Chakra Petch">Chakra Petch ดิจิทัล</option><option value="Anuphan">Anuphan มินิมอล</option><option value="K2D">K2D เทคโน</option><option value="Kodchasan">Kodchasan เหลี่ยมมน</option><option value="Krub">Krub คมชัด</option><option value="Chonburi">Chonburi หนาคลาสสิก</option><option value="Sriracha">Sriracha ลายมือปากกา</option><option value="Pattaya">Pattaya พู่กันหนา</option></select></label>
-          <label class="f"><span>ฟอนต์ตัวเลข</span><select data-k="numFont"><option value="">เหมือนตัวอักษรหลัก</option><option value="Bebas Neue">Bebas Neue สปอร์ตสูง</option><option value="Oswald">Oswald แคบหนา</option><option value="Teko">Teko สกอร์บอร์ด</option><option value="Anton">Anton ตัวหนาพิเศษ</option><option value="Big Shoulders Display">Big Shoulders สตรีท</option><option value="Saira Condensed">Saira Condensed เรซซิ่ง</option><option value="Barlow Condensed">Barlow Condensed อัตโนมัติ</option><option value="Orbitron">Orbitron ฟิวเจอร์</option><option value="Russo One">Russo One มอเตอร์สปอร์ต</option></select></label>
-        </div>
-        <label class="f"><span>ขนาด <output data-out="scale"></output></span><input type="range" min="40" max="160" step="1" data-k="scale"></label>
-        <label class="f"><span>หมุน <output data-out="rot"></output></span><input type="range" min="-180" max="180" step="1" data-k="rot"></label>
-      </fieldset>
     </section>
 
     <!-- STYLE -->
     <section class="pane" id="tab-style" role="tabpanel" hidden>
       <fieldset>
-        <legend>ธีมสำเร็จรูป</legend>
+        <legend>ธีมสี</legend>
         <div class="presets" id="presetGrid"></div>
       </fieldset>
       <fieldset>
-        <legend>สี</legend>
+        <legend>แบรนด์ของคุณ</legend>
+        <label class="f"><span>ข้อความแบรนด์</span><input type="text" data-k="footer"></label>
+        <label class="btn filebtn" style="background:var(--sunk);color:var(--ink);border-color:var(--line)"><input type="file" id="logoIn" accept="image/png,image/*">อัปโหลดโลโก้ (PNG พื้นใส)</label>
+        <div class="chips"><label class="chip"><input type="checkbox" data-k="useLogo"> ใช้โลโก้แทนข้อความ</label><button type="button" class="tb" id="logoClear">ลบโลโก้</button></div>
+        <label class="f"><span>ขนาดโลโก้ <output data-out="logoSize"></output></span><input type="range" min="50" max="250" step="5" data-k="logoSize"></label>
+        <p class="hint" style="text-align:left">แบรนด์จะอยู่ในตำแหน่งที่แบบแอปวิ่งใช้วางโลโก้ ทุกแม่แบบ</p>
+      </fieldset>
+      <details class="fs"><summary>สีเอง</summary><div class="fsb">
         <div class="row">
           <label class="f"><span>ตัวอักษร</span><input type="color" data-k="style.text"></label>
           <label class="f"><span>สีหลัก</span><input type="color" data-k="style.accent"></label>
@@ -405,9 +472,8 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
           <label class="f"><span>ความหนาขอบ <output data-out="style.strokeW"></output></span><input type="range" min="2" max="16" data-k="style.strokeW"></label>
         </div>
         <label class="f"><span>เงา <output data-out="style.shadow"></output></span><input type="range" min="0" max="100" data-k="style.shadow"></label>
-      </fieldset>
-      <fieldset>
-        <legend>กรอบรองพื้น</legend>
+      </div></details>
+      <details class="fs"><summary>กรอบรองพื้น</summary><div class="fsb">
         <div class="row">
           <label class="f"><span>แบบ</span><select data-k="style.panel"><option value="none">ไม่มี</option><option value="solid">ทึบ/โปร่งแสง</option><option value="glass">กระจกเบลอ</option><option value="outline">เส้นขอบ</option></select></label>
           <label class="f"><span>สีกรอบ</span><input type="color" data-k="style.panelColor"></label>
@@ -415,15 +481,7 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
         <label class="f"><span>ความทึบ <output data-out="style.panelAlpha"></output></span><input type="range" min="5" max="100" data-k="style.panelAlpha"></label>
         <label class="f"><span>มุมโค้ง <output data-out="style.radius"></output></span><input type="range" min="0" max="80" data-k="style.radius"></label>
         <p class="hint" style="text-align:left">กระจกเบลอจะเบลอรูปพื้นหลังจริงเมื่อบันทึกแบบมีพื้นหลัง ส่วน PNG โปร่งใสจะเป็นแผ่นโปร่งแสง</p>
-      </fieldset>
-      <fieldset>
-        <legend>แบรนด์ของคุณ</legend>
-        <label class="f"><span>ข้อความแบรนด์</span><input type="text" data-k="footer"></label>
-        <label class="btn filebtn" style="background:var(--sunk);color:var(--ink);border-color:var(--line)"><input type="file" id="logoIn" accept="image/png,image/*">อัปโหลดโลโก้ (PNG พื้นใส)</label>
-        <div class="chips"><label class="chip"><input type="checkbox" data-k="useLogo"> ใช้โลโก้แทนข้อความ</label><button type="button" class="tb" id="logoClear">ลบโลโก้</button></div>
-        <label class="f"><span>ขนาดโลโก้ <output data-out="logoSize"></output></span><input type="range" min="50" max="250" step="5" data-k="logoSize"></label>
-        <p class="hint" style="text-align:left">แบรนด์จะอยู่ในตำแหน่งที่แบบแอปวิ่งใช้วางโลโก้ ทุกแม่แบบ</p>
-      </fieldset>
+      </div></details>
       <fieldset>
         <legend>สไตล์ของฉัน</legend>
         <div class="row" style="grid-template-columns:minmax(0,1fr) auto">
@@ -437,7 +495,14 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
     <!-- ROUTE -->
     <section class="pane" id="tab-route" role="tabpanel" hidden>
       <fieldset>
-        <legend>ที่มาของเส้นทาง</legend>
+        <legend>เส้นทาง</legend>
+        <label class="btn primary filebtn" id="routeImgBtn"><input type="file" id="routeImgIn" accept="image/*">ดึงเส้นทางจากภาพ</label>
+        <p class="hint" style="text-align:left">ใช้ได้กับภาพเส้นทางที่บันทึกจาก Strava, ภาพแผนที่ใน Apple Fitness หรือรูปที่มีเส้นทางสีส้ม แดง เหลือง แอปจะลอกรูปทรงเส้นทางให้ตรงตามภาพ</p>
+        <div class="row" style="grid-template-columns:minmax(0,1fr) auto;align-items:end">
+          <label class="f"><span>สีของเส้นในภาพ</span><select id="pickMode"><option value="">อัตโนมัติ (ส้ม แดง เหลือง)</option><option value="custom">สีอื่น เลือกเอง</option></select></label>
+          <input type="color" id="pickColor" value="#fc4c02" aria-label="สีเส้นในภาพ" style="width:56px" hidden>
+        </div>
+        <details class="more"><summary>วิธีอื่น: วาดเอง หรือไฟล์ GPX</summary>
         <div class="routebox">
           <canvas id="pad" width="600" height="600" aria-label="วาดเส้นทางด้วยนิ้ว"></canvas>
           <div class="stack">
@@ -449,31 +514,10 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
             <button id="clearPad">ล้างแล้ววาดใหม่</button>
           </div>
         </div>
-        <label class="btn primary filebtn" id="routeImgBtn"><input type="file" id="routeImgIn" accept="image/*">ดึงเส้นทางจากภาพ</label>
-        <p class="hint" style="text-align:left">ใช้ได้กับภาพเส้นทางที่บันทึกจาก Strava, ภาพแผนที่ใน Apple Fitness หรือรูปที่มีเส้นทางสีส้ม แดง เหลือง แอปจะลอกรูปทรงเส้นทางให้ตรงตามภาพ</p>
-        <div class="row" style="grid-template-columns:minmax(0,1fr) auto;align-items:end">
-          <label class="f"><span>สีของเส้นในภาพ</span><select id="pickMode"><option value="">อัตโนมัติ (ส้ม แดง เหลือง)</option><option value="custom">สีอื่น เลือกเอง</option></select></label>
-          <input type="color" id="pickColor" value="#fc4c02" aria-label="สีเส้นในภาพ" style="width:56px" hidden>
-        </div>
         <label class="f"><span>นำเข้าไฟล์ GPX (เส้นทาง GPS จริง)</span><input type="file" id="gpxIn" accept=".gpx,application/gpx+xml,application/xml,text/xml"></label>
         <p class="hint" style="text-align:left">ส่งออก GPX จาก Apple Watch ได้ด้วยแอปฟรีอย่าง HealthFit หรือ RunGap แล้วเลือกไฟล์ที่นี่ ระยะทางในไฟล์จะถูกกรอกให้ด้วย</p>
-      </fieldset>
-      <fieldset>
-        <legend>ตำแหน่งเส้นทาง</legend>
-        <label class="chip" style="justify-self:start"><input type="checkbox" data-k="rt.free"> ย้ายเส้นทางอิสระ แยกจากตัวเลข</label>
-        <p class="hint" style="text-align:left">เปิดแล้วลากเส้นทางบนภาพตัวอย่างเพื่อย้าย ใช้สองนิ้วย่อขยายและหมุน แตะสองครั้งที่เส้นทางเพื่อคืนค่า</p>
-        <label class="f"><span>ขนาด <output data-out="rt.scale"></output></span><input type="range" min="20" max="400" data-k="rt.scale"></label>
-        <label class="f"><span>หมุน <output data-out="rt.rot"></output></span><input type="range" min="-180" max="180" data-k="rt.rot"></label>
-        <div class="row">
-          <label class="f"><span>ซ้าย-ขวา</span><input type="range" min="-0.7" max="0.7" step="0.01" data-k="rt.x"></label>
-          <label class="f"><span>ขึ้น-ลง</span><input type="range" min="-0.7" max="0.7" step="0.01" data-k="rt.y"></label>
-        </div>
-        <div class="chips">
-          <label class="chip"><input type="checkbox" data-k="rt.flip"> กลับด้านซ้าย-ขวา</label>
-          <label class="chip"><input type="checkbox" data-k="rt.behind"> วางไว้หลังตัวเลข</label>
-          <button type="button" class="tb" id="rtReset">คืนค่าเส้นทาง</button>
-        </div>
-      </fieldset>
+              </details>
+</fieldset>
       <fieldset>
         <legend>สไตล์เส้นทาง</legend>
         <div class="cards" role="radiogroup" aria-label="สไตล์เส้นทาง">
@@ -491,6 +535,21 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
         <label class="f"><span>ขนาดเส้นทาง <output data-out="route.size"></output></span><input type="range" min="50" max="160" data-k="route.size"></label>
         <label class="chip" style="justify-self:start"><input type="checkbox" data-k="route.dots"> จุดเริ่ม (เขียว) / จบ (แดง)</label>
       </fieldset>
+      <details class="fs"><summary>ตำแหน่งเส้นทางอิสระ</summary><div class="fsb">
+        <label class="chip" style="justify-self:start"><input type="checkbox" data-k="rt.free"> ย้ายเส้นทางอิสระ แยกจากตัวเลข</label>
+        <p class="hint" style="text-align:left">เปิดแล้วลากเส้นทางบนภาพตัวอย่างเพื่อย้าย ใช้สองนิ้วย่อขยายและหมุน แตะสองครั้งที่เส้นทางเพื่อคืนค่า</p>
+        <label class="f"><span>ขนาด <output data-out="rt.scale"></output></span><input type="range" min="20" max="400" data-k="rt.scale"></label>
+        <label class="f"><span>หมุน <output data-out="rt.rot"></output></span><input type="range" min="-180" max="180" data-k="rt.rot"></label>
+        <div class="row">
+          <label class="f"><span>ซ้าย-ขวา</span><input type="range" min="-0.7" max="0.7" step="0.01" data-k="rt.x"></label>
+          <label class="f"><span>ขึ้น-ลง</span><input type="range" min="-0.7" max="0.7" step="0.01" data-k="rt.y"></label>
+        </div>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" data-k="rt.flip"> กลับด้านซ้าย-ขวา</label>
+          <label class="chip"><input type="checkbox" data-k="rt.behind"> วางไว้หลังตัวเลข</label>
+          <button type="button" class="tb" id="rtReset">คืนค่าเส้นทาง</button>
+        </div>
+      </div></details>
     </section>
 
     <!-- BACKGROUND -->
@@ -501,8 +560,7 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
         <button id="clearMedia" hidden>เอาพื้นหลังออก</button>
         <p class="hint" style="text-align:left">ใช้ดูตัวอย่าง หรือบันทึกรวมเป็นภาพเดียว ถ้าแค่ต้องการสติกเกอร์ไปวางในแอปตัดต่อ ไม่ต้องใส่พื้นหลัง</p>
       </fieldset>
-      <fieldset>
-        <legend>ปรับรูป</legend>
+      <details class="fs"><summary>ปรับแสง สี และฟิลเตอร์</summary><div class="fsb">
         <label class="f"><span>ซูม <output data-out="bg.zoom"></output></span><input type="range" min="100" max="300" data-k="bg.zoom"></label>
         <div class="row">
           <label class="f"><span>เลื่อนซ้าย-ขวา</span><input type="range" min="-50" max="50" data-k="bg.x"></label>
@@ -521,13 +579,13 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
         <label class="f"><span>ความอิ่มสี <output data-out="bg.sat"></output></span><input type="range" min="-100" max="100" data-k="bg.sat"></label>
         <label class="f"><span>ขอบมืด <output data-out="bg.vignette"></output></span><input type="range" min="0" max="100" data-k="bg.vignette"></label>
         <label class="f"><span>ไล่เงาด้านล่าง (ให้ตัวหนังสืออ่านง่าย) <output data-out="bg.fadeBottom"></output></span><input type="range" min="0" max="100" data-k="bg.fadeBottom"></label>
-      </fieldset>
+      </div></details>
     </section>
 
     <!-- LIBRARY -->
     <section class="pane" id="tab-lib" role="tabpanel" hidden>
       <fieldset>
-        <legend>ประวัติการวิ่ง</legend>
+        <legend>ประวัติ</legend>
         <button class="primary" id="saveRun">เก็บรายการนี้ไว้ในประวัติ</button>
         <div class="list" id="runList"></div>
       </fieldset>
@@ -544,12 +602,13 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
 
 <div class="savebar">
   <div class="in">
-    <select id="exportType" aria-label="ชนิดไฟล์">
-      <option value="png">PNG โปร่งใส (สติกเกอร์)</option>
-      <option value="jpg">JPG รวมพื้นหลัง</option>
-      <option value="anim">วิดีโอแอนิเมชัน (เส้นทางวาด + ตัวเลขนับ)</option>
-      <option value="video">วิดีโอพื้นหลังรวมสติกเกอร์</option>
-    </select>
+    <div class="fmt" role="radiogroup" aria-label="ชนิดไฟล์">
+      <button type="button" data-fmt="png" aria-pressed="true"><b>สติกเกอร์</b><small>PNG ใส</small></button>
+      <button type="button" data-fmt="jpg"><b>รวมรูป</b><small>JPG</small></button>
+      <button type="button" data-fmt="anim"><b>แอนิเมชัน</b><small>วิดีโอ</small></button>
+      <button type="button" data-fmt="video"><b>รวมคลิป</b><small>วิดีโอ</small></button>
+    </div>
+    <select id="exportType" hidden><option value="png">png</option><option value="jpg">jpg</option><option value="anim">anim</option><option value="video">video</option></select>
     <button class="primary" id="exportBtn">บันทึก</button>
   </div>
 </div>
@@ -561,6 +620,7 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
     <p class="hint" id="resultHint"></p>
     <div class="acts">
       <button class="primary" id="shareBtn">บันทึก / แชร์</button>
+      <button id="copyBtn" hidden>คัดลอกภาพ</button>
       <button id="closeModal">ปิด</button>
     </div>
   </div>
@@ -582,10 +642,10 @@ const DEF={
   gym:{title:'เวทเทรนนิ่ง',date:'',place:'',time:'1:05:20',kcal:'410',hr:'128',wunit:'kg',muscles:['อก','ไหล่','หลังแขน'],
     ex:[{name:'Bench Press',sets:4,reps:8,kg:60,pr:true},{name:'Incline DB Press',sets:3,reps:10,kg:22,pr:false},{name:'Overhead Press',sets:3,reps:8,kg:35,pr:false},{name:'Lateral Raise',sets:3,reps:15,kg:8,pr:false},{name:'Tricep Pushdown',sets:3,reps:12,kg:25,pr:false}]},
   gshow:{vol:true,time:true,kcal:true,hr:false,sets:false,count:false,prs:false,list:true,bars:false,muscles:true},
-  iconSize:100,wxSize:100,useLogo:false,logoSize:100,
+  safe:false,iconSize:100,wxSize:100,useLogo:false,logoSize:100,
   wx:{on:false,useTime:true,cond:'cloudy',temp:'29',feels:'',hum:'79',wind:'',pm:'',place:'',lat:null,lon:null},
   wxshow:{icon:true,temp:true,cond:false,feels:false,hum:true,wind:false,pm:false},
-  tpl:'classic',icon:'blade',numFont:'',pos:'center',font:'Kanit',scale:100,rot:0,ox:0,oy:0,ratio:'9:16',res:'1',
+  tpl:'classic',icon:'tilt',numFont:'',pos:'center',font:'Kanit',scale:100,rot:0,ox:0,oy:0,ratio:'9:16',res:'1',
   style:{text:'#ffffff',accent:'#ff5a1f',accent2:'#ffd23f',grad:false,stroke:false,strokeColor:'#000000',strokeW:6,shadow:55,upper:false,
          panel:'none',panelColor:'#0b1426',panelAlpha:55,radius:36},
   layers:{},order:[],layoutTouched:false,layoutIds:'',anim:{dur:6,bg:'media'},rt:{free:false,x:0,y:.3,scale:90,rot:0,flip:false,behind:false},sel:'stats',
@@ -615,6 +675,7 @@ const clone=o=>JSON.parse(JSON.stringify(o));
 function merge(a,b){for(const k in b){if(b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k])&&a[k]&&typeof a[k]==='object')merge(a[k],b[k]);else if(k in a)a[k]=b[k]}return a}
 const store={get(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch(e){return f}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 let S=merge(clone(DEF),store.get('rs.state',{}));
+if(S.icon!=='none'&&!['tilt','duo','speedtilt','line','line2','speed','trail','solid','circle','hexshoe','dumbbell','barbell','kettle','plate','gymhex','flame','bolt','medal','watch'].includes(S.icon))S.icon=S.mode==='gym'?'gymhex':'tilt';
 const getP=(p)=>p.split('.').reduce((o,k)=>o?.[k],S);
 const setP=(p,v)=>{const ks=p.split('.');const last=ks.pop();ks.reduce((o,k)=>o[k],S)[last]=v};
 
@@ -708,20 +769,25 @@ const erase=(c,fn)=>{c.save();c.globalCompositeOperation='destination-out';fn();
 function cutDetails(c,w){erase(c,()=>{c.lineCap='round';c.lineWidth=w||1.7;c.stroke(DETAIL);c.lineWidth=1.6;c.save();c.clip(SIL);c.stroke(MID_CUT);c.restore()})}
 function shoeBody(c,st,mid){c.fillStyle=st.text;c.fill(SIL);c.save();c.clip(SIL);c.fillStyle=st.accent;c.fill(mid||MID);c.restore()}
 const SHOE_BOX={w:108,ox:3},SHOE_FX={w:134,ox:30};
+// Line-art running shoes: drawn in a 100x60 shoe space, fitted to a 50-unit-tall icon box
+const SH_OUT=P2('M8 50 C6 44 6 36 9 30 L12 22 C13 19 16 18 18 20 C22 25 30 26 36 21 L44 13 C46 11 49 11 51 13 L58 22 C66 27 80 30 90 35 C96 38 97 44 93 47 C90 49 86 50 80 50 L14 51 C10 51 8 51 8 50 Z');
+const SH_MID=P2('M9 42 C30 44.5 60 44.5 95 41'),SH_LACE=P2('M46 19 L51 15.5 M50.5 23 L55.5 19.5 M55 27 L60 23.5'),SH_HEEL=P2('M14 27 C18 31 20 36 19 42');
+const SH_STRIPE=P2('M30 38 C40 31 52 29 66 32'),SH_LUGS=P2('M14 51 v4 M26 51 v4 M38 51 v4 M50 51 v4 M62 51 v4 M74 51 v4 M86 50 v4');
+const SH_SOLE=P2('M9 44 C30 46.5 60 46.5 94 43 C96 46 93 48 90 49 C86 50 80 50 80 50 L14 51 C10 51 8 51 8 50 Z'),SH_SPEED=P2('M-2 26 H-18 M0 34 H-24 M2 42 H-12');
+function shoeLine(c,col,w,extra){c.lineCap='round';c.lineJoin='round';c.lineWidth=w||4.2;c.strokeStyle=col;c.stroke(SH_OUT);c.stroke(SH_MID);c.stroke(SH_LACE);(extra||[]).forEach(q=>c.stroke(q))}
+const tiltC=(c,a)=>{c.translate(52,32);c.rotate(a*Math.PI/180);c.translate(-52,-32)};
+function shoeIcon(name,bb,fn){const k=50/(bb[3]-bb[1]);return{name,w:50*(bb[2]-bb[0])/(bb[3]-bb[1]),ox:0,draw(c,st){c.scale(k,k);c.translate(-bb[0],-bb[1]);fn(c,st)}}}
 const ICONS={
-  blade:{...SHOE_FX,name:'เบลด',draw(c,st){c.fillStyle=st.accent;c.fill(SLASH);shoeBody(c,st);cutDetails(c)}},
-  mono:{w:132,ox:26,name:'โมโนไลน์',draw(c,st){c.lineJoin='round';c.lineCap='round';c.strokeStyle=st.text;c.lineWidth=2.6;c.stroke(SIL);
-    c.strokeStyle=st.accent;c.lineWidth=2.4;c.stroke(P2('M4 35 C30 38 70 38 102 32'));c.lineWidth=1.8;c.stroke(DETAIL);c.lineWidth=2.6;c.stroke(P2('M-4 25 L-22 25'))}},
-  carbon:{...SHOE_FX,name:'คาร์บอน',draw(c,st){c.fillStyle=st.accent;c.fill(SLASH);shoeBody(c,st,STACK);
-    c.save();c.clip(SIL);c.strokeStyle=st.accent2;c.lineWidth=2;c.stroke(PLATE);c.restore();cutDetails(c)}},
-  aero:{w:136,ox:32,name:'แอโร',draw(c,st){c.translate(50,30);c.rotate(-7*Math.PI/180);c.translate(-50,-30);c.fillStyle=st.accent;c.fill(SLASH);shoeBody(c,st);cutDetails(c);erase(c,()=>c.fill(AERO_CUT))}},
-  spike:{...SHOE_FX,name:'สไปค์',draw(c,st){c.fillStyle=st.accent;c.fill(SLASH);shoeBody(c,st,THIN);c.fillStyle=st.accent2;c.fill(SPIKES);cutDetails(c)}},
-  trail:{...SHOE_BOX,name:'เทรลโปร',draw(c,st){shoeBody(c,st);c.fillStyle=st.accent;c.fill(LUGS);c.fillStyle=st.accent2;c.fill(TOE_GUARD);cutDetails(c)}},
-  wing:{w:140,ox:29,name:'ปีกเทพ',draw(c,st){c.fillStyle=st.accent;c.fill(WINGS);shoeBody(c,st);cutDetails(c)}},
-  pulse:{w:136,ox:31,name:'ชีพจร',draw(c,st){shoeBody(c,st);cutDetails(c);c.lineJoin='round';c.lineCap='round';c.strokeStyle=st.accent2;c.lineWidth=2.6;c.stroke(ECG)}},
-  hex:{w:50,ox:0,name:'ตราหกเหลี่ยม',draw(c,st){c.fillStyle=st.accent;c.fill(HEX);erase(c,()=>{c.translate(5.5,13);c.scale(.37,.37);c.fill(SIL)})}},
-  badge:{w:50,ox:0,name:'ตราวงกลม',draw(c,st){c.lineWidth=3;c.strokeStyle=st.accent;c.beginPath();c.arc(25,25,23,0,7);c.stroke();
-    c.save();c.translate(6,13.5);c.scale(.37,.37);c.fillStyle=st.text;c.fill(SIL);c.restore();c.strokeStyle=st.accent2;c.lineWidth=2;c.beginPath();c.moveTo(14,36);c.lineTo(36,36);c.stroke()}},
+  tilt:shoeIcon('ลายเส้นเอียง',[5,6,103,72],(c,st)=>{tiltC(c,-24);shoeLine(c,st.accent)}),
+  duo:shoeIcon('สองสีเอียง',[5,6,103,72],(c,st)=>{tiltC(c,-24);shoeLine(c,st.text,4.2,[SH_HEEL]);c.strokeStyle=st.accent;c.stroke(SH_MID);c.stroke(SH_LACE)}),
+  speedtilt:shoeIcon('พุ่งเอียง',[-22,4,103,74],(c,st)=>{tiltC(c,-24);c.lineCap='round';c.lineWidth=4.2;c.strokeStyle=st.accent;c.stroke(SH_SPEED);shoeLine(c,st.text,4.2,[SH_STRIPE])}),
+  line:shoeIcon('ลายเส้น',[4,9,99,54],(c,st)=>shoeLine(c,st.accent)),
+  line2:shoeIcon('ลายเส้นสองสี',[4,9,99,54],(c,st)=>{shoeLine(c,st.text);c.strokeStyle=st.accent;c.stroke(SH_MID);c.stroke(SH_HEEL)}),
+  speed:shoeIcon('พุ่ง',[-27,9,99,54],(c,st)=>{c.lineCap='round';c.lineWidth=4.2;c.strokeStyle=st.accent;c.stroke(SH_SPEED);shoeLine(c,st.text,4.2,[SH_STRIPE])}),
+  trail:shoeIcon('เทรล',[4,9,99,58],(c,st)=>{shoeLine(c,st.text,4.2,[SH_HEEL]);c.strokeStyle=st.accent;c.stroke(SH_LUGS);c.stroke(SH_MID)}),
+  solid:shoeIcon('ทึบ',[5,10,98,53],(c,st)=>{c.fillStyle=st.text;c.fill(SH_OUT);c.fillStyle=st.accent;c.fill(SH_SOLE);erase(c,()=>{c.lineCap='round';c.lineWidth=3.2;c.stroke(SH_LACE);c.stroke(SH_MID)})}),
+  circle:shoeIcon('ตราวงกลม',[5,-13,95,77],(c,st)=>{c.lineWidth=4;c.strokeStyle=st.accent;c.beginPath();c.arc(50,32,42,0,7);c.stroke();c.translate(15,8);c.scale(.7,.7);tiltC(c,-18);shoeLine(c,st.text,5.5)}),
+  hexshoe:shoeIcon('ตราหกเหลี่ยม',[3,0,47,50],(c,st)=>{c.fillStyle=st.accent;c.fill(HEX);erase(c,()=>{c.translate(4.5,10);c.scale(.38,.38);tiltC(c,-18);c.lineCap="round";c.lineJoin="round";c.lineWidth=6.5;c.stroke(SH_OUT);c.stroke(SH_MID);c.stroke(SH_LACE)})}),
   dumbbell:{w:104,ox:0,name:'ดัมเบล',draw(c,st){c.fillStyle=st.text;rrect(c,28,22,48,6,2);c.fill();rrect(c,2,19,6,12,2);c.fill();rrect(c,96,19,6,12,2);c.fill();
     c.fillStyle=st.accent;rrect(c,8,12,8,26,3);c.fill();rrect(c,88,12,8,26,3);c.fill();rrect(c,16,6,10,38,3);c.fill();rrect(c,78,6,10,38,3);c.fill();
     c.fillStyle=st.text;rrect(c,26,17,4,16,1);c.fill();rrect(c,74,17,4,16,1);c.fill();erase(c,()=>{c.fillRect(19.5,10,2,30);c.fillRect(82.5,10,2,30)})}},
@@ -741,7 +807,7 @@ const ICONS={
   watch:{w:40,ox:0,name:'นาฬิกา',draw(c,st){c.fillStyle=st.accent;rrect(c,15,0,10,6,2);c.fill();c.lineWidth=4.5;c.strokeStyle=st.text;c.beginPath();c.arc(20,29,17.5,0,7);c.stroke();
     c.lineCap='round';c.strokeStyle=st.accent;c.lineWidth=4;c.beginPath();c.moveTo(20,29);c.lineTo(20,17);c.stroke();c.beginPath();c.moveTo(20,29);c.lineTo(28,33);c.stroke()}}
 };
-const iconOf=k=>k==='none'?null:(ICONS[k]||ICONS.blade);
+const iconOf=k=>k==='none'?null:(ICONS[k]||ICONS.tilt);
 function iconBitmap(ic,h){ // renders the icon at pixel height h (plus padding) on its own canvas
   const k=h/50,pad=Math.ceil(4*k),c=document.createElement('canvas');c.width=Math.ceil(ic.w*k)+pad*2;c.height=Math.ceil(h)+pad*2;
   const x=c.getContext('2d');x.translate(pad,pad);x.scale(k,k);x.translate(ic.ox,0);ic.draw(x,S.style);return{c,pad};
@@ -1031,6 +1097,16 @@ function drawFreeLayers(ctx,W,H,mult,d){
   LAYER_CACHE=list.map(l=>({id:l.id,name:l.name||LAYER_NAMES[l.id]||l.id}));
 }
 let LAYER_CACHE=[];
+function drawGuides(c,W,H){
+  c.save();
+  if(GUIDE&&(GUIDE.x||GUIDE.y)){c.strokeStyle='#ff2d87';c.lineWidth=Math.max(2,W/400);c.setLineDash([]);
+    if(GUIDE.x){c.beginPath();c.moveTo(W/2,0);c.lineTo(W/2,H);c.stroke()}if(GUIDE.y){c.beginPath();c.moveTo(0,H/2);c.lineTo(W,H/2);c.stroke()}}
+  if(S.safe&&H>W*1.5){const top=H*.13,bot=H*.2;c.fillStyle='rgba(255,45,135,.13)';c.fillRect(0,0,W,top);c.fillRect(0,H-bot,W,bot);
+    c.setLineDash([W/60,W/90]);c.strokeStyle='rgba(255,45,135,.8)';c.lineWidth=W/360;c.beginPath();c.moveTo(0,top);c.lineTo(W,top);c.moveTo(0,H-bot);c.lineTo(W,H-bot);c.stroke();
+    c.setLineDash([]);c.fillStyle='rgba(255,255,255,.9)';c.font=`600 ${W/34}px "IBM Plex Sans Thai",sans-serif`;c.textAlign='center';
+    c.fillText('พื้นที่ชื่อบัญชีและปุ่มของ Stories',W/2,top-W/40);c.fillText('พื้นที่ช่องข้อความและปุ่มด้านล่าง',W/2,H-bot+W/18)}
+  c.restore();
+}
 function drawSelection(ctx){
   if(ANIM)return;const r=HITS.find(h=>h.id===S.sel);if(!r||(S.sel==='stats'))return;const pad=16;
   ctx.save();ctx.translate(r.cx,r.cy);ctx.rotate(r.rot*Math.PI/180);ctx.setLineDash([14,10]);ctx.lineWidth=3;ctx.strokeStyle='rgba(255,255,255,.9)';
@@ -1104,11 +1180,11 @@ function draw(){
   bgv.style.transform=mediaKind==='video'?`translate(${S.bg.x/4}%,${S.bg.y/4}%) scale(${S.bg.zoom/100})`:'';
   // preview: draw overlay with background for glass blur only on photo
   const vx=view.getContext('2d');
-  HITS=[];const glass=bg&&S.style.panel==='glass';composite(vx,W,H,1,glass?bg:null);drawSelection(vx);
+  HITS=[];const glass=bg&&S.style.panel==='glass';composite(vx,W,H,1,glass?bg:null);drawSelection(vx);drawGuides(vx,W,H);
   bgc.style.visibility=glass?'hidden':''; // the view already holds the background when the glass panel samples it
-  document.querySelectorAll('[data-ratio]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ratio===S.ratio));$('freeBtn').setAttribute('aria-pressed',!!S.rt.free);
+  document.querySelectorAll('[data-ratio]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ratio===S.ratio));$('freeBtn').setAttribute('aria-pressed',!!S.rt.free);$('safeBtn').setAttribute('aria-pressed',!!S.safe);updUndo();
   document.querySelectorAll('[data-out]').forEach(o=>{const v=getP(o.dataset.out);o.textContent=['scale','route.size','bg.zoom','style.panelAlpha','style.shadow','rt.scale','iconSize','wxSize','logoSize'].includes(o.dataset.out)?v+'%':['rot','rt.rot'].includes(o.dataset.out)?v+'°':v});
-  if(ANIM)return;drawPad();renderIconCards();renderLayers();store.set('rs.state',S);
+  if(ANIM)return;drawPad();renderIconCards();renderLayers();store.set('rs.state',S);queueHist();queueThumbs();
 }
 
 // ---------- bindings ----------
@@ -1128,7 +1204,7 @@ function syncCheck(k){const el=document.querySelector(`[data-k="${k}"]`);if(el)e
 function onTpl(t){if(t==='bar'){S.pos='bottom';S.show.hr=true;}syncInputs()}
 
 document.querySelectorAll('[role=tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[role=tab]').forEach(x=>x.setAttribute('aria-selected',x===b));
-  document.querySelectorAll('.pane').forEach(p=>p.hidden=p.id!=='tab-'+b.dataset.tab);if(b.dataset.tab==='route')drawPad()});
+  document.querySelectorAll('.pane').forEach(p=>p.hidden=p.id!=='tab-'+b.dataset.tab);if(b.dataset.tab==='layout')queueThumbs();if(b.dataset.tab==='route')drawPad()});
 document.querySelectorAll('[data-ratio]').forEach(b=>b.onclick=()=>{S.ratio=b.dataset.ratio;bgCache.key='';schedule()});
 $('freeBtn').onclick=()=>{S.rt.free=!S.rt.free;S.sel=S.rt.free?'route':'stats';syncInputs();schedule();toast(S.rt.free?'ลากเส้นทางบนภาพได้อิสระแล้ว':'เส้นทางกลับไปอยู่ในแม่แบบ')};
 $('rtReset').onclick=()=>{Object.assign(S.rt,{x:0,y:.3,scale:90,rot:0,flip:false});S.sel='route';syncInputs();schedule()};
@@ -1144,14 +1220,16 @@ view.addEventListener('pointerdown',e=>{view.setPointerCapture(e.pointerId);ptrs
   start=snap();const now=Date.now();
   if(now-lastTap<300&&ptrs.size===1&&target){const t=tf(target);if(target==='route')Object.assign(S.rt,{x:0,y:.3,scale:90,rot:0});else if(target==='stats'){S.ox=0;S.oy=0}else{t.o.scale=100;t.o.rot=0}syncInputs()}
   lastTap=now;schedule()});
+let GUIDE=null;
 view.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId)||!target)return;if(S.tpl==='free')S.layoutTouched=true;ptrs.set(e.pointerId,[e.clientX,e.clientY]);const r=view.getBoundingClientRect(),t=tf(target);
   if(ptrs.size===1&&start.pts.length===1){const[p]=[...ptrs.values()];
-    t.o[t.x]=+clamp(start.x+(p[0]-start.pts[0][0])/r.width,-t.lim,t.lim).toFixed(4);t.o[t.y]=+clamp(start.y+(p[1]-start.pts[0][1])/r.height,-t.lim,t.lim).toFixed(4)}
+    let nx=clamp(start.x+(p[0]-start.pts[0][0])/r.width,-t.lim,t.lim),ny=clamp(start.y+(p[1]-start.pts[0][1])/r.height,-t.lim,t.lim);GUIDE={x:Math.abs(nx)<.018,y:Math.abs(ny)<.012};if(GUIDE.x)nx=0;if(GUIDE.y)ny=0;
+    t.o[t.x]=+nx.toFixed(4);t.o[t.y]=+ny.toFixed(4)}
   else if(ptrs.size===2&&start.pts.length===2){const[a,b]=[...ptrs.values()];const d0=Math.hypot(start.pts[0][0]-start.pts[1][0],start.pts[0][1]-start.pts[1][1]),d1=Math.hypot(a[0]-b[0],a[1]-b[1]);
     const a0=Math.atan2(start.pts[1][1]-start.pts[0][1],start.pts[1][0]-start.pts[0][0]),a1=Math.atan2(b[1]-a[1],b[0]-a[0]);
     t.o.scale=Math.round(clamp(start.s*d1/Math.max(d0,1),t.min,t.max));t.o.rot=Math.round(wrap(start.r+(a1-a0)*180/Math.PI))}
   syncInputs();schedule()});
-const up=e=>{ptrs.delete(e.pointerId);start=snap()};view.addEventListener('pointerup',up);view.addEventListener('pointercancel',up);
+const up=e=>{ptrs.delete(e.pointerId);start=snap();if(!ptrs.size&&GUIDE){GUIDE=null;schedule()}};view.addEventListener('pointerup',up);view.addEventListener('pointercancel',up);
 view.addEventListener('wheel',e=>{e.preventDefault();const id=pick(e);if(!id)return;S.sel=id;const t=tf(id);t.o.scale=Math.round(clamp(t.o.scale-e.deltaY*.1,t.min,t.max));syncInputs();schedule()},{passive:false});
 function snap(){const t=tf(target);return{pts:[...ptrs.values()].map(p=>[...p]),x:t.o[t.x],y:t.o[t.y],s:t.o.scale,r:t.o.rot}}
 const wrap=v=>((v+180)%360+360)%360-180;
@@ -1196,8 +1274,8 @@ $('gpxIn').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{
 $('mediaIn').onchange=e=>{const f=e.target.files[0];if(!f)return;const url=URL.createObjectURL(f);
   if(f.type.startsWith('video')){media=bgv;mediaKind='video';bgv.src=url;bgv.hidden=false;bgv.play().catch(()=>{});}
   else{const im=new Image();im.onload=()=>{media=im;mediaKind='image';bgv.hidden=true;bgv.removeAttribute('src');bgCache.key='';schedule()};im.src=url}
-  $('clearMedia').hidden=false;$('exportType').value=f.type.startsWith('video')?'video':'jpg';schedule();e.target.value=''};
-$('clearMedia').onclick=()=>{media=null;mediaKind=null;bgv.pause();bgv.hidden=true;bgv.removeAttribute('src');bgCache.key='';$('clearMedia').hidden=true;$('exportType').value='png';schedule()};
+  $('clearMedia').hidden=false;setFmt(f.type.startsWith('video')?'video':'jpg');schedule();e.target.value=''};
+$('clearMedia').onclick=()=>{media=null;mediaKind=null;bgv.pause();bgv.hidden=true;bgv.removeAttribute('src');bgCache.key='';$('clearMedia').hidden=true;setFmt('png');schedule()};
 
 // presets & saved styles
 const STYLE_KEYS=['style','tpl','icon','font','numFont','route.style','route.width','route.dots'];
@@ -1253,6 +1331,7 @@ async function exportVideo(){
 }
 function openModal(){$('modal').hidden=false}
 function showResult(blob,name,kind){
+  $('copyBtn').hidden=kind!=='image'||!(navigator.clipboard&&window.ClipboardItem);
   result={blob,name};openModal();$('prog').hidden=true;$('shareBtn').disabled=false;
   const url=URL.createObjectURL(blob);const box=$('resultBox');box.innerHTML='';
   const el=document.createElement(kind==='video'?'video':'img');el.src=url;if(kind==='video'){el.controls=true;el.playsInline=true;el.muted=true}else el.alt='ภาพที่สร้าง';box.append(el);
@@ -1614,14 +1693,14 @@ $('addEx').onclick=()=>{S.gym.ex.push({name:'',sets:3,reps:10,kg:'',pr:false});r
 function syncGymUI(){$('muscleChips').querySelectorAll('input').forEach(i=>i.checked=S.gym.muscles.includes(i.value))}
 
 // mode switch
-const SHOE_KEYS=['blade','mono','carbon','aero','spike','trail','wing','pulse','hex','badge'],GYM_KEYS=['dumbbell','barbell','kettle','plate','gymhex'];
+const SHOE_KEYS=['tilt','duo','speedtilt','line','line2','speed','trail','solid','circle','hexshoe'],GYM_KEYS=['dumbbell','barbell','kettle','plate','gymhex'];
 function applyMode(){
   const gym=S.mode==='gym';document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===S.mode));
   document.querySelectorAll('.run-only').forEach(el=>el.hidden=gym);document.querySelectorAll('.gym-only').forEach(el=>el.hidden=!gym);
   if(gym&&$('tab-route')&&!$('tab-route').hidden)document.querySelector('[data-tab=data]').click();
 }
 document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{if(S.mode===b.dataset.mode)return;S.mode=b.dataset.mode;
-  if(S.mode==='gym'&&SHOE_KEYS.includes(S.icon))S.icon='dumbbell';if(S.mode==='run'&&GYM_KEYS.includes(S.icon))S.icon='blade';
+  if(S.mode==='gym'&&SHOE_KEYS.includes(S.icon))S.icon='dumbbell';if(S.mode==='run'&&GYM_KEYS.includes(S.icon))S.icon='tilt';
   if(S.tpl==='splits'&&S.mode==='gym')S.tpl='classic';
   S.layoutIds='';applyMode();syncInputs();schedule()});
 
@@ -1811,6 +1890,44 @@ Object.assign(TPL,{
     st.forEach((t,i)=>{const cx=lx+(i%2)*(cw-120*s)/2,ry=y+Math.floor(i/2)*150*s;label(CTX,t.label,cx,ry+30*s,28*s,'left');drawVal(CTX,cx,ry+110*s,t.val,t.unit,76*s,'left')});
   }
 });
+
+// ---------- undo / redo ----------
+let hist=[],hi=-1,histT=0;
+const snapJ=()=>JSON.stringify(S,(k,v)=>k==='sel'?undefined:v);
+function pushHist(){const j=snapJ();if(hist[hi]===j)return;hist=hist.slice(0,hi+1);hist.push(j);if(hist.length>80)hist.shift();hi=hist.length-1;updUndo()}
+function queueHist(){clearTimeout(histT);histT=setTimeout(pushHist,400)}
+function updUndo(){const u=$('undoBtn'),r=$('redoBtn');if(u)u.disabled=hi<=0;if(r)r.disabled=hi>=hist.length-1}
+function goHist(d){clearTimeout(histT);pushHist();const n=hi+d;if(n<0||n>=hist.length)return;hi=n;const sel=S.sel;S=merge(clone(DEF),JSON.parse(hist[hi]));S.sel=sel;
+  renderExEditor();syncGymUI();applyMode();syncInputs();ensureFont().then(schedule);updUndo()}
+$('undoBtn').onclick=()=>goHist(-1);$('redoBtn').onclick=()=>goHist(1);
+addEventListener('keydown',e=>{if(!(e.metaKey||e.ctrlKey)||e.key.toLowerCase()!=='z'||/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))return;e.preventDefault();goHist(e.shiftKey?1:-1)});
+$('safeBtn').onclick=()=>{S.safe=!S.safe;schedule();toast(S.safe?'แสดงพื้นที่ที่ปุ่มของ Stories จะบัง':'ซ่อนขอบปลอดภัย')};
+
+// ---------- template thumbnails ----------
+const TPL_GROUPS=[['แนะนำ',[['classic','คลาสสิก'],['routeback','เส้นทางหลังตัวเลข'],['ticket','ตั๋ว'],['card','การ์ด'],['dots','จุดไข่ปลา'],['pills','แคปซูล']]],
+  ['แบบอื่น',[['hero','ตัวเลขยักษ์'],['side','ข้างจอ'],['lapbars','กราฟต่อรอบ'],['grid','ตาราง'],['splits','สปลิต'],['bar','แถบล่าง'],['badge','เหรียญ'],['free','อิสระ']]]];
+(()=>{const g=$('tplGrid');TPL_GROUPS.forEach(([title,list])=>{const h=document.createElement('h3');h.textContent=title;g.append(h);const grid=document.createElement('div');grid.className='tgrid';
+  list.forEach(([v,n])=>{const l=document.createElement('label');l.className='tcard';l.innerHTML=`<input type="radio" name="tpl" data-k="tpl" value="${v}"><canvas width="180" height="320" data-tpl="${v}"></canvas><span>${n}</span>`;grid.append(l)});g.append(grid)})})();
+let thumbT=0;const thumbOff=document.createElement('canvas');
+function queueThumbs(){clearTimeout(thumbT);thumbT=setTimeout(renderThumbs,280)}
+function renderThumbs(){
+  if($('tab-layout').hidden||ANIM)return;const[W0,H0]=dims(),k=360/W0,W=360,H=Math.round(H0*k);thumbOff.width=W;thumbOff.height=H;const ox=thumbOff.getContext('2d');
+  const keep={tpl:S.tpl,layers:JSON.stringify(S.layers),ids:S.layoutIds,rt:JSON.stringify(S.rt)},kh=HITS,kr=ROUTE_ON,kl=LAYER_CACHE;
+  const light=parseInt(S.style.text.slice(1),16)<0x888888;
+  document.querySelectorAll('#tplGrid canvas').forEach(cv=>{const tw=180,th=Math.round(180*H/W);if(cv.height!==th)cv.height=th;const x=cv.getContext('2d');
+    const g=x.createLinearGradient(0,0,0,th);g.addColorStop(0,light?'#eef1f6':'#34405a');g.addColorStop(1,light?'#d9dee8':'#141a26');x.fillStyle=g;x.fillRect(0,0,tw,th);
+    S.tpl=cv.dataset.tpl;try{composite(ox,W,H,1,null);x.drawImage(thumbOff,0,0,tw,th)}catch(e){}});
+  S.tpl=keep.tpl;S.layers=JSON.parse(keep.layers);S.layoutIds=keep.ids;S.rt=JSON.parse(keep.rt);HITS=kh;ROUTE_ON=kr;LAYER_CACHE=kl;
+}
+
+// ---------- export format chips, intro, next steps, copy ----------
+function setFmt(f){$('exportType').value=f;document.querySelectorAll('[data-fmt]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.fmt===f))}
+document.querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>setFmt(b.dataset.fmt));
+try{if(localStorage.getItem('rs.intro'))$('intro').hidden=true}catch(e){}
+$('introClose').onclick=()=>{$('intro').hidden=true;try{localStorage.setItem('rs.intro','1')}catch(e){}};
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{document.querySelector(`[role=tab][data-tab="${b.dataset.go}"]`).click();scrollTo({top:0,behavior:'smooth'})});
+$('copyBtn').onclick=async()=>{if(!result)return;try{let blob=result.blob;if(blob.type!=='image/png'){const im=await createImageBitmap(blob),c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);blob=await new Promise(r=>c.toBlob(r,'image/png'))}
+  await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);toast('คัดลอกแล้ว วางใน Stories ได้เลย')}catch(e){toast('เครื่องนี้คัดลอกภาพไม่ได้ ใช้ปุ่มบันทึกแทน')}};
 
 // ---------- fonts ----------
 async function ensureFont(){try{const fams=[S.font,S.numFont].filter(Boolean);await Promise.all(fams.flatMap(f=>[400,500,600,700,800].map(w=>document.fonts.load(`${wfor(f,w)} 40px "${f}"`,'ระยะทาง 0123 กม.'))))}catch(e){}}
