@@ -128,6 +128,13 @@ fieldset.ai{border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in s
 .exfoot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
 .exfoot b{font:700 16px var(--num);color:var(--ink)}
 #quickEx .tb{font-size:12.5px;padding:5px 10px}
+.rpcard{max-width:560px;gap:10px}
+.rphead{display:flex;align-items:center;justify-content:space-between;font:700 16px var(--num)}
+.rpsw{width:26px;height:26px;border-radius:50%;box-shadow:0 0 0 2px var(--surface),0 0 0 3px var(--line)}
+.rpwrap{display:flex;justify-content:center;min-height:120px;touch-action:none}
+#rpCv{border-radius:12px;touch-action:none;cursor:crosshair;max-width:100%}
+.rptips{display:flex;gap:8px;flex-wrap:wrap}
+.rptips span{font-size:12.5px;background:var(--sunk);border:1px solid var(--line);border-radius:999px;padding:4px 10px;color:var(--muted)}
 .modal{position:fixed;inset:0;background:rgba(5,10,20,.75);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
 .modal .card2{background:var(--surface);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;align-items:stretch;max-height:100%;max-width:440px;width:100%}
 .modal .chk{background-color:#9aa3b1;background-image:linear-gradient(45deg,#b7bec9 25%,transparent 25%),linear-gradient(-45deg,#b7bec9 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#b7bec9 75%),linear-gradient(-45deg,transparent 75%,#b7bec9 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0;border-radius:10px;overflow:hidden;display:flex;justify-content:center;min-height:0}
@@ -497,11 +504,8 @@ label.tcard:focus-within canvas{outline:2px solid var(--hot);outline-offset:2px}
       <fieldset>
         <legend>เส้นทาง</legend>
         <label class="btn primary filebtn" id="routeImgBtn"><input type="file" id="routeImgIn" accept="image/*">ดึงเส้นทางจากภาพ</label>
-        <p class="hint" style="text-align:left">ใช้ได้กับภาพเส้นทางที่บันทึกจาก Strava, ภาพแผนที่ใน Apple Fitness หรือรูปที่มีเส้นทางสีส้ม แดง เหลือง แอปจะลอกรูปทรงเส้นทางให้ตรงตามภาพ</p>
-        <div class="row" style="grid-template-columns:minmax(0,1fr) auto;align-items:end">
-          <label class="f"><span>สีของเส้นในภาพ</span><select id="pickMode"><option value="">อัตโนมัติ (ส้ม แดง เหลือง)</option><option value="custom">สีอื่น เลือกเอง</option></select></label>
-          <input type="color" id="pickColor" value="#fc4c02" aria-label="สีเส้นในภาพ" style="width:56px" hidden>
-        </div>
+        <p class="hint" style="text-align:left">ใช้ได้กับภาพเส้นทางจาก Strava, แผนที่ใน Apple Fitness หรือภาพหน้าจอที่มีเส้นทาง จะมีหน้าจอให้ตรวจผลก่อนใช้ แตะที่เส้นเพื่อเลือกสี หรือลากกรอบเฉพาะเส้นทางได้</p>
+
         <details class="more"><summary>วิธีอื่น: วาดเอง หรือไฟล์ GPX</summary>
         <div class="routebox">
           <canvas id="pad" width="600" height="600" aria-label="วาดเส้นทางด้วยนิ้ว"></canvas>
@@ -625,6 +629,15 @@ label.tcard:focus-within canvas{outline:2px solid var(--hot);outline-offset:2px}
     </div>
   </div>
 </div>
+<div class="modal" id="rpModal" hidden role="dialog" aria-modal="true" aria-label="ดึงเส้นทางจากภาพ">
+  <div class="card2 rpcard">
+    <div class="rphead"><b>ดึงเส้นทางจากภาพ</b><span class="rpsw" id="rpSw" title="สีที่ใช้ค้นหา"></span></div>
+    <div class="rpwrap"><canvas id="rpCv"></canvas></div>
+    <p class="hint" id="rpMsg"></p>
+    <div class="rptips"><span>แตะที่เส้น = เลือกสีเส้น</span><span>ลากนิ้ว = ครอปเฉพาะเส้นทาง</span></div>
+    <div class="acts"><button id="rpReset">เริ่มใหม่</button><button id="rpCancel">ยกเลิก</button><button class="primary" id="rpUse">ใช้เส้นทางนี้</button></div>
+  </div>
+</div>
 <div class="toast" id="toast" hidden role="status"></div>
 
 <script>
@@ -710,7 +723,7 @@ function derive(){
   const stats=all.filter(s=>S.show[s.k]&&s.val);
   if(S.style.upper&&S.lang==='en')stats.forEach(s=>s.label=s.label.toUpperCase());
   const m=S.route.mode;
-  const route=m==='preset'?PRESET:m==='drawn'?chaikin(chaikin(S.route.drawn)):m==='gpx'?S.route.gpx:m==='shot'?chaikin(S.route.shot):[];
+  const route=m==='preset'?PRESET:m==='drawn'?chaikin(chaikin(S.route.drawn)):m==='gpx'?S.route.gpx:m==='shot'?chaikinMulti(S.route.shot):[];
   const free=(S.rt.free||S.tpl==='free')&&route.length>1;
   return{L,stats,route:free?[]:route,freeRoute:free?route:null,
     splits:String(r.splits).split(/[,\s]+/).map(parseT).filter(x=>x>0).slice(0,12),
@@ -842,16 +855,16 @@ function drawRoute(ctx,full,bx,by,bw,bh,align){
   const pw=Math.max(x1-x0,1e-9),ph=Math.max(y1-y0,1e-9),k=Math.min(bw/pw,bh/ph),dw=pw*k,dh=ph*k;
   const ox=align==='left'?bx:align==='right'?bx+bw-dw:bx+(bw-dw)/2,oy=by+(bh-dh)/2;
   const P=([x,y])=>[ox+(x-x0)*k,oy+(y-y0)*k];const st=S.style,lw=R.width*SC;
-  const path=()=>{ctx.beginPath();pts.forEach((p,i)=>{const[x,y]=P(p);i?ctx.lineTo(x,y):ctx.moveTo(x,y)})};
+  const path=()=>{ctx.beginPath();pts.forEach((p,i)=>{const[x,y]=P(p);(i&&!p[2])?ctx.lineTo(x,y):ctx.moveTo(x,y)})};
   ctx.save();ctx.lineJoin='round';ctx.lineCap='round';setShadow(ctx);
   if(R.style==='pace'||R.style==='pacet'){
     const N=64,ser=paceSeries(N);
     if(!ser){ctx.strokeStyle=st.accent;ctx.lineWidth=lw;path();ctx.stroke()}
     else{const lo=Math.min(...ser),hi=Math.max(...ser),rng=Math.max(hi-lo,1);
-      const L=[0];for(let i=1;i<full.length;i++)L.push(L[i-1]+Math.hypot(full[i][0]-full[i-1][0],full[i][1]-full[i-1][1]));const tot=L[L.length-1]||1;
+      const L=[0];for(let i=1;i<full.length;i++)L.push(L[i-1]+(full[i][2]?0:Math.hypot(full[i][0]-full[i-1][0],full[i][1]-full[i-1][1])));const tot=L[L.length-1]||1;
       // shadow pass, then coloured segments on top
       ctx.strokeStyle=paceColor((ser[0]-lo)/rng,R.style==='pacet');ctx.lineWidth=lw;path();ctx.stroke();ctx.shadowColor='transparent';
-      let acc=0;for(let i=1;i<pts.length;i++){const a=P(pts[i-1]),b=P(pts[i]);const seg=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);const f=(acc+seg/2)/tot;acc+=seg;
+      let acc=0;for(let i=1;i<pts.length;i++){if(pts[i][2])continue;const a=P(pts[i-1]),b=P(pts[i]);const seg=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);const f=(acc+seg/2)/tot;acc+=seg;
         const v=ser[Math.min(N-1,Math.round(f*(N-1)))];ctx.strokeStyle=paceColor((v-lo)/rng,R.style==='pacet');ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()}}
   }
   else if(R.style==='glow'){ctx.shadowColor=st.accent;ctx.shadowBlur=lw*3;ctx.shadowOffsetY=0;ctx.strokeStyle=st.accent;ctx.lineWidth=lw;path();ctx.stroke();ctx.shadowBlur=lw*1.2;ctx.strokeStyle=st.accent2;ctx.lineWidth=lw*.4;path();ctx.stroke()}
@@ -859,7 +872,7 @@ function drawRoute(ctx,full,bx,by,bw,bh,align){
   else if(R.style==='dash'){ctx.setLineDash([lw*1.6,lw*1.4]);ctx.strokeStyle=st.accent;ctx.lineWidth=lw;path();ctx.stroke()}
   else if(R.style==='double'){ctx.strokeStyle=st.text;ctx.lineWidth=lw*1.9;path();ctx.stroke();ctx.shadowColor='transparent';ctx.strokeStyle=st.accent;ctx.lineWidth=lw;path();ctx.stroke()}
   else if(R.style==='dots'){ctx.fillStyle=st.accent;let acc=0,prev=P(pts[0]);const gap=lw*1.9;ctx.beginPath();ctx.arc(prev[0],prev[1],lw*.55,0,7);ctx.fill();
-    for(let i=1;i<pts.length;i++){const c=P(pts[i]);let dx=c[0]-prev[0],dy=c[1]-prev[1],dl=Math.hypot(dx,dy);while(acc+dl>=gap){const t=(gap-acc)/dl;const q=[prev[0]+dx*t,prev[1]+dy*t];ctx.beginPath();ctx.arc(q[0],q[1],lw*.55,0,7);ctx.fill();prev=q;dx=c[0]-prev[0];dy=c[1]-prev[1];dl=Math.hypot(dx,dy);acc=0}acc+=dl;prev=c}}
+    for(let i=1;i<pts.length;i++){const c=P(pts[i]);if(pts[i][2]){prev=c;acc=0;continue}let dx=c[0]-prev[0],dy=c[1]-prev[1],dl=Math.hypot(dx,dy);while(acc+dl>=gap){const t=(gap-acc)/dl;const q=[prev[0]+dx*t,prev[1]+dy*t];ctx.beginPath();ctx.arc(q[0],q[1],lw*.55,0,7);ctx.fill();prev=q;dx=c[0]-prev[0];dy=c[1]-prev[1];dl=Math.hypot(dx,dy);acc=0}acc+=dl;prev=c}}
   else{ctx.strokeStyle=st.accent;ctx.lineWidth=lw;path();ctx.stroke()}
   ctx.setLineDash([]);
   if(frac<1){const[hx,hy]=P(pts[pts.length-1]);ctx.shadowColor=st.accent2;ctx.shadowBlur=lw*2.5;ctx.shadowOffsetY=0;ctx.beginPath();ctx.arc(hx,hy,lw*1.1,0,7);ctx.fillStyle='#fff';ctx.fill()}
@@ -1161,7 +1174,7 @@ function paceColor(u,themed){ // u: 0 fast .. 1 slow
   return `rgb(${A.map((v,k)=>Math.round(v+(B[k]-v)*t)).join(',')})`;
 }
 function cutPath(pts,f){ // first fraction f of the path by length
-  if(f>=1)return pts;const L=[0];for(let i=1;i<pts.length;i++)L.push(L[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));
+  if(f>=1)return pts;const L=[0];for(let i=1;i<pts.length;i++)L.push(L[i-1]+(pts[i][2]?0:Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1])));
   const target=L[L.length-1]*f,out=[pts[0]];for(let i=1;i<pts.length;i++){if(L[i]<=target){out.push(pts[i]);continue}
     const t=(target-L[i-1])/Math.max(L[i]-L[i-1],1e-9);out.push([pts[i-1][0]+(pts[i][0]-pts[i-1][0])*t,pts[i-1][1]+(pts[i][1]-pts[i-1][1])*t]);break}
   return out;
@@ -1243,7 +1256,7 @@ function drawPad(){
   let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;pts.forEach(([x,y])=>{x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)});
   const fit=m!=='drawn',k=fit?Math.min(500/Math.max(x1-x0,1e-9),500/Math.max(y1-y0,1e-9)):1,ox=fit?300-(x0+x1)/2*k:0,oy=fit?300-(y0+y1)/2*k:0;
   pctx.lineWidth=10;pctx.lineCap=pctx.lineJoin='round';pctx.strokeStyle=S.style.accent;
-  pctx.beginPath();pts.forEach(([x,y],i)=>i?pctx.lineTo(ox+x*k,oy+y*k):pctx.moveTo(ox+x*k,oy+y*k));pctx.stroke();
+  pctx.beginPath();pts.forEach(([x,y,u],i)=>(i&&!u)?pctx.lineTo(ox+x*k,oy+y*k):pctx.moveTo(ox+x*k,oy+y*k));pctx.stroke();
 }
 function padPt(e){const r=pad.getBoundingClientRect();return[(e.clientX-r.left)/r.width*600,(e.clientY-r.top)/r.height*600]}
 pad.addEventListener('pointerdown',e=>{drawing=true;pad.setPointerCapture(e.pointerId);S.route.drawn=[padPt(e)];S.route.mode='drawn';syncInputs();schedule()});
@@ -1403,45 +1416,50 @@ function parseWorkoutText(raw){
   return o;
 }
 
-// Trace a coloured route line out of any image: a saved route sticker, a map screenshot or a photo with a route on it.
-// 1) mask route-coloured pixels  2) join small gaps  3) keep the most route-like blob
-// 4) thin it to a 1-pixel skeleton  5) walk the skeleton in order  6) simplify.
+// Trace a coloured route line out of any image (route sticker, map screenshot, photo with a route).
+// 1) mask route-coloured pixels (auto orange/red/yellow, or the colour the user tapped)  2) join small gaps
+// 3) keep the most route-like blob  4) thin it to a 1-pixel skeleton  5) split the skeleton into separate strokes
+// at junctions (no invented connector lines)  6) chain strokes end-to-end, lifting the pen only where they don't touch.
+// Output points are in image pixels; a point [x,y,1] starts a new stroke.
 function rgbHue(r,g,b){const mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;let h=0;
   if(d){if(mx===r)h=((g-b)/d)%6;else if(mx===g)h=(b-r)/d+2;else h=(r-g)/d+4;h*=60;if(h<0)h+=360}
   return[h,mx?d/mx:0,mx/255]}
-function routeFromImage(img,strict=true,pickHex=''){
-  const MAX=900,sc=Math.min(1,MAX/Math.max(img.naturalWidth,img.naturalHeight)),W=Math.max(8,Math.round(img.naturalWidth*sc)),H=Math.max(8,Math.round(img.naturalHeight*sc));
-  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const cx=cv.getContext('2d',{willReadFrequently:true});cx.drawImage(img,0,0,W,H);
+function routeFromImage(img,strict=true,pickHex='',crop=null){
+  const iw=img.naturalWidth,ih=img.naturalHeight,c0=crop||{x0:0,y0:0,x1:1,y1:1};
+  const sx0=Math.round(c0.x0*iw),sy0=Math.round(c0.y0*ih),sw=Math.max(8,Math.round((c0.x1-c0.x0)*iw)),sh=Math.max(8,Math.round((c0.y1-c0.y0)*ih));
+  const MAX=900,sc=Math.min(1,MAX/Math.max(sw,sh)),W=Math.max(8,Math.round(sw*sc)),H=Math.max(8,Math.round(sh*sc));
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const cx=cv.getContext('2d',{willReadFrequently:true});cx.drawImage(img,sx0,sy0,sw,sh,0,0,W,H);
   const p=cx.getImageData(0,0,W,H).data,N=W*H;
-  let target=null;if(pickHex){const n=parseInt(pickHex.slice(1),16);target=rgbHue(n>>16&255,n>>8&255,n&255)[0]}
-  const build=t=>{const m=new Uint8Array(N);let c=0;for(let i=0;i<N;i++){const k=i*4;if(p[k+3]<100)continue;const r=p[k],g=p[k+1],b=p[k+2],[h,s,v]=rgbHue(r,g,b);
-      let ok;if(t!=null){const dh=Math.min(Math.abs(h-t),360-Math.abs(h-t));ok=dh<20&&s>.35&&v>.35}else ok=(h<=48||h>=355)&&s>.5&&v>.55&&r>150;
-      if(ok){m[i]=1;c++}}return[m,c]};
   let mapLike=false;
   if(strict){ // screenshot reading: skip dark app screens (charts, text) unless part of the screen is a map
     let dark=0,map=0,tot=0;for(let i=0;i<N;i+=7){const k=i*4,r=p[k],g=p[k+1],b=p[k+2],l=(r+g+b)/3;tot++;if(p[k+3]>100&&l<45)dark++;if(l>25&&l<170&&g>r+6&&g>=b-4)map++}
     mapLike=map/tot>=.2;if(!mapLike&&dark/tot>.6)return null}
-  let[mask,cnt]=build(target);
-  if(cnt<40&&target==null){ // nothing orange/red/yellow: fall back to the most common vivid colour
+  let tgt=null;if(pickHex){const n=parseInt(pickHex.slice(1),16);tgt=rgbHue(n>>16&255,n>>8&255,n&255)}
+  const build=t=>{const m=new Uint8Array(N);let c=0;for(let i=0;i<N;i++){const k=i*4;if(p[k+3]<100)continue;const r=p[k],g=p[k+1],b=p[k+2],[h,s,v]=rgbHue(r,g,b);let ok;
+      if(t){const dh=Math.min(Math.abs(h-t[0]),360-Math.abs(h-t[0]));ok=dh<16&&s>Math.max(.3,t[1]-.3)&&v>Math.max(.3,t[2]-.35)}
+      else ok=(h<=48||h>=355)&&s>.72&&v>.55&&r>150;
+      if(ok){m[i]=1;c++}}return[m,c]};
+  let[mask,cnt]=build(tgt);
+  if(cnt<40&&!tgt){ // nothing orange/red/yellow: fall back to the most common vivid colour
     const hist=new Array(36).fill(0);for(let i=0;i<N;i++){const k=i*4;if(p[k+3]<100)continue;const[h,s,v]=rgbHue(p[k],p[k+1],p[k+2]);if(s>.55&&v>.5)hist[Math.floor(h/10)%36]++}
-    const bi=hist.indexOf(Math.max(...hist));if(hist[bi]>=40)[mask,cnt]=build(bi*10+5)}
-  if(cnt<40)return null;
-  // close small gaps (dashes, overlapping laps) with a 5x5 dilation
+    const bi=hist.indexOf(Math.max(...hist));if(hist[bi]>=40)[mask,cnt]=build([bi*10+5,.7,.7])}
+  if(cnt<30)return null;
+  // close small gaps (dashes, overlapping laps)
   const dil=new Uint8Array(N),R=Math.max(2,Math.round(Math.max(W,H)/(mapLike?110:260)));
   for(let y=0;y<H;y++)for(let x=0;x<W;x++){if(!mask[y*W+x])continue;for(let dy=-R;dy<=R;dy++){const yy=y+dy;if(yy<0||yy>=H)continue;for(let dx=-R;dx<=R;dx++){const xx=x+dx;if(xx>=0&&xx<W)dil[yy*W+xx]=1}}}
   // connected blobs
-  const lab=new Int32Array(N).fill(-1),comps=[];const q=new Int32Array(N);
+  const lab=new Int32Array(N).fill(-1),comps=[],q=new Int32Array(N);
   for(let i=0;i<N;i++){if(!dil[i]||lab[i]>=0)continue;let qh=0,qt=0;q[qt++]=i;lab[i]=comps.length;let n=0,x0=W,y0=H,x1=0,y1=0;
     while(qh<qt){const j=q[qh++];n++;const x=j%W,y=(j/W)|0;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;
       for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const xx=x+dx,yy=y+dy;if(xx<0||yy<0||xx>=W||yy>=H)continue;const k=yy*W+xx;if(dil[k]&&lab[k]<0){lab[k]=comps.length;q[qt++]=k}}}
     comps.push({id:comps.length,n,x0,y0,x1,y1})}
   const md=Math.min(W,H);
   comps.forEach(c=>{const bw=c.x1-c.x0+1,bh=c.y1-c.y0+1;c.diag=Math.hypot(bw,bh);c.fill=c.n/(bw*bh);c.elong=Math.max(bw,bh)/Math.max(1,Math.min(bw,bh));
-    c.ok=mapLike?c.diag>=md*.1:c.diag>=md*(strict?.18:.08)&&(c.fill<=.35||(c.elong>6&&c.fill<=.75))});
+    c.ok=(mapLike||crop||tgt)?c.diag>=md*.06:c.diag>=md*(strict?.18:.08)&&(c.fill<=.35||(c.elong>6&&c.fill<=.75))});
   let cands=comps.filter(c=>c.ok).sort((a,b)=>b.n-a.n).slice(0,6);
   if(!cands.length&&!strict)cands=comps.sort((a,b)=>b.n-a.n).slice(0,1);
   if(!cands.length)return null;
-  // thin each candidate (Zhang-Suen) and score it: long skeletons with few branch ends look like routes, text looks bushy
+  const N8=bw=>[-bw-1,-bw,-bw+1,-1,1,bw-1,bw,bw+1];
   const skel=c=>{const bw=c.x1-c.x0+3,bh=c.y1-c.y0+3,g=new Uint8Array(bw*bh);
     for(let y=c.y0;y<=c.y1;y++)for(let x=c.x0;x<=c.x1;x++)if(lab[y*W+x]===c.id)g[(y-c.y0+1)*bw+(x-c.x0+1)]=1;
     for(let changed=true;changed;){changed=false;for(let step=0;step<2;step++){const del=[];
@@ -1450,30 +1468,52 @@ function routeFromImage(img,strict=true,pickHex=''){
         if(B<2||B>6||A!==1)continue;
         if(step===0?(P[0]&&P[2]&&P[4])||(P[2]&&P[4]&&P[6]):(P[0]&&P[2]&&P[6])||(P[0]&&P[4]&&P[6]))continue;del.push(i)}
       if(del.length){changed=true;del.forEach(i=>g[i]=0)}}}
-    let Ls=0,E=0,J=0;for(let i=0;i<g.length;i++){if(!g[i])continue;Ls++;let d=0;for(const o of[-bw-1,-bw,-bw+1,-1,1,bw-1,bw,bw+1])if(g[i+o])d++;if(d===1)E++;else if(d>=4)J++}
-    const br=(E+J)/Math.max(Ls,1)*50;return{g,bw,bh,score:Ls/(1+br*br*br),br}};
-  let pick=null;for(const c of cands){const k=skel(c);if(strict&&k.br>6)continue;if(!pick||k.score>pick.score)pick=k}
+    for(let y=1;y<bh-1;y++)for(let x=1;x<bw-1;x++){const i=y*bw+x;if(!g[i])continue;const n=g[i-bw],e=g[i+1],so=g[i+bw],w=g[i-1]; // drop staircase corners
+      if((n&&e&&!so&&!w&&!g[i+bw-1])||(e&&so&&!n&&!w&&!g[i-bw-1])||(so&&w&&!n&&!e&&!g[i-bw+1])||(w&&n&&!so&&!e&&!g[i+bw+1]))g[i]=0}
+    const o=N8(bw);let Ls=0,E=0,J=0;for(let i=0;i<g.length;i++){if(!g[i])continue;Ls++;let d=0;for(const k of o)if(g[i+k])d++;if(d===1)E++;else if(d>=4)J++}
+    const br=(E+J)/Math.max(Ls,1)*50;return{c,g,bw,bh,Ls,score:Ls/(1+br*br*br),br}};
+  let pick=null;for(const c of cands){const k=skel(c);if(strict&&!mapLike&&k.br>6)continue;if(!pick||k.score>pick.score)pick=k}
   if(!pick)return null;
-  const{g,bw,bh}=pick;
-  // walk the skeleton, preferring to keep going straight
-  const pts=[];for(let i=0;i<g.length;i++)if(g[i])pts.push(i);if(pts.length<8)return null;
-  const NB=[[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]],vis=new Uint8Array(g.length);
-  const deg=i=>{let d=0;const x=i%bw,y=(i/bw)|0;NB.forEach(([dx,dy])=>{if(g[(y+dy)*bw+x+dx])d++});return d};
-  let cur=pts.find(i=>deg(i)===1);if(cur==null)cur=pts[0];
-  const path=[cur];vis[cur]=1;let left=pts.length-1;
-  while(left>0){const x=cur%bw,y=(cur/bw)|0;const back=path[Math.max(0,path.length-4)],dx0=x-back%bw,dy0=y-((back/bw)|0),dl=Math.hypot(dx0,dy0)||1;
-    let nx=-1,bs=-9;NB.forEach(([dx,dy])=>{const k=(y+dy)*bw+x+dx;if(g[k]&&!vis[k]){const sc=(dx*dx0+dy*dy0)/(dl*Math.hypot(dx,dy));if(sc>bs){bs=sc;nx=k}}});
-    if(nx<0){let bd=1e9;for(const k of pts){if(vis[k])continue;const d=(k%bw-x)**2+(((k/bw)|0)-y)**2;if(d<bd){bd=d;nx=k}}
-      if(nx<0)break;if(Math.sqrt(bd)>12&&left<pts.length*.2)break}
-    vis[nx]=1;left--;path.push(nx);cur=nx}
-  let out=path.map(i=>[i%bw,(i/bw)|0]);
-  // close loops, then drop jitter (Douglas-Peucker)
-  const f=out[0],l=out[out.length-1];if(out.length>20&&Math.hypot(f[0]-l[0],f[1]-l[1])<Math.max(14,Math.hypot(bw,bh)*.06))out.push(f);
-  const rdp=(a,e)=>{if(a.length<3)return a;const[A,B]=[a[0],a[a.length-1]],dx=B[0]-A[0],dy=B[1]-A[1],L=Math.hypot(dx,dy);let mi=0,md=0;
-    for(let i=1;i<a.length-1;i++){const d=L?Math.abs(dy*a[i][0]-dx*a[i][1]+B[0]*A[1]-B[1]*A[0])/L:Math.hypot(a[i][0]-A[0],a[i][1]-A[1]);if(d>md){md=d;mi=i}}
-    return md>e?rdp(a.slice(0,mi+1),e).slice(0,-1).concat(rdp(a.slice(mi),e)):[A,B]};
-  out=rdp(out,.9);return out.length>=3?out:null;
+  const{g,bw,bh}=pick,off=N8(bw),thick=Math.max(2,pick.c.n/Math.max(pick.Ls,1));
+  const deg=i=>{let d=0;for(const k of off)if(g[i+k])d++;return d};
+  // prune short spurs left by thinning (not real side loops)
+  for(let pass=0;pass<3;pass++){let removed=0;
+    for(let i=0;i<g.length;i++){if(!g[i]||deg(i)!==1)continue;const chain=[i];let prev=-1,cur=i;
+      while(chain.length<=thick*1.6){let nx=-1;for(const k of off){const j=cur+k;if(g[j]&&j!==prev&&!chain.includes(j)){nx=j;break}}if(nx<0)break;if(deg(nx)>=3){chain.forEach(j=>g[j]=0);removed++;break}prev=cur;cur=nx;chain.push(nx)}}
+    if(!removed)break}
+  // split the skeleton into strokes between endpoints/junctions
+  const vis=new Uint8Array(g.length),strokes=[],xy=i=>[i%bw,(i/bw)|0],isNode=i=>deg(i)!==2;
+  const walk=(a,b)=>{const s=[a,b];let prev=a,cur=b;vis[b]=1;
+    while(!isNode(cur)){let nx=-1;for(const k of off){const j=cur+k;if(g[j]&&j!==prev&&(!vis[j]||isNode(j))&&j!==s[s.length-2]){nx=j;break}}if(nx<0||nx===a&&s.length<3)break;s.push(nx);if(nx===a)break;vis[nx]=1;prev=cur;cur=nx}
+    return s};
+  const done=new Set();
+  for(let i=0;i<g.length;i++){if(!g[i]||!isNode(i))continue;vis[i]=1;
+    for(const k of off){const j=i+k;if(!g[j])continue;if(isNode(j)){const key=Math.min(i,j)+'-'+Math.max(i,j);if(done.has(key))continue;done.add(key);strokes.push([i,j]);continue}
+      if(vis[j])continue;strokes.push(walk(i,j))}}
+  for(let i=0;i<g.length;i++){if(g[i]&&!vis[i]){vis[i]=1;let nb=-1;for(const k of off)if(g[i+k]){nb=i+k;break}if(nb<0)continue;const s=walk(i,nb);s.push(i);strokes.push(s)}} // pure loops
+  let paths=strokes.map(s=>s.map(xy)).filter(s=>s.length>=2);
+  const plen=s=>{let L=0;for(let i=1;i<s.length;i++)L+=Math.hypot(s[i][0]-s[i-1][0],s[i][1]-s[i-1][1]);return L};
+  const total=paths.reduce((a,s)=>a+plen(s),0);if(total<10)return null;
+  paths=paths.filter(s=>plen(s)>=1.5);
+  // chain strokes: continue from the current end to the nearest stroke end
+  paths.sort((a,b)=>plen(b)-plen(a));const used=new Array(paths.length).fill(false),out=[];let end=null;
+  for(let n=0;n<paths.length;n++){let bi=-1,bd=1e9,rev=false;
+    if(end==null)bi=0;else paths.forEach((s,i)=>{if(used[i])return;const d0=Math.hypot(s[0][0]-end[0],s[0][1]-end[1]),d1=Math.hypot(s[s.length-1][0]-end[0],s[s.length-1][1]-end[1]);if(d0<bd){bd=d0;bi=i;rev=false}if(d1<bd){bd=d1;bi=i;rev=true}});
+    used[bi]=true;let s=paths[bi].slice();if(rev)s.reverse();
+    if(end&&bd<=2.9)s=s.slice(1);else if(out.length)s[0]=[s[0][0],s[0][1],1];
+    s.forEach(q=>out.push(q));end=out[out.length-1]}
+  // simplify each stroke (Douglas-Peucker), then map back to image pixels
+  const rdp=(a,e)=>{if(a.length<3)return a;const[A,B]=[a[0],a[a.length-1]],dx=B[0]-A[0],dy=B[1]-A[1],L=Math.hypot(dx,dy);let mi=0,mxd=0;
+    for(let i=1;i<a.length-1;i++){const d=L?Math.abs(dy*a[i][0]-dx*a[i][1]+B[0]*A[1]-B[1]*A[0])/L:Math.hypot(a[i][0]-A[0],a[i][1]-A[1]);if(d>mxd){mxd=d;mi=i}}
+    return mxd>e?rdp(a.slice(0,mi+1),e).slice(0,-1).concat(rdp(a.slice(mi),e)):[A,B]};
+  const res=[];let cur=[];const flush=()=>{if(!cur.length)return;const pen=cur[0][2];const r=rdp(cur.map(q=>[q[0],q[1]]),.8);if(pen)r[0]=[r[0][0],r[0][1],1];r.forEach(q=>res.push(q));cur=[]};
+  out.forEach(q=>{if(q[2])flush();cur.push(q)});flush();
+  const ox=pick.c.x0-1,oy=pick.c.y0-1;
+  return res.length>=2?res.map(q=>{const r=[+(sx0+(q[0]+ox)/sc).toFixed(1),+(sy0+(q[1]+oy)/sc).toFixed(1)];if(q[2])r.push(1);return r}):null;
 }
+// smoothing that respects pen-up breaks
+function chaikinMulti(p){const out=[];let seg=[];const fl=()=>{if(!seg.length)return;const pen=seg[0][2];const c=chaikin(chaikin(seg.map(q=>[q[0],q[1]])));if(pen&&out.length)c[0]=[c[0][0],c[0][1],1];c.forEach(q=>out.push(q));seg=[]};
+  p.forEach(q=>{if(q[2])fl();seg.push(q)});fl();return out}
 
 function loadImg(file){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=rej;im.src=URL.createObjectURL(file)})}
 function ocrCanvas(img){
@@ -1550,13 +1590,38 @@ async function readShots(files){
   finally{$('shotBtn').classList.remove('busy');$('shotIn').value=''}
 }
 $('shotIn').onchange=e=>readShots(e.target.files);
-$('pickMode').onchange=e=>{$('pickColor').hidden=e.target.value!=='custom';S.route.pick=e.target.value==='custom'?$('pickColor').value:''};
-$('pickColor').oninput=e=>{S.route.pick=e.target.value};
-$('routeImgIn').onchange=async e=>{const f=e.target.files[0];if(!f)return;$('routeImgBtn').classList.add('busy');
-  try{const im=await loadImg(f);const r=routeFromImage(im,false,S.route.pick);
-    if(r){S.route.shot=r;S.route.mode='shot';syncInputs();schedule();toast('ดึงเส้นทางจากภาพแล้ว')}
-    else toast('ไม่พบเส้นทางในภาพ ลองเลือก "สีอื่น" แล้วเลือกสีให้ตรงกับเส้น')}
-  catch(err){toast('เปิดภาพไม่ได้')}finally{$('routeImgBtn').classList.remove('busy');e.target.value=''}};
+// route picker: preview the trace, tap the line to pick its colour, drag to crop
+const RP={img:null,crop:null,pick:'',res:null,fit:null,down:null};
+function rpTrace(){const r=RP;r.res=routeFromImage(r.img,false,r.pick,r.crop);rpDraw();
+  $('rpMsg').textContent=r.res?'เส้นสีฟ้าคือเส้นทางที่ดึงได้ ถ้ายังไม่ตรง แตะที่เส้นทางในภาพ หรือลากกรอบรอบเส้นทาง':'ยังไม่พบเส้นทาง แตะที่เส้นทางในภาพเพื่อบอกสีของเส้น';$('rpUse').disabled=!r.res}
+function rpDraw(){const r=RP,cv=$('rpCv'),box=cv.parentElement.getBoundingClientRect(),iw=r.img.naturalWidth,ih=r.img.naturalHeight;
+  const k=Math.min(box.width/iw,(innerHeight*.58)/ih),W=Math.round(iw*k),H=Math.round(ih*k),dpr=Math.min(2,devicePixelRatio||1);
+  cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';r.fit={k,W,H};const x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);
+  x.fillStyle='#8a93a3';x.fillRect(0,0,W,H);x.drawImage(r.img,0,0,W,H);x.fillStyle='rgba(8,12,22,.45)';x.fillRect(0,0,W,H);
+  const c=r.crop;if(c){x.save();x.beginPath();x.rect(c.x0*W,c.y0*H,(c.x1-c.x0)*W,(c.y1-c.y0)*H);x.clip();x.drawImage(r.img,0,0,W,H);x.restore();
+    x.setLineDash([6,5]);x.strokeStyle='#fff';x.lineWidth=1.5;x.strokeRect(c.x0*W,c.y0*H,(c.x1-c.x0)*W,(c.y1-c.y0)*H);x.setLineDash([])}
+  if(r.res){x.lineJoin=x.lineCap='round';x.lineWidth=Math.max(2.5,W/150);x.strokeStyle='#2ee6ff';x.shadowColor='rgba(0,0,0,.6)';x.shadowBlur=4;x.beginPath();
+    r.res.forEach((q,i)=>(i&&!q[2])?x.lineTo(q[0]*k,q[1]*k):x.moveTo(q[0]*k,q[1]*k));x.stroke();x.shadowBlur=0}
+  if(r.down&&r.down.drag){const d=r.down;x.strokeStyle='#ffd23f';x.lineWidth=2;x.strokeRect(Math.min(d.x,d.x2),Math.min(d.y,d.y2),Math.abs(d.x2-d.x),Math.abs(d.y2-d.y))}
+  $('rpSw').style.background=r.pick||'conic-gradient(#ff3b30,#ff9500,#ffcc00,#ff3b30)'}
+function rpPt(e){const b=$('rpCv').getBoundingClientRect();return[e.clientX-b.left,e.clientY-b.top]}
+$('rpCv').addEventListener('pointerdown',e=>{$('rpCv').setPointerCapture(e.pointerId);const[x,y]=rpPt(e);RP.down={x,y,x2:x,y2:y,drag:false}});
+$('rpCv').addEventListener('pointermove',e=>{const d=RP.down;if(!d)return;const[x,y]=rpPt(e);d.x2=x;d.y2=y;if(Math.hypot(x-d.x,y-d.y)>10)d.drag=true;if(d.drag)rpDraw()});
+$('rpCv').addEventListener('pointerup',e=>{const d=RP.down;RP.down=null;if(!d)return;const{W,H,k}=RP.fit;
+  if(d.drag){const x0=Math.max(0,Math.min(d.x,d.x2))/W,y0=Math.max(0,Math.min(d.y,d.y2))/H,x1=Math.min(W,Math.max(d.x,d.x2))/W,y1=Math.min(H,Math.max(d.y,d.y2))/H;
+    if(x1-x0>.04&&y1-y0>.04)RP.crop={x0,y0,x1,y1};rpTrace();return}
+  // tap: sample the colour under the finger (most saturated pixel nearby)
+  const c=document.createElement('canvas'),R=Math.max(3,Math.round(10/k));c.width=c.height=R*2+1;const g=c.getContext('2d',{willReadFrequently:true});
+  g.drawImage(RP.img,d.x/k-R,d.y/k-R,R*2+1,R*2+1,0,0,R*2+1,R*2+1);const px=g.getImageData(0,0,R*2+1,R*2+1).data;let best=-1,bi=0;
+  for(let i=0;i<px.length;i+=4){if(px[i+3]<100)continue;const[,sa,v]=rgbHue(px[i],px[i+1],px[i+2]);const sc=sa*v;if(sc>best){best=sc;bi=i}}
+  if(best<.2){toast('ตรงนี้ไม่มีสี ลองแตะให้ตรงเส้นทาง');return}
+  RP.pick='#'+[px[bi],px[bi+1],px[bi+2]].map(v=>v.toString(16).padStart(2,'0')).join('');rpTrace()});
+$('rpReset').onclick=()=>{RP.crop=null;RP.pick='';rpTrace()};
+$('rpCancel').onclick=()=>{$('rpModal').hidden=true};
+$('rpUse').onclick=()=>{if(!RP.res)return;S.route.shot=RP.res;S.route.mode='shot';$('rpModal').hidden=true;syncInputs();schedule();toast('ใช้เส้นทางจากภาพแล้ว')};
+addEventListener('resize',()=>{if(!$('rpModal').hidden&&RP.img)rpDraw()});
+$('routeImgIn').onchange=async e=>{const f=e.target.files[0];if(!f)return;
+  try{RP.img=await loadImg(f);RP.crop=null;RP.pick=S.route.pick||'';$('rpModal').hidden=false;requestAnimationFrame(rpTrace)}catch(err){toast('เปิดภาพไม่ได้')}finally{e.target.value=''}};
 (async()=>{const s=await getSample();$('aiEngine').textContent=s?'อ่านด้วย Claude (แม่นยำสุด ใช้โควตาบัญชี Claude ของคุณ)':
   'อ่านในเครื่องด้วย OCR ฟรี ภาพไม่ถูกส่งออกไปไหน ครั้งแรกต้องใช้เน็ตโหลดข้อมูลภาษาประมาณ 8 MB'})();
 
